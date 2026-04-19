@@ -1,0 +1,309 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 300 560"
+  width="300"
+  height="560"
+  fill="none"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role="img"
+  aria-label="Rover dashboard — phone screen mock"
+>
+  <!-- ============================================================
+       Phone bezel — box-drawn silhouette (matches phone-screen-menu.svg)
+       ============================================================ -->
+  <g stroke="var(--color-text-primary)" stroke-width="2" fill="none">
+    <path d="
+      M34 18
+      Q24 18 24 28
+      L24 532
+      Q24 542 34 542
+      L266 542
+      Q276 542 276 532
+      L276 28
+      Q276 18 266 18
+      Z
+    " />
+    <!-- Notch -->
+    <path d="M124 18 L176 18" stroke-width="1.75" />
+  </g>
+
+  <!-- Inner screen frame -->
+  <g stroke="var(--color-border)" stroke-width="1" fill="none">
+    <path d="M36 40 L264 40 L264 520 L36 520 Z" />
+  </g>
+
+  <!-- ============================================================
+       Title bar: "rover · dash"
+       Mono-tick rendering; header is one fewer tick than "main" to read as "dash".
+       ============================================================ -->
+  <g stroke="var(--color-text-primary)" fill="none">
+    <!-- "rover" mark: 5 short ticks -->
+    <path d="M50 62 L58 62" stroke-width="2.5" />
+    <path d="M62 62 L70 62" stroke-width="2.5" />
+    <path d="M74 62 L82 62" stroke-width="2.5" />
+    <path d="M86 62 L94 62" stroke-width="2.5" />
+    <path d="M98 62 L106 62" stroke-width="2.5" />
+    <!-- separator dot -->
+    <circle cx="114" cy="62" r="1.5" fill="var(--color-text-muted)" stroke="none" />
+    <!-- "dash" ticks, muted (4 ticks) -->
+    <path d="M120 62 L128 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+    <path d="M132 62 L140 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+    <path d="M144 62 L152 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+    <path d="M156 62 L164 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+
+    <!-- Underline -->
+    <path d="M50 72 L250 72" stroke="var(--color-border)" stroke-width="1" />
+  </g>
+
+  <!-- ============================================================
+       Sparkline panel — box-drawn frame + polyline trace
+       ~60% of screen width (screen is 228wide; frame spans ~138px ≈ 60%).
+       ============================================================ -->
+  <g fill="none">
+    <!-- Box-drawn frame around the sparkline -->
+    <path
+      d="
+        M50 90
+        Q48 90 48 92
+        L48 146
+        Q48 148 50 148
+        L250 148
+        Q252 148 252 146
+        L252 92
+        Q252 90 250 90
+        Z
+      "
+      stroke="var(--color-border)"
+      stroke-width="1"
+    />
+    <!-- Micro-label ticks top-left of panel: "load" (muted) -->
+    <path d="M58 102 L66 102" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <path d="M70 102 L78 102" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <!-- Faint baseline -->
+    <path d="M58 138 L242 138" stroke="var(--color-border)" stroke-width="0.75" />
+
+    <!-- Sparkline polyline: 10 points, accent stroke -->
+    <polyline
+      points="58,132 78,124 94,128 110,118 126,112 142,120 160,108 182,114 206,100 242,118"
+      stroke="var(--color-accent)"
+      stroke-width="1.75"
+      fill="none"
+    />
+    <!-- Trailing pulse at the last sample -->
+    <circle cx="242" cy="118" r="2.25" fill="var(--color-accent)" stroke="none" />
+  </g>
+
+  <!-- ============================================================
+       Column header strip — muted text-tick rendering
+       4 columns: AGENT · STATE · TOKENS · AGE
+       Col x-anchors: 60 / 148 / 186 / 226
+       ============================================================ -->
+  <g stroke="var(--color-text-muted)" stroke-width="1.5" fill="none">
+    <!-- AGENT -->
+    <path d="M60 168 L74 168" />
+    <path d="M78 168 L92 168" />
+    <!-- STATE -->
+    <path d="M148 168 L162 168" />
+    <!-- TOKENS -->
+    <path d="M186 168 L200 168" />
+    <path d="M204 168 L214 168" />
+    <!-- AGE -->
+    <path d="M226 168 L240 168" />
+  </g>
+  <!-- Header separator rule -->
+  <path d="M50 178 L250 178" stroke="var(--color-border)" stroke-width="1" fill="none" />
+
+  <!-- ============================================================
+       Rows — 5 agent rows. Row 2 SELECTED with accent gutter bar
+       (same cursor-highlight mechanism as phone-screen-menu.svg row 2).
+       Row y-centers: 196, 232, 268, 304, 340  (pitch 36)
+       ============================================================ -->
+
+  <!-- Row 1 — running -->
+  <g fill="none">
+    <!-- name ticks (stub "agent-01" shape: 5 ticks + gap + 2 ticks) -->
+    <path d="M60 196 L70 196" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M74 196 L84 196" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M88 196 L98 196" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M102 196 L112 196" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M116 196 L126 196" stroke="var(--color-text-primary)" stroke-width="2" />
+    <!-- state glyph: filled circle = running (muted) -->
+    <circle cx="154" cy="196" r="3.25" fill="var(--color-text-muted)" stroke="none" />
+    <!-- tokens ticks -->
+    <path d="M186 196 L196 196" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <path d="M200 196 L210 196" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <!-- age ticks -->
+    <path d="M226 196 L234 196" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <path d="M238 196 L246 196" stroke="var(--color-text-muted)" stroke-width="1.75" />
+  </g>
+
+  <!-- Row 2 — SELECTED (accent highlight strip + accent box frame) -->
+  <g fill="none">
+    <!-- Highlight strip on the left gutter, accent -->
+    <path d="M50 214 L54 214 L54 250 L50 250 Z" fill="var(--color-accent)" stroke="none" />
+    <!-- Box-drawn frame in accent -->
+    <path
+      d="
+        M56 214
+        Q54 214 54 216
+        L54 248
+        Q54 250 56 250
+        L248 250
+        Q250 250 250 248
+        L250 216
+        Q250 214 248 214
+        Z
+      "
+      stroke="var(--color-accent)"
+      stroke-width="1.5"
+      fill="none"
+    />
+    <!-- name ticks — accent-tinted (stub "plan-reviewer") -->
+    <path d="M60 232 L70 232" stroke="var(--color-accent)" stroke-width="2" />
+    <path d="M74 232 L84 232" stroke="var(--color-accent)" stroke-width="2" />
+    <path d="M88 232 L98 232" stroke="var(--color-accent)" stroke-width="2" />
+    <path d="M102 232 L112 232" stroke="var(--color-accent)" stroke-width="2" />
+    <path d="M116 232 L126 232" stroke="var(--color-accent)" stroke-width="2" />
+    <path d="M130 232 L140 232" stroke="var(--color-accent)" stroke-width="2" />
+    <!-- Cursor ▌ at end of name column -->
+    <rect x="143" y="226" width="5" height="12" fill="var(--color-accent)" stroke="none" />
+    <!-- state: filled accent dot (running / focused) -->
+    <circle cx="163" cy="232" r="3.5" fill="var(--color-accent)" stroke="none" />
+    <!-- tokens ticks (accent) -->
+    <path d="M186 232 L196 232" stroke="var(--color-accent)" stroke-width="1.75" />
+    <path d="M200 232 L210 232" stroke="var(--color-accent)" stroke-width="1.75" />
+    <path d="M214 232 L220 232" stroke="var(--color-accent)" stroke-width="1.75" />
+    <!-- age ticks (accent) -->
+    <path d="M226 232 L234 232" stroke="var(--color-accent)" stroke-width="1.75" />
+    <path d="M238 232 L246 232" stroke="var(--color-accent)" stroke-width="1.75" />
+  </g>
+
+  <!-- Row 3 — idle (hollow dot) -->
+  <g fill="none">
+    <!-- name ticks (stub "dsp-lane-a") -->
+    <path d="M60 268 L70 268" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M74 268 L84 268" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M88 268 L98 268" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M102 268 L112 268" stroke="var(--color-text-primary)" stroke-width="2" />
+    <!-- state: hollow ring = idle -->
+    <circle cx="154" cy="268" r="3" stroke="var(--color-text-muted)" stroke-width="1.25" fill="none" />
+    <!-- tokens ticks (fewer — idle has smaller count) -->
+    <path d="M186 268 L196 268" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <!-- age ticks -->
+    <path d="M226 268 L234 268" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <path d="M238 268 L246 268" stroke="var(--color-text-muted)" stroke-width="1.75" />
+  </g>
+
+  <!-- Row 4 — done (checkmark-esque tick pair) -->
+  <g fill="none">
+    <!-- name ticks (stub "sweep-4") -->
+    <path d="M60 304 L70 304" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M74 304 L84 304" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M88 304 L98 304" stroke="var(--color-text-primary)" stroke-width="2" />
+    <!-- state: small check-shaped polyline = done -->
+    <path d="M149 304 L154 309 L162 299" stroke="var(--color-text-muted)" stroke-width="1.5" fill="none" />
+    <!-- tokens ticks -->
+    <path d="M186 304 L196 304" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <path d="M200 304 L210 304" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <path d="M214 304 L220 304" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <!-- age ticks -->
+    <path d="M226 304 L234 304" stroke="var(--color-text-muted)" stroke-width="1.75" />
+  </g>
+
+  <!-- Row 5 — running, quieter -->
+  <g fill="none">
+    <!-- name ticks (stub "ops-merge") -->
+    <path d="M60 340 L70 340" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M74 340 L84 340" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M88 340 L98 340" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M102 340 L112 340" stroke="var(--color-text-primary)" stroke-width="2" />
+    <path d="M116 340 L126 340" stroke="var(--color-text-primary)" stroke-width="2" />
+    <!-- state: filled muted dot -->
+    <circle cx="154" cy="340" r="3.25" fill="var(--color-text-muted)" stroke="none" />
+    <!-- tokens ticks -->
+    <path d="M186 340 L196 340" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <path d="M200 340 L210 340" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <!-- age ticks -->
+    <path d="M226 340 L234 340" stroke="var(--color-text-muted)" stroke-width="1.75" />
+    <path d="M238 340 L246 340" stroke="var(--color-text-muted)" stroke-width="1.75" />
+  </g>
+
+  <!-- ============================================================
+       Divider between table and footer
+       ============================================================ -->
+  <path d="M50 370 L250 370" stroke="var(--color-border)" stroke-width="1" fill="none" />
+
+  <!-- ============================================================
+       Tail: prompt line ("> …") — same pattern as menu.svg body
+       ============================================================ -->
+  <g stroke="var(--color-text-muted)" fill="none">
+    <!-- > prompt glyph -->
+    <path d="M50 400 L58 407 L50 414" stroke-width="1.5" stroke="var(--color-text-primary)" />
+    <!-- content ticks -->
+    <path d="M66 407 L100 407" stroke-width="1.25" />
+    <path d="M104 407 L130 407" stroke-width="1.25" />
+    <path d="M134 407 L164 407" stroke-width="1.25" />
+  </g>
+
+  <!-- ============================================================
+       Footer chord-chip row — same 4-chip vocabulary as menu.svg,
+       relabeled for dashboard context (J/K nav · ⏎ open · R refresh · Q quit).
+       Positions match menu.svg exactly so the two screens feel like one device.
+       ============================================================ -->
+  <g fill="none">
+    <!-- Separator rule -->
+    <path d="M50 462 L250 462" stroke="var(--color-border)" stroke-width="1" />
+
+    <!-- Chip 1: J (nav) -->
+    <g>
+      <path
+        d="M50 480 L70 480 L70 498 L50 498 Z"
+        stroke="var(--color-text-primary)"
+        stroke-width="1.25"
+        fill="none"
+      />
+      <path d="M60 485 L60 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+      <path d="M74 490 L84 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+      <path d="M88 490 L94 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+    </g>
+
+    <!-- Chip 2: K (nav) -->
+    <g>
+      <path
+        d="M100 480 L120 480 L120 498 L100 498 Z"
+        stroke="var(--color-text-primary)"
+        stroke-width="1.25"
+        fill="none"
+      />
+      <path d="M110 485 L110 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+      <path d="M124 490 L134 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+      <path d="M138 490 L148 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+    </g>
+
+    <!-- Chip 3: R refresh -->
+    <g>
+      <path
+        d="M154 480 L174 480 L174 498 L154 498 Z"
+        stroke="var(--color-text-primary)"
+        stroke-width="1.25"
+        fill="none"
+      />
+      <path d="M164 485 L164 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+      <path d="M178 490 L188 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+      <path d="M192 490 L202 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+    </g>
+
+    <!-- Chip 4: Q quit -->
+    <g>
+      <path
+        d="M208 480 L228 480 L228 498 L208 498 Z"
+        stroke="var(--color-text-primary)"
+        stroke-width="1.25"
+        fill="none"
+      />
+      <path d="M218 485 L218 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+      <path d="M232 490 L242 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+    </g>
+  </g>
+</svg>

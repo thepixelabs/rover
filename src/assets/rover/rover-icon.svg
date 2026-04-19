@@ -1,0 +1,25 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 16 16"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.25"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role="img"
+  aria-label="Rover"
+>
+  <!-- Phone bezel: box-drawn silhouette (╭─╮ │ ╰─╯) -->
+  <!-- Top edge with rounded corners -->
+  <path d="M4.5 1.75 Q4 1.75 4 2.25 L4 13.25 Q4 13.75 4.5 13.75 L10.5 13.75 Q11 13.75 11 13.25 L11 2.25 Q11 1.75 10.5 1.75 Z" />
+  <!-- Prompt glyph: a > cursor inside the bezel -->
+  <path d="M5.5 7 L6.75 8 L5.5 9" stroke-width="1.1" />
+  <!-- Solid block cursor ▌ next to prompt -->
+  <rect x="7.75" y="7.25" width="1.5" height="1.5" fill="currentColor" stroke="none" />
+  <!-- Signal arc leaving the top-right corner (the "reach") -->
+  <path d="M11.75 3.25 Q13.25 3.25 13.25 4.75" stroke-width="1.25" />
+  <!-- Pulse dot at arc terminus -->
+  <circle cx="13.25" cy="4.75" r="0.6" fill="currentColor" stroke="none" />
+</svg>

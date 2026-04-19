@@ -1,0 +1,206 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 300 560"
+  width="300"
+  height="560"
+  fill="none"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role="img"
+  aria-label="Rover main menu — phone screen mock"
+>
+  <!-- ============================================================
+       Phone bezel — box-drawn silhouette
+       ============================================================ -->
+  <g stroke="var(--color-text-primary)" stroke-width="2" fill="none">
+    <path d="
+      M34 18
+      Q24 18 24 28
+      L24 532
+      Q24 542 34 542
+      L266 542
+      Q276 542 276 532
+      L276 28
+      Q276 18 266 18
+      Z
+    " />
+    <!-- Notch -->
+    <path d="M124 18 L176 18" stroke-width="1.75" />
+  </g>
+
+  <!-- Inner screen frame -->
+  <g stroke="var(--color-border)" stroke-width="1" fill="none">
+    <path d="M36 40 L264 40 L264 520 L36 520 Z" />
+  </g>
+
+  <!-- ============================================================
+       Title bar: "rover · main"
+       Drawn as monospace-ish tick marks; no <text> to stay font-independent.
+       A simple underline below it sells the header idea.
+       ============================================================ -->
+  <g stroke="var(--color-text-primary)" fill="none">
+    <!-- "rover" mark: 5 short ticks representing letters -->
+    <path d="M50 62 L58 62" stroke-width="2.5" />
+    <path d="M62 62 L70 62" stroke-width="2.5" />
+    <path d="M74 62 L82 62" stroke-width="2.5" />
+    <path d="M86 62 L94 62" stroke-width="2.5" />
+    <path d="M98 62 L106 62" stroke-width="2.5" />
+    <!-- separator dot -->
+    <circle cx="114" cy="62" r="1.5" fill="var(--color-text-muted)" stroke="none" />
+    <!-- "main" ticks, muted -->
+    <path d="M120 62 L128 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+    <path d="M132 62 L140 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+    <path d="M144 62 L152 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+    <path d="M156 62 L164 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+
+    <!-- Underline -->
+    <path d="M50 72 L250 72" stroke="var(--color-border)" stroke-width="1" />
+  </g>
+
+  <!-- ============================================================
+       Session list rows (4 entries) — box-drawn
+       Each row is a thin rectangle with left gutter marker + name ticks + status dot.
+       Row 2 is the selected row (accent).
+       ============================================================ -->
+  <g fill="none">
+    <!-- Row 1: session "sweep-4" running -->
+    <g stroke="var(--color-text-muted)" stroke-width="1.25">
+      <path d="M50 96 L250 96 L250 132 L50 132 Z" />
+      <!-- session glyph ticks (mono) -->
+      <path d="M64 114 L74 114" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M78 114 L88 114" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M92 114 L102 114" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M106 114 L116 114" stroke-width="2" stroke="var(--color-text-primary)" />
+      <!-- status dot -->
+      <circle cx="232" cy="114" r="3.5" fill="var(--color-text-muted)" stroke="none" />
+    </g>
+
+    <!-- Row 2: SELECTED — frame in accent, row highlight strip -->
+    <g>
+      <!-- Highlight strip on the left gutter, accent -->
+      <path d="M50 144 L54 144 L54 180 L50 180 Z" fill="var(--color-accent)" stroke="none" />
+      <!-- Box-drawn frame in accent -->
+      <path
+        d="
+          M56 144
+          Q54 144 54 146
+          L54 178
+          Q54 180 56 180
+          L248 180
+          Q250 180 250 178
+          L250 146
+          Q250 144 248 144
+          Z
+        "
+        stroke="var(--color-accent)"
+        stroke-width="1.5"
+        fill="none"
+      />
+      <!-- Name ticks (accent-tinted primary) -->
+      <path d="M64 162 L74 162" stroke-width="2" stroke="var(--color-accent)" />
+      <path d="M78 162 L88 162" stroke-width="2" stroke="var(--color-accent)" />
+      <path d="M92 162 L102 162" stroke-width="2" stroke="var(--color-accent)" />
+      <path d="M106 162 L116 162" stroke-width="2" stroke="var(--color-accent)" />
+      <path d="M120 162 L130 162" stroke-width="2" stroke="var(--color-accent)" />
+      <!-- Cursor ▌ at end -->
+      <rect x="134" y="156" width="6" height="12" fill="var(--color-accent)" stroke="none" />
+      <!-- Status dot -->
+      <circle cx="232" cy="162" r="3.5" fill="var(--color-accent)" stroke="none" />
+    </g>
+
+    <!-- Row 3 -->
+    <g stroke="var(--color-text-muted)" stroke-width="1.25">
+      <path d="M50 192 L250 192 L250 228 L50 228 Z" />
+      <path d="M64 210 L74 210" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M78 210 L88 210" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M92 210 L102 210" stroke-width="2" stroke="var(--color-text-primary)" />
+      <circle cx="232" cy="210" r="3.5" fill="var(--color-text-muted)" stroke="none" />
+    </g>
+
+    <!-- Row 4 -->
+    <g stroke="var(--color-text-muted)" stroke-width="1.25">
+      <path d="M50 240 L250 240 L250 276 L50 276 Z" />
+      <path d="M64 258 L74 258" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M78 258 L88 258" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M92 258 L102 258" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M106 258 L116 258" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M120 258 L130 258" stroke-width="2" stroke="var(--color-text-primary)" />
+      <path d="M134 258 L144 258" stroke-width="2" stroke="var(--color-text-primary)" />
+      <circle cx="232" cy="258" r="3.5" fill="var(--color-text-muted)" stroke="none" />
+    </g>
+  </g>
+
+  <!-- ============================================================
+       Middle breathing space: a faint prompt line
+       ============================================================ -->
+  <g stroke="var(--color-text-muted)" fill="none">
+    <!-- > prompt glyph -->
+    <path d="M50 320 L58 327 L50 334" stroke-width="1.5" stroke="var(--color-text-primary)" />
+    <!-- Line of content ticks -->
+    <path d="M66 327 L100 327" stroke-width="1.25" />
+    <path d="M104 327 L130 327" stroke-width="1.25" />
+    <path d="M134 327 L164 327" stroke-width="1.25" />
+  </g>
+
+  <!-- ============================================================
+       Footer hint row: Y yolo · A altergo · D agents · Q quit
+       Drawn as 4 chord-chip pills with a bold "key" rect and a label ticks-strip.
+       ============================================================ -->
+  <g fill="none">
+    <!-- Separator rule -->
+    <path d="M50 462 L250 462" stroke="var(--color-border)" stroke-width="1" />
+
+    <!-- Chip 1: Y yolo -->
+    <g>
+      <path
+        d="M50 480 L70 480 L70 498 L50 498 Z"
+        stroke="var(--color-text-primary)"
+        stroke-width="1.25"
+        fill="none"
+      />
+      <!-- Centered "key" glyph: a thick vertical tick -->
+      <path d="M60 485 L60 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+      <!-- Label ticks -->
+      <path d="M74 490 L84 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+      <path d="M88 490 L94 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+    </g>
+
+    <!-- Chip 2: A altergo -->
+    <g>
+      <path
+        d="M100 480 L120 480 L120 498 L100 498 Z"
+        stroke="var(--color-text-primary)"
+        stroke-width="1.25"
+        fill="none"
+      />
+      <path d="M110 485 L110 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+      <path d="M124 490 L134 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+      <path d="M138 490 L148 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+    </g>
+
+    <!-- Chip 3: D agents -->
+    <g>
+      <path
+        d="M154 480 L174 480 L174 498 L154 498 Z"
+        stroke="var(--color-text-primary)"
+        stroke-width="1.25"
+        fill="none"
+      />
+      <path d="M164 485 L164 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+      <path d="M178 490 L188 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+      <path d="M192 490 L202 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+    </g>
+
+    <!-- Chip 4: Q quit -->
+    <g>
+      <path
+        d="M208 480 L228 480 L228 498 L208 498 Z"
+        stroke="var(--color-text-primary)"
+        stroke-width="1.25"
+        fill="none"
+      />
+      <path d="M218 485 L218 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+      <path d="M232 490 L242 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+    </g>
+  </g>
+</svg>

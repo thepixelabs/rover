@@ -1,0 +1,219 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 320"
+  width="640"
+  height="320"
+  fill="none"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role="img"
+  aria-label="altergo plus Dispatch plus Rover — horizontal landing variant"
+>
+  <!-- ============================================================
+       ROVER — phone on the left, tilted ~10°
+       ============================================================ -->
+  <g
+    transform="rotate(-10 100 150)"
+    stroke="var(--color-text-primary)"
+    stroke-width="1.75"
+    fill="none"
+  >
+    <!-- Phone bezel: box-drawn silhouette -->
+    <path d="
+      M72 60
+      Q65 60 65 67
+      L65 232
+      Q65 239 72 239
+      L128 239
+      Q135 239 135 232
+      L135 67
+      Q135 60 128 60
+      Z
+    " />
+    <!-- Notch hint -->
+    <path d="M93 60 L107 60" stroke-width="1.5" />
+
+    <!-- Inner screen frame -->
+    <path
+      d="M65.5 72 L134.5 72 L134.5 226 L65.5 226 Z"
+      stroke="var(--color-border)"
+      stroke-width="1"
+    />
+
+    <!-- Prompt: > glyph -->
+    <path d="M74 90 L82 97 L74 104" stroke-width="1.4" />
+    <!-- Block cursor ▌ -->
+    <rect x="86" y="91.5" width="7" height="10" fill="var(--color-text-primary)" stroke="none" />
+
+    <!-- 3-line menu -->
+    <path d="M74 124 L128 124" stroke-width="1.1" />
+    <path d="M74 140 L128 140" stroke-width="1.1" />
+    <path d="M74 156 L116 156" stroke-width="1.1" />
+
+    <!-- Footer hint -->
+    <path d="M74 210 L128 210" stroke="var(--color-text-muted)" stroke-width="0.9" />
+  </g>
+
+  <!-- ============================================================
+       DISPATCH — desktop window in the center
+       ============================================================ -->
+  <g
+    stroke="var(--color-text-primary)"
+    stroke-width="1.75"
+    fill="none"
+  >
+    <!-- Desktop window bezel -->
+    <path d="
+      M232 92
+      Q224 92 224 100
+      L224 236
+      Q224 244 232 244
+      L472 244
+      Q480 244 480 236
+      L480 100
+      Q480 92 472 92
+      Z
+    " />
+
+    <!-- Title bar separator -->
+    <path d="M224 116 L480 116" stroke-width="1.2" />
+
+    <!-- 3-dot cluster -->
+    <circle cx="238" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+    <circle cx="249" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+    <circle cx="260" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+
+    <!-- Interior: railroad + dashboard -->
+    <g stroke="var(--color-text-muted)" stroke-width="1.1" fill="none">
+      <!-- Railroad -->
+      <path d="M244 148 L460 148" />
+      <path d="M244 158 L460 158" />
+      <path d="M264 146 L264 160" stroke-width="0.9" />
+      <path d="M300 146 L300 160" stroke-width="0.9" />
+      <path d="M336 146 L336 160" stroke-width="0.9" />
+      <path d="M372 146 L372 160" stroke-width="0.9" />
+      <path d="M408 146 L408 160" stroke-width="0.9" />
+      <path d="M444 146 L444 160" stroke-width="0.9" />
+
+      <!-- Two dashboard panels -->
+      <path d="M244 182 L344 182 L344 222 L244 222 Z" />
+      <path d="M360 182 L460 182 L460 222 L360 222 Z" />
+
+      <!-- Sparkline -->
+      <path d="M252 212 L266 200 L280 208 L294 194 L308 204 L322 198 L336 210" stroke-width="0.9" />
+
+      <!-- Bars -->
+      <path d="M368 216 L368 208" stroke-width="1.4" />
+      <path d="M380 216 L380 200" stroke-width="1.4" />
+      <path d="M392 216 L392 210" stroke-width="1.4" />
+      <path d="M404 216 L404 198" stroke-width="1.4" />
+      <path d="M416 216 L416 204" stroke-width="1.4" />
+      <path d="M428 216 L428 192" stroke-width="1.4" />
+      <path d="M440 216 L440 202" stroke-width="1.4" />
+      <path d="M452 216 L452 208" stroke-width="1.4" />
+    </g>
+  </g>
+
+  <!-- ============================================================
+       ALTERGO — ground plane strip along the bottom, full width
+       ============================================================ -->
+  <g
+    stroke="var(--color-text-muted)"
+    fill="none"
+  >
+    <!-- Ground plane: forward edge + receding edge -->
+    <path d="M24 264 L616 264" stroke-width="1.1" />
+    <path d="M72 300 L568 300" stroke-width="0.9" opacity="0.65" />
+
+    <!-- Perspective rails -->
+    <path d="M24 264 L72 300" stroke-width="0.7" opacity="0.5" />
+    <path d="M616 264 L568 300" stroke-width="0.7" opacity="0.5" />
+
+    <!-- Front row of bracket glyphs: [acct-a]  [acct-b]  [acct-c]  [acct-d] -->
+    <g stroke-width="1.1" transform="translate(90 276)">
+      <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+      <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+      <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+      <path d="M18 3 L18 8 M18 3 L23 3 M18 5.5 L22 5.5 M18 8 L23 8" stroke-width="0.8" opacity="0.8" />
+      <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+    </g>
+    <g stroke-width="1.1" transform="translate(220 276)">
+      <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+      <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+      <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+      <path d="M18 3 L18 8 M18 3 L22 3 Q23 3 23 4 L23 5 Q23 6 22 6 L18 6 M18 6 L22 6 Q23 6 23 7 L23 8 Q23 9 22 9 L18 8" stroke-width="0.8" opacity="0.8" />
+      <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+    </g>
+    <g stroke-width="1.1" transform="translate(350 276)">
+      <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+      <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+      <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+      <path d="M23 3 Q18 3 18 5.5 Q18 8 23 8" stroke-width="0.8" opacity="0.8" fill="none" />
+      <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+    </g>
+    <g stroke-width="1.1" transform="translate(480 276)">
+      <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+      <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+      <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+      <path d="M18 3 L18 8 M23 3 L23 8 M18 5.5 L23 5.5" stroke-width="0.8" opacity="0.8" />
+      <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+    </g>
+
+    <!-- Back row: smaller glyphs receding -->
+    <g stroke-width="0.8" opacity="0.5">
+      <g transform="translate(140 292)">
+        <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+        <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+        <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+      </g>
+      <g transform="translate(260 292)">
+        <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+        <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+        <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+      </g>
+      <g transform="translate(380 292)">
+        <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+        <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+        <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+      </g>
+      <g transform="translate(500 292)">
+        <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+        <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+        <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- ============================================================
+       CONNECTING ARC — phone → desktop → altergo pulse
+       ============================================================ -->
+  <g fill="none" stroke="var(--color-accent)">
+    <!-- Halo -->
+    <path
+      d="
+        M117 106
+        C 180 130, 230 150, 280 180
+        S 360 210, 420 240
+        S 460 280, 438 282
+      "
+      stroke-width="5"
+      stroke-linecap="round"
+      opacity="0.18"
+    />
+    <!-- Main arc -->
+    <path
+      d="
+        M117 106
+        C 180 130, 230 150, 280 180
+        S 360 210, 420 240
+        S 460 280, 438 282
+      "
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+    <!-- Pulse terminus in altergo plane -->
+    <circle cx="438" cy="282" r="3" fill="var(--color-accent)" stroke="none" />
+    <circle cx="438" cy="282" r="7" stroke="var(--color-accent)" stroke-width="1" opacity="0.55" />
+    <circle cx="438" cy="282" r="12" stroke="var(--color-accent)" stroke-width="0.9" opacity="0.3" />
+  </g>
+</svg>

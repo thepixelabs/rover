@@ -1,0 +1,2720 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark" data-theme-choice="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rover — Your fleet, one SSH away. &middot; Dispatch</title>
+  <meta name="description" content="The phone companion for Dispatch. SSH from anywhere and check, launch, or kill any AI agent in two keystrokes." />
+  <meta name="keywords" content="Rover, SSH from phone, AI agent monitoring from phone, terminal companion, Blink, Termius, a-Shell, Dispatch TUI, altergo, mobile agent control" />
+  <meta name="author" content="thepixelabs" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="theme-color" content="#0a0d1a" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="canonical" href="https://dispatch.pixelabs.net/rover.html" />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="Rover — Your fleet, one SSH away." />
+  <meta property="og:description" content="The phone companion for Dispatch. SSH from anywhere and check, launch, or kill any AI agent in two keystrokes." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dispatch.pixelabs.net/rover.html" />
+  <meta property="og:image" content="https://dispatch.pixelabs.net/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rover — the phone companion for Dispatch, a terminal-style interface reached over SSH" />
+  <meta property="og:site_name" content="Dispatch by thepixelabs" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Rover — Your fleet, one SSH away." />
+  <meta name="twitter:description" content="The phone companion for Dispatch. SSH from anywhere and check, launch, or kill any AI agent in two keystrokes." />
+  <meta name="twitter:image" content="https://dispatch.pixelabs.net/og-image.png" />
+  <meta name="twitter:creator" content="@thepixelabs" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://dispatch.pixelabs.net/rover.html#webpage",
+        "name": "Rover — Phone companion for Dispatch",
+        "description": "Rover is the Dispatch TUI. SSH from your phone and check, launch, or kill any AI coding agent in two keystrokes.",
+        "url": "https://dispatch.pixelabs.net/rover.html",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Dispatch",
+          "url": "https://dispatch.pixelabs.net"
+        },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://dispatch.pixelabs.net/og-image.png"
+        },
+        "breadcrumb": { "@id": "https://dispatch.pixelabs.net/rover.html#breadcrumb" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://dispatch.pixelabs.net/rover.html#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Dispatch", "item": "https://dispatch.pixelabs.net" },
+          { "@type": "ListItem", "position": 2, "name": "Rover", "item": "https://dispatch.pixelabs.net/rover.html" }
+        ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Rover",
+        "description": "Phone companion for Dispatch. SSH from your phone and check, launch, or kill any AI coding agent in two keystrokes.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "macOS, Linux",
+        "url": "https://dispatch.pixelabs.net/rover.html",
+        "codeRepository": "https://github.com/thepixelabs/dispatch/tree/main/rover",
+        "license": "https://github.com/thepixelabs/dispatch/blob/main/LICENSE",
+        "isPartOf": {
+          "@type": "SoftwareApplication",
+          "name": "Dispatch",
+          "url": "https://dispatch.pixelabs.net"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "thepixelabs",
+          "url": "https://github.com/thepixelabs"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Fonts (self-hosted) -->
+  <link rel="stylesheet" href="fonts/fonts.css" />
+
+  <style>
+    /* ================================================================
+       DESIGN TOKENS — DARK (default)
+       Duplicated verbatim from landing.html. Sync: update both files on
+       brand changes until a third marketing page triggers extraction.
+       ================================================================ */
+    :root,
+    [data-theme="dark"] {
+      color-scheme: dark;
+
+      --bg:           #07091a;
+      --bg-deep:      #040612;
+      --bg-surface:   #0c0f24;
+      --bg-card:      rgba(255, 255, 255, 0.04);
+      --bg-card-hover:rgba(255, 255, 255, 0.07);
+
+      --border:       rgba(255, 255, 255, 0.08);
+      --border-accent:rgba(99, 102, 241, 0.35);
+
+      --text:         rgba(255, 255, 255, 0.93);
+      --text-muted:   rgba(255, 255, 255, 0.55);
+      --text-dim:     rgba(255, 255, 255, 0.32);
+
+      --indigo:       #6366f1;
+      --indigo-light: #818cf8;
+      --indigo-glow:  rgba(99, 102, 241, 0.4);
+
+      --neon-green:   #0ffa7a;
+      --neon-green-glow: rgba(15, 250, 122, 0.35);
+      --neon-magenta: #ff2d9e;
+      --neon-magenta-glow: rgba(255, 45, 158, 0.35);
+      --neon-cyan:    #00e5ff;
+      --neon-cyan-glow: rgba(0, 229, 255, 0.3);
+      --neon-orange:  #ff6b1a;
+      --neon-orange-glow: rgba(255, 107, 26, 0.3);
+      --acid-yellow:  #d4ff00;
+      --acid-yellow-glow: rgba(212, 255, 0, 0.28);
+      --deep-violet:  #7c3aed;
+
+      --amber:        #f59e0b;
+      --red:          #ef4444;
+
+      --glass-bg:     rgba(18, 22, 52, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.09);
+      --card-shadow:  0 1px 0 rgba(255,255,255,0.06) inset, 0 2px 16px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.04) inset;
+      --card-shadow-hover: 0 1px 0 rgba(255,255,255,0.08) inset, 0 8px 32px rgba(0,0,0,0.38), 0 0 0 1px rgba(99,102,241,0.18) inset;
+      --section-tint: rgba(99, 102, 241, 0.025);
+
+      --radius:       16px;
+      --radius-sm:    10px;
+      --radius-xs:    6px;
+      --max-w:        1120px;
+
+      --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ================================================================
+       DESIGN TOKENS — LIGHT
+       ================================================================ */
+    [data-theme="light"] {
+      color-scheme: light;
+
+      --bg:           #f5f2ec;
+      --bg-deep:      #ece8e0;
+      --bg-surface:   #faf8f4;
+      --bg-card:      rgba(0, 0, 0, 0.04);
+      --bg-card-hover:rgba(0, 0, 0, 0.07);
+
+      --border:       rgba(0, 0, 0, 0.1);
+      --border-accent:rgba(99, 102, 241, 0.4);
+
+      --text:         rgba(18, 18, 28, 0.92);
+      --text-muted:   rgba(18, 18, 28, 0.55);
+      --text-dim:     rgba(18, 18, 28, 0.38);
+
+      --indigo:       #4f52d9;
+      --indigo-light: #6366f1;
+      --indigo-glow:  rgba(99, 102, 241, 0.25);
+
+      --neon-green:   #00c05a;
+      --neon-green-glow: rgba(0, 192, 90, 0.25);
+      --neon-magenta: #e0176c;
+      --neon-magenta-glow: rgba(224, 23, 108, 0.2);
+      --neon-cyan:    #007ab8;
+      --neon-cyan-glow: rgba(0, 122, 184, 0.2);
+      --neon-orange:  #d44e00;
+      --neon-orange-glow: rgba(212, 78, 0, 0.2);
+      --acid-yellow:  #8a9e00;
+      --acid-yellow-glow: rgba(138, 158, 0, 0.2);
+      --deep-violet:  #5b21b6;
+
+      --amber:        #d97706;
+      --red:          #dc2626;
+
+      --glass-bg:     rgba(255, 255, 255, 0.82);
+      --glass-border: rgba(0, 0, 0, 0.09);
+      --card-shadow:  0 1px 0 rgba(255,255,255,0.95) inset, 0 2px 12px rgba(0,0,0,0.09), 0 0 0 1px rgba(0,0,0,0.06);
+      --card-shadow-hover: 0 1px 0 rgba(255,255,255,0.98) inset, 0 6px 28px rgba(0,0,0,0.13), 0 0 0 1px rgba(99,102,241,0.2);
+      --section-tint: rgba(99, 102, 241, 0.03);
+
+      --ribbon-bg:    rgba(99, 102, 241, 0.06);
+    }
+
+    /* ================================================================
+       RESET & BASE
+       ================================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.35s ease, color 0.35s ease;
+      isolation: isolate;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.028;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      will-change: transform;
+      transform: translateZ(0);
+      contain: strict;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 120% 40% at 50% 20%, rgba(99, 102, 241, 0.07) 0%, transparent 70%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+      will-change: transform;
+      transform: translateZ(0);
+      contain: strict;
+    }
+
+    [data-theme="light"] body::after {
+      background:
+        radial-gradient(ellipse 120% 40% at 50% 20%, rgba(99, 102, 241, 0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 80% 30% at 50% 100%, rgba(99, 102, 241, 0.04) 0%, transparent 70%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+    }
+
+    a { color: inherit; }
+    code, pre { font-family: var(--font-mono); }
+
+    .container {
+      width: min(var(--max-w), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 16px;
+      z-index: 9999;
+      padding: 10px 18px;
+      background: var(--indigo);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 0 0 var(--radius-xs) var(--radius-xs);
+      text-decoration: none;
+      transition: top 150ms;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ================================================================
+       GLOBAL FOCUS-VISIBLE FALLBACK
+       Every interactive element gets a visible ring for keyboard users.
+       More specific rules above can override, but this ensures nothing
+       is focus-invisible.
+       ================================================================ */
+    a:focus-visible,
+    button:focus-visible,
+    [role="button"]:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid var(--neon-cyan);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* ================================================================
+       NAV
+       ================================================================ */
+    .site-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 0 20px;
+      background: rgba(7, 9, 26, 0.92);
+      border-bottom: 1px solid var(--border);
+    }
+
+    [data-theme="light"] .site-nav {
+      background: rgba(245, 242, 236, 0.78);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .nav-brand {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-brand-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: 0 0 8px 2px var(--neon-green-glow);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.85); }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 150ms;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(128, 128, 128, 0.1);
+    }
+
+    /* Current-page indicator for nav (Rover link highlighted on rover.html) */
+    .nav-links a[aria-current="page"] {
+      color: var(--neon-cyan);
+      position: relative;
+    }
+    .nav-links a[aria-current="page"]::after {
+      content: '';
+      position: absolute;
+      left: 14px; right: 14px;
+      bottom: 2px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 8px var(--neon-cyan-glow);
+    }
+    [data-theme="light"] .nav-links a[aria-current="page"]::after {
+      box-shadow: none;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: border-color 150ms, color 150ms, transform 120ms;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(128, 128, 128, 0.2);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+    .theme-toggle:focus-visible {
+      outline: 2px solid var(--indigo);
+      outline-offset: 2px;
+    }
+    .theme-toggle svg {
+      width: 16px; height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .icon-system, .icon-dark, .icon-light { display: none; }
+    [data-theme-choice="dark"]   .icon-dark   { display: block; }
+    [data-theme-choice="light"]  .icon-light  { display: block; }
+    [data-theme-choice="system"] .icon-system { display: block; }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--indigo-light);
+      transition: border-color 150ms, transform 120ms;
+      min-height: 44px;
+    }
+
+    .nav-cta:hover {
+      background: rgba(99, 102, 241, 0.25);
+      border-color: rgba(99, 102, 241, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta svg {
+      width: 16px; height: 16px;
+      fill: currentColor;
+    }
+
+    .nav-star-count {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .nav-hamburger {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: border-color 150ms, color 150ms, transform 120ms;
+      flex-shrink: 0;
+    }
+    .nav-hamburger:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(128, 128, 128, 0.2);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+    .nav-hamburger:focus-visible {
+      outline: 2px solid var(--indigo);
+      outline-offset: 2px;
+    }
+    .nav-hamburger svg {
+      width: 18px; height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    @keyframes navSlideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .nav-hamburger { display: inline-flex; }
+      .nav-links { display: none; }
+
+      .site-nav.nav-open .nav-links {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0; right: 0;
+        background: rgba(7, 9, 26, 0.97);
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0 12px;
+        gap: 2px;
+        animation: navSlideDown 200ms var(--ease-out) both;
+        z-index: 199;
+      }
+
+      [data-theme="light"] .site-nav.nav-open .nav-links {
+        background: rgba(245, 242, 236, 0.98);
+      }
+
+      .site-nav.nav-open .nav-links li {
+        width: 100%;
+      }
+
+      .site-nav.nav-open .nav-links a {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 10px 20px;
+        border-radius: 0;
+        font-size: 1rem;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .nav-star-count { display: none; }
+      .nav-cta { padding: 8px 14px; }
+    }
+
+    /* ================================================================
+       BUTTONS (shared)
+       ================================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: transform 120ms var(--ease-spring), border-color 180ms, box-shadow 180ms;
+      will-change: transform;
+      cursor: pointer;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+    .btn:focus-visible { outline: 2px solid var(--indigo); outline-offset: 3px; }
+
+    .btn-primary {
+      background: rgba(99, 102, 241, 0.22);
+      border-color: rgba(99, 102, 241, 0.45);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: rgba(99, 102, 241, 0.34);
+      border-color: rgba(99, 102, 241, 0.65);
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.25);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(128, 128, 128, 0.2);
+    }
+
+    .btn svg {
+      width: 18px; height: 18px;
+      fill: currentColor;
+    }
+
+    /* ================================================================
+       SECTION COMMON
+       ================================================================ */
+    .section {
+      padding: clamp(48px, 8vw, 72px) 0;
+      position: relative;
+    }
+
+    .section:nth-of-type(even) {
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        var(--section-tint) 20%,
+        var(--section-tint) 80%,
+        transparent 100%
+      );
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--indigo-light);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.55rem, 4vw, 2.7rem);
+      font-weight: 800;
+      letter-spacing: clamp(-0.5px, -0.03em, -1px);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      line-height: 1.75;
+    }
+
+    .section-head { margin-bottom: 36px; }
+
+    .section-head--center { text-align: center; }
+    .section-head--center .section-desc { margin: 0 auto; }
+
+    /* ================================================================
+       ANIMATIONS (reveal)
+       ================================================================ */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(32px) scale(0.98);
+      transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-spring);
+    }
+
+    [data-reveal].revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    [data-reveal-delay="1"] { transition-delay: 80ms; }
+    [data-reveal-delay="2"] { transition-delay: 160ms; }
+    [data-reveal-delay="3"] { transition-delay: 240ms; }
+    [data-reveal-delay="4"] { transition-delay: 320ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    /* ================================================================
+       GRADIENT SECTION DIVIDERS (subset)
+       ================================================================ */
+    .section-divider {
+      border: none;
+      margin: 0;
+      position: relative;
+      height: 2px;
+      overflow: visible;
+    }
+    .section-divider::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 1px;
+    }
+    .section-divider::after {
+      content: '';
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      top: -3px;
+      height: 8px;
+      border-radius: 4px;
+      opacity: 0.35;
+    }
+    .section-divider[data-color="cyan-green"]::before {
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0,229,255,0.9) 20%,
+        rgba(15,250,122,0.9) 80%,
+        transparent 100%
+      );
+    }
+    .section-divider[data-color="cyan-green"]::after {
+      background: linear-gradient(90deg,
+        transparent 0%,
+        #00e5ff 20%,
+        #0ffa7a 80%,
+        transparent 100%
+      );
+    }
+    .section-divider[data-color="cyan-indigo"]::before {
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0, 229, 255, 0.75) 20%,
+        rgba(99, 102, 241, 0.9) 55%,
+        rgba(99, 102, 241, 0.7) 80%,
+        transparent 100%
+      );
+    }
+    .section-divider[data-color="cyan-indigo"]::after {
+      background: linear-gradient(90deg,
+        transparent 0%,
+        #00e5ff 20%,
+        #6366f1 55%,
+        #6366f1 80%,
+        transparent 100%
+      );
+    }
+    [data-theme="light"] .section-divider::after { opacity: 0.2; }
+    [data-theme="light"] .section-divider::before { opacity: 0.6; }
+
+    /* ================================================================
+       CTA CARD (footer CTA reuse)
+       ================================================================ */
+    .cta-section {
+      padding: 56px 0 72px;
+      text-align: center;
+    }
+
+    .cta-card {
+      padding: clamp(28px, 6vw, 48px) clamp(20px, 5vw, 40px);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-accent);
+      background: var(--glass-bg);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--card-shadow), 0 24px 64px rgba(99, 102, 241, 0.1);
+    }
+
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 5%, var(--neon-cyan) 35%, var(--indigo-light) 65%, transparent 95%);
+    }
+
+    .cta-card .section-title { margin-bottom: 12px; }
+    .cta-card .section-desc  { margin: 0 auto 32px; }
+
+    .cta-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* ================================================================
+       FOOTER (inherited)
+       ================================================================ */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .site-footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 5%, var(--indigo) 40%, var(--indigo-light) 65%, transparent 95%);
+    }
+
+    .footer-main {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .footer-main { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    .footer-brand-mark {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+
+    .footer-brand-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: 0 0 6px var(--neon-green-glow);
+    }
+
+    [data-theme="light"] .footer-brand-dot { box-shadow: none; }
+
+    .footer-brand-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 220px;
+    }
+
+    .footer-nav-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    .footer-nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-nav-links a {
+      text-decoration: none;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      transition: color 150ms;
+    }
+
+    .footer-nav-links a:hover { color: var(--text); }
+
+    .footer-social-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .footer-social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: border-color 150ms, color 150ms, transform 120ms;
+    }
+
+    .footer-social-link:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(128, 128, 128, 0.2);
+      color: var(--text);
+      transform: translateY(-2px);
+    }
+
+    .footer-social-link svg {
+      width: 16px; height: 16px;
+      fill: currentColor;
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .footer-docs-link {
+      color: var(--neon-cyan) !important;
+      opacity: 0.8;
+    }
+    .footer-docs-link:hover {
+      color: var(--neon-cyan) !important;
+      opacity: 1;
+    }
+
+    .nav-docs-link {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px !important;
+      border-radius: 999px !important;
+      border: 1px solid rgba(0, 229, 255, 0.28) !important;
+      color: var(--neon-cyan) !important;
+      font-weight: 600 !important;
+      transition: color 150ms, border-color 150ms !important;
+    }
+    .nav-docs-link:hover {
+      border-color: rgba(0, 229, 255, 0.55) !important;
+      color: var(--neon-cyan) !important;
+      background: rgba(0, 229, 255, 0.07) !important;
+    }
+    .nav-docs-link svg {
+      width: 13px; height: 13px;
+      stroke: currentColor;
+      flex-shrink: 0;
+    }
+
+    [data-theme="light"] .nav-docs-link {
+      border-color: rgba(0, 122, 184, 0.3) !important;
+      color: var(--neon-cyan) !important;
+    }
+    [data-theme="light"] .nav-docs-link:hover {
+      border-color: rgba(0, 122, 184, 0.55) !important;
+      background: rgba(0, 122, 184, 0.08) !important;
+    }
+
+    img, video, canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ================================================================
+       ROVER PAGE — .rv-* scoped styles
+       ================================================================ */
+
+    /* SVG token bridge — alias Electron-style var names to landing.html tokens
+       so the shipped src/assets/rover/*.svg content paints with the marketing
+       palette, including the 25-theme system via data-theme. */
+    .rv-hero-art,
+    .rv-media,
+    .rv-threetogether-diagram,
+    .rv-phone-screen {
+      --color-text-primary: var(--text);
+      --color-text-muted:   var(--text-muted);
+      --color-border:       var(--border);
+      --color-accent:       var(--neon-cyan);
+    }
+
+    /* ---- HERO (Block 1) ---- */
+    .rv-hero {
+      padding: 110px 0 60px;
+      position: relative;
+      overflow: hidden;
+      contain: paint;
+    }
+
+    .rv-hero-inner {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .rv-hero-inner { grid-template-columns: 1fr; gap: 36px; text-align: center; }
+      .rv-hero-art { max-width: 520px; margin: 0 auto; }
+    }
+
+    .rv-hero-eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      margin-bottom: 16px;
+    }
+
+    .rv-hero-title {
+      font-size: clamp(2rem, 5.6vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: clamp(-0.5px, -0.04em, -2px);
+      margin-bottom: 18px;
+    }
+    .rv-hero-title-accent {
+      background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--indigo-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .rv-hero-subtitle {
+      font-size: clamp(0.98rem, 2vw, 1.15rem);
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 26px;
+      max-width: 520px;
+    }
+    @media (max-width: 900px) {
+      .rv-hero-subtitle { margin-left: auto; margin-right: auto; }
+    }
+
+    .rv-hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .rv-hero-actions { justify-content: center; }
+    }
+
+    .rv-hero-art {
+      position: relative;
+      width: 100%;
+    }
+    .rv-hero-art svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    .rv-hero-art::before {
+      content: '';
+      position: absolute;
+      inset: -10%;
+      background: radial-gradient(circle at 50% 50%, var(--neon-cyan-glow) 0%, transparent 65%);
+      opacity: 0.55;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(14px);
+    }
+
+    /* ---- CTA primary override (cyan-tinted) ---- */
+    .rv-cta-primary {
+      background: rgba(0, 229, 255, 0.16);
+      border-color: rgba(0, 229, 255, 0.5);
+      color: var(--text);
+    }
+    .rv-cta-primary:hover {
+      background: rgba(0, 229, 255, 0.28);
+      border-color: rgba(0, 229, 255, 0.75);
+      box-shadow: 0 8px 28px var(--neon-cyan-glow);
+    }
+    [data-theme="light"] .rv-cta-primary {
+      background: rgba(0, 122, 184, 0.12);
+      border-color: rgba(0, 122, 184, 0.45);
+    }
+    [data-theme="light"] .rv-cta-primary:hover {
+      background: rgba(0, 122, 184, 0.2);
+      border-color: rgba(0, 122, 184, 0.7);
+    }
+
+    /* ---- THREE-TOGETHER (Block 2) ---- */
+    .rv-threetogether {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      text-align: center;
+    }
+    .rv-threetogether-diagram {
+      display: none;
+    }
+    .rv-threetogether-headline {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .rv-verb-trio {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+    .rv-verb-trio .rv-sep {
+      color: var(--neon-cyan);
+      padding: 0 6px;
+    }
+    .rv-threetogether-body {
+      max-width: 620px;
+      color: var(--text-muted);
+      font-size: 1.02rem;
+      line-height: 1.8;
+    }
+    .rv-threetogether-body strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ---- BENEFITS (Block 3) ---- */
+    .rv-benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .rv-benefits-grid { grid-template-columns: 1fr; }
+    }
+
+    .rv-benefit-card {
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      box-shadow: var(--card-shadow);
+      transition: border-color 200ms, transform 250ms var(--ease-spring), box-shadow 250ms;
+    }
+    .rv-benefit-card:hover {
+      border-color: rgba(0, 229, 255, 0.3);
+      transform: translateY(-3px);
+      box-shadow: var(--card-shadow-hover);
+    }
+    .rv-benefit-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-sm);
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.24);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neon-cyan);
+      margin-bottom: 14px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+    .rv-benefit-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.35;
+      color: var(--text);
+    }
+    .rv-benefit-body {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+    .rv-benefit-body code {
+      display: inline-block;
+      padding: 1px 6px;
+      margin: 0 1px;
+      border-radius: 4px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.22);
+      color: var(--neon-cyan);
+      font-size: 0.86em;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    [data-theme="light"] .rv-benefit-body code {
+      background: rgba(0, 122, 184, 0.08);
+      border-color: rgba(0, 122, 184, 0.28);
+      color: #006092;
+    }
+
+    /* ---- INSTALL TABS (Block 4) ---- */
+    .rv-install {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .rv-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      border-radius: 999px;
+      margin: 0 auto 22px;
+      max-width: 460px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .rv-tabs::-webkit-scrollbar { display: none; }
+
+    .rv-tab {
+      flex: 1;
+      padding: 11px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: color 140ms, background 140ms, border-color 140ms;
+      white-space: nowrap;
+      /* WCAG 2.5.5 touch target — 44×44 min */
+      min-height: 44px;
+    }
+    .rv-tab:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+    [data-theme="light"] .rv-tab:hover { background: rgba(0, 0, 0, 0.05); }
+
+    .rv-tab[aria-selected="true"] {
+      color: var(--neon-cyan);
+      background: rgba(0, 229, 255, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.3);
+    }
+    .rv-tab:focus-visible {
+      outline: 2px solid var(--neon-cyan);
+      outline-offset: 2px;
+    }
+    .rv-tab[aria-disabled="true"] {
+      opacity: 0.55;
+      cursor: help;
+      position: relative;
+    }
+
+    .rv-tabpanels { position: relative; }
+    .rv-tabpanel { display: none; }
+    .rv-tabpanel[data-active="true"] { display: block; }
+
+    .rv-install-snippet {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 200ms, box-shadow 200ms;
+      min-height: 52px;
+      width: 100%;
+      /* Real <button> reset — override UA defaults so native buttons look identical */
+      text-align: left;
+      font: inherit;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .rv-install-snippet:hover {
+      border-color: rgba(0, 229, 255, 0.4);
+      box-shadow: 0 4px 20px rgba(0, 229, 255, 0.1);
+    }
+    .rv-install-snippet:focus-visible {
+      outline: 2px solid var(--neon-cyan);
+      outline-offset: 2px;
+    }
+    .rv-install-snippet .rv-prompt {
+      color: var(--neon-green);
+      user-select: none;
+      flex-shrink: 0;
+    }
+    [data-theme="light"] .rv-install-snippet .rv-prompt { color: #008f43; }
+    .rv-install-snippet > .rv-cmd {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+      flex: 1 1 0;
+    }
+    .rv-install-snippet .rv-copy-icon {
+      color: var(--text-dim);
+      transition: color 200ms;
+      width: 15px; height: 15px;
+      flex-shrink: 0;
+    }
+    .rv-install-snippet:hover .rv-copy-icon { color: var(--neon-cyan); }
+
+    .rv-install-note {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+
+    /* Windows-disabled banner */
+    .rv-win-banner {
+      display: none;
+      margin: 16px auto 0;
+      padding: 10px 16px;
+      max-width: 560px;
+      text-align: center;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(245, 158, 11, 0.28);
+      background: rgba(245, 158, 11, 0.08);
+      color: var(--amber);
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+    }
+    .rv-win-banner[data-visible="true"] { display: block; }
+
+    /* Toast */
+    .rv-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      z-index: 300;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--glass-bg);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      color: var(--neon-cyan);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms, transform 260ms var(--ease-spring);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 18px rgba(0, 229, 255, 0.25);
+    }
+    .rv-toast[data-visible="true"] {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ---- KEYBINDS (Block 5) ---- */
+    .rv-chord-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 8px;
+      list-style: none;
+      padding: 0;
+    }
+    .rv-chord {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      color: var(--text);
+    }
+    .rv-chord-key {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--neon-cyan);
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.28);
+      line-height: 1;
+    }
+    [data-theme="light"] .rv-chord-key {
+      background: rgba(0, 122, 184, 0.08);
+      border-color: rgba(0, 122, 184, 0.3);
+      color: #006092;
+    }
+    .rv-chord-label { color: var(--text-muted); }
+
+    .rv-keybinds-footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-top: 10px;
+      margin-bottom: 36px;
+    }
+    .rv-keybinds-footer a {
+      color: var(--neon-cyan);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(0, 229, 255, 0.4);
+      transition: text-decoration-color 150ms;
+    }
+    .rv-keybinds-footer a:hover {
+      text-decoration-color: var(--neon-cyan);
+    }
+
+    .rv-phone-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      max-width: 720px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .rv-phone-pair { grid-template-columns: 1fr; gap: 36px; max-width: 360px; }
+    }
+    .rv-phone-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .rv-phone-screen svg {
+      width: 100%;
+      max-width: 260px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.45));
+    }
+    [data-theme="light"] .rv-phone-screen svg {
+      filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
+    }
+    .rv-phone-caption {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    /* ---- SELF-QUALIFY (Block 6) ---- */
+    .rv-qualify-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    @media (max-width: 720px) {
+      .rv-qualify-grid { grid-template-columns: 1fr; }
+    }
+    .rv-qualify-col {
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+    }
+    .rv-qualify-col--yes {
+      border-color: rgba(15, 250, 122, 0.22);
+    }
+    .rv-qualify-col--notyet {
+      border-color: rgba(245, 158, 11, 0.22);
+    }
+    .rv-qualify-head {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .rv-qualify-col--yes .rv-qualify-head { color: var(--neon-green); }
+    .rv-qualify-col--notyet .rv-qualify-head { color: var(--amber); }
+    [data-theme="light"] .rv-qualify-col--yes .rv-qualify-head { color: #008f43; }
+
+    .rv-qualify-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .rv-qualify-list li {
+      position: relative;
+      padding-left: 24px;
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .rv-qualify-col--yes .rv-qualify-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--neon-green);
+      font-weight: 700;
+    }
+    .rv-qualify-col--notyet .rv-qualify-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--amber);
+      font-weight: 700;
+    }
+    [data-theme="light"] .rv-qualify-col--yes .rv-qualify-list li::before { color: #008f43; }
+
+    /* ---- FOOTER CTA LOCKUP (Block 7) ---- */
+    .rv-lockup {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+      margin-top: 20px;
+    }
+    .rv-lockup .rv-sep { color: var(--neon-cyan); padding: 0 6px; }
+
+    .rv-footer-kicker {
+      color: var(--text-muted);
+      font-size: 1.02rem;
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto 28px;
+    }
+
+    /* Mobile tightening */
+    @media (max-width: 480px) {
+      .rv-hero { padding: 90px 0 44px; }
+      .section-head { margin-bottom: 28px; }
+      .rv-benefit-card { padding: 20px; }
+      .rv-qualify-col { padding: 20px; }
+      /* Install snippet — shrink monospace and allow overflow ellipsis
+         on extra-narrow screens so the copy button and icon stay visible. */
+      .rv-install-snippet {
+        font-size: 0.82rem;
+        padding: 14px 14px;
+        gap: 10px;
+      }
+      .rv-tab { padding: 11px 10px; font-size: 0.78rem; }
+    }
+
+    /* Ultrawide — cap container growth via existing --max-w; ensure hero
+       doesn't become awkward at >1440. Subtle safeguard. */
+    @media (min-width: 1600px) {
+      .rv-hero-inner { gap: 72px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Skip to main content (accessibility) -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- NAV (inherited from landing.html with Rover highlighted) -->
+  <header class="site-nav" role="banner">
+    <div class="container nav-inner">
+      <a class="nav-brand" href="landing.html" aria-label="Dispatch — home">
+        <span class="nav-brand-dot" aria-hidden="true"></span>
+        DISPATCH
+      </a>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-links" id="nav-links-list">
+          <li>
+            <a href="https://pixelabs.net" target="_blank" rel="noopener noreferrer" class="nav-link-with-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="margin-right: 4px; vertical-align: -2px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              pixelabs
+            </a>
+          </li>
+          <li><a href="landing.html#features">Features</a></li>
+          <li><a href="landing.html#how">How it works</a></li>
+          <li><a href="landing.html#screenshots">Screenshots</a></li>
+          <li><a href="landing.html#character-system">Character System</a></li>
+          <li><a href="#" aria-current="page" aria-disabled="true" onclick="return false;">Rover</a></li>
+          <li>
+            <a href="https://dispatch.pixelabs.net/docs/" target="_blank" rel="noopener noreferrer" class="nav-docs-link" aria-label="Dispatch documentation (opens in new tab)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Docs
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="nav-right">
+        <button
+          class="nav-hamburger"
+          id="nav-hamburger"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="nav-links-list"
+        >
+          <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+            <line x1="1" y1="4"  x2="17" y2="4"/>
+            <line x1="1" y1="9"  x2="17" y2="9"/>
+            <line x1="1" y1="14" x2="17" y2="14"/>
+          </svg>
+        </button>
+
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          aria-label="Toggle color theme (currently dark)"
+          title="Cycle theme: dark / light / system"
+        >
+          <svg class="icon-dark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="icon-light" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="icon-system" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </button>
+
+        <a class="nav-cta" href="https://github.com/thepixelabs/dispatch" target="_blank" rel="noopener noreferrer" aria-label="View Dispatch on GitHub and star the repository">
+          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          <span>Star</span>
+          <span class="nav-star-count" id="nav-stars" aria-label="GitHub stars">--</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" data-rover-event="rover.page.view">
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 1 — HERO
+         Earnest headline, branded strap, primary copy-to-clipboard CTA.
+         ═══════════════════════════════════════════════════════════════ -->
+    <section class="rv-hero" id="top" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="rv-hero-inner">
+          <div class="rv-hero-copy">
+            <p class="rv-hero-eyebrow">Part of Dispatch &middot; The edge terminal for your agents</p>
+            <h1 class="rv-hero-title">
+              Your fleet, <span class="rv-hero-title-accent">one SSH away.</span>
+            </h1>
+            <p class="rv-hero-subtitle">
+              Rover is the Dispatch TUI. Check, launch, or kill any agent from your phone over SSH.
+            </p>
+            <div class="rv-hero-actions">
+              <button
+                class="btn btn-primary rv-cta-primary"
+                type="button"
+                id="rv-hero-copy-btn"
+                data-rover-copy="pipx"
+                data-rover-event="rover.hero.cta_copy"
+                aria-label="Copy install command"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="width:18px;height:18px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy install command
+              </button>
+              <a
+                class="btn btn-secondary"
+                href="https://github.com/thepixelabs/dispatch/tree/main/rover"
+                target="_blank" rel="noopener noreferrer"
+                data-rover-event="rover.hero.cta_github"
+                aria-label="View Rover on GitHub (opens in new tab)"
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                View on GitHub
+              </a>
+            </div>
+          </div>
+
+          <div class="rv-hero-art">
+            <!-- Inlined: src/assets/rover/rover-landing.svg (token cascade via .rv-hero-art).
+                 Illustration is content — SR reads the SVG's role="img" + aria-label below. -->
+
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Rover phone terminal, signal arc to Dispatch cockpit, altergo ground plane">
+              <g stroke="var(--color-text-primary)" stroke-width="1.75" fill="none">
+                <path d="M72 60 Q65 60 65 67 L65 232 Q65 239 72 239 L128 239 Q135 239 135 232 L135 67 Q135 60 128 60 Z" />
+                <path d="M93 60 L107 60" stroke-width="1.5" />
+                <path d="M65.5 72 L134.5 72 L134.5 226 L65.5 226 Z" stroke="var(--color-border)" stroke-width="1" />
+                <path d="M74 90 L82 97 L74 104" stroke-width="1.4" />
+                <rect x="86" y="91.5" width="7" height="10" fill="var(--color-text-primary)" stroke="none" />
+                <path d="M74 124 L128 124" stroke-width="1.1" />
+                <path d="M74 140 L128 140" stroke-width="1.1" />
+                <path d="M74 156 L116 156" stroke-width="1.1" />
+                <path d="M74 210 L128 210" stroke="var(--color-text-muted)" stroke-width="0.9" />
+              </g>
+              <g stroke="var(--color-text-primary)" stroke-width="1.75" fill="none">
+                <path d="M232 92 Q224 92 224 100 L224 236 Q224 244 232 244 L472 244 Q480 244 480 236 L480 100 Q480 92 472 92 Z" />
+                <path d="M224 116 L480 116" stroke-width="1.2" />
+                <circle cx="238" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+                <circle cx="249" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+                <circle cx="260" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+                <g stroke="var(--color-text-muted)" stroke-width="1.1" fill="none">
+                  <path d="M244 148 L460 148" />
+                  <path d="M244 158 L460 158" />
+                  <path d="M264 146 L264 160" stroke-width="0.9" />
+                  <path d="M300 146 L300 160" stroke-width="0.9" />
+                  <path d="M336 146 L336 160" stroke-width="0.9" />
+                  <path d="M372 146 L372 160" stroke-width="0.9" />
+                  <path d="M408 146 L408 160" stroke-width="0.9" />
+                  <path d="M444 146 L444 160" stroke-width="0.9" />
+                  <path d="M244 182 L344 182 L344 222 L244 222 Z" />
+                  <path d="M360 182 L460 182 L460 222 L360 222 Z" />
+                  <path d="M252 212 L266 200 L280 208 L294 194 L308 204 L322 198 L336 210" stroke-width="0.9" />
+                  <path d="M368 216 L368 208" stroke-width="1.4" />
+                  <path d="M380 216 L380 200" stroke-width="1.4" />
+                  <path d="M392 216 L392 210" stroke-width="1.4" />
+                  <path d="M404 216 L404 198" stroke-width="1.4" />
+                  <path d="M416 216 L416 204" stroke-width="1.4" />
+                  <path d="M428 216 L428 192" stroke-width="1.4" />
+                  <path d="M440 216 L440 202" stroke-width="1.4" />
+                  <path d="M452 216 L452 208" stroke-width="1.4" />
+                </g>
+              </g>
+              <g stroke="var(--color-text-muted)" fill="none">
+                <path d="M24 264 L616 264" stroke-width="1.1" />
+                <path d="M72 300 L568 300" stroke-width="0.9" opacity="0.65" />
+                <path d="M24 264 L72 300" stroke-width="0.7" opacity="0.5" />
+                <path d="M616 264 L568 300" stroke-width="0.7" opacity="0.5" />
+                <g stroke-width="1.1" transform="translate(90 276)">
+                  <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+                  <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M18 3 L18 8 M18 3 L23 3 M18 5.5 L22 5.5 M18 8 L23 8" stroke-width="0.8" opacity="0.8" />
+                  <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+                </g>
+                <g stroke-width="1.1" transform="translate(220 276)">
+                  <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+                  <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M18 3 L18 8 M18 3 L22 3 Q23 3 23 4 L23 5 Q23 6 22 6 L18 6 M18 6 L22 6 Q23 6 23 7 L23 8 Q23 9 22 9 L18 8" stroke-width="0.8" opacity="0.8" />
+                  <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+                </g>
+                <g stroke-width="1.1" transform="translate(350 276)">
+                  <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+                  <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M23 3 Q18 3 18 5.5 Q18 8 23 8" stroke-width="0.8" opacity="0.8" fill="none" />
+                  <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+                </g>
+                <g stroke-width="1.1" transform="translate(480 276)">
+                  <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+                  <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M18 3 L18 8 M18 3 L23 3 M18 5.5 L23 5.5 M18 8 L23 8" stroke-width="0.8" opacity="0.8" />
+                  <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+                </g>
+                <g stroke-width="0.8" opacity="0.5">
+                  <g transform="translate(140 292)">
+                    <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+                    <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+                    <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+                  </g>
+                  <g transform="translate(260 292)">
+                    <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+                    <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+                    <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+                  </g>
+                  <g transform="translate(380 292)">
+                    <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+                    <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+                    <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+                  </g>
+                  <g transform="translate(500 292)">
+                    <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+                    <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+                    <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+                  </g>
+                </g>
+              </g>
+              <g fill="none" stroke="var(--color-accent)">
+                <path d="M117 106 C 180 130, 230 150, 280 180 S 360 210, 420 240 S 460 280, 438 282" stroke-width="5" stroke-linecap="round" opacity="0.18" />
+                <path d="M117 106 C 180 130, 230 150, 280 180 S 360 210, 420 240 S 460 280, 438 282" stroke-width="2" stroke-linecap="round" />
+                <circle cx="438" cy="282" r="3" fill="var(--color-accent)" stroke="none" />
+                <circle cx="438" cy="282" r="7" stroke="var(--color-accent)" stroke-width="1" opacity="0.55" />
+                <circle cx="438" cy="282" r="12" stroke="var(--color-accent)" stroke-width="0.9" opacity="0.3" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider" data-color="cyan-green" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 2 — THREE-TOGETHER (altergo + Dispatch + Rover)
+         Earnest voice — this block is teaching the three-stack story.
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="three-together" class="section" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="rv-threetogether">
+          <div class="rv-threetogether-diagram" aria-hidden="true">
+            <!-- Inlined: src/assets/rover/rover-landing.svg (horizontal variant).
+                 Phone rotation stripped for this block so the trio reads as a
+                 level horizontal sequence paired with the centered heading. -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="altergo plus Dispatch plus Rover — three surfaces, one stack">
+              <!-- ROVER — phone on the left (rotation removed) -->
+              <g stroke="var(--color-text-primary)" stroke-width="1.75" fill="none">
+                <path d="M72 60 Q65 60 65 67 L65 232 Q65 239 72 239 L128 239 Q135 239 135 232 L135 67 Q135 60 128 60 Z" />
+                <path d="M93 60 L107 60" stroke-width="1.5" />
+                <path d="M65.5 72 L134.5 72 L134.5 226 L65.5 226 Z" stroke="var(--color-border)" stroke-width="1" />
+                <path d="M74 90 L82 97 L74 104" stroke-width="1.4" />
+                <rect x="86" y="91.5" width="7" height="10" fill="var(--color-text-primary)" stroke="none" />
+                <path d="M74 124 L128 124" stroke-width="1.1" />
+                <path d="M74 140 L128 140" stroke-width="1.1" />
+                <path d="M74 156 L116 156" stroke-width="1.1" />
+                <path d="M74 210 L128 210" stroke="var(--color-text-muted)" stroke-width="0.9" />
+              </g>
+              <!-- DISPATCH — desktop window in the center -->
+              <g stroke="var(--color-text-primary)" stroke-width="1.75" fill="none">
+                <path d="M232 92 Q224 92 224 100 L224 236 Q224 244 232 244 L472 244 Q480 244 480 236 L480 100 Q480 92 472 92 Z" />
+                <path d="M224 116 L480 116" stroke-width="1.2" />
+                <circle cx="238" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+                <circle cx="249" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+                <circle cx="260" cy="104" r="2.75" fill="var(--color-text-muted)" stroke="none" />
+                <g stroke="var(--color-text-muted)" stroke-width="1.1" fill="none">
+                  <path d="M244 148 L460 148" />
+                  <path d="M244 158 L460 158" />
+                  <path d="M264 146 L264 160" stroke-width="0.9" />
+                  <path d="M300 146 L300 160" stroke-width="0.9" />
+                  <path d="M336 146 L336 160" stroke-width="0.9" />
+                  <path d="M372 146 L372 160" stroke-width="0.9" />
+                  <path d="M408 146 L408 160" stroke-width="0.9" />
+                  <path d="M444 146 L444 160" stroke-width="0.9" />
+                  <path d="M244 182 L344 182 L344 222 L244 222 Z" />
+                  <path d="M360 182 L460 182 L460 222 L360 222 Z" />
+                  <path d="M252 212 L266 200 L280 208 L294 194 L308 204 L322 198 L336 210" stroke-width="0.9" />
+                  <path d="M368 216 L368 208" stroke-width="1.4" />
+                  <path d="M380 216 L380 200" stroke-width="1.4" />
+                  <path d="M392 216 L392 210" stroke-width="1.4" />
+                  <path d="M404 216 L404 198" stroke-width="1.4" />
+                  <path d="M416 216 L416 204" stroke-width="1.4" />
+                  <path d="M428 216 L428 192" stroke-width="1.4" />
+                  <path d="M440 216 L440 202" stroke-width="1.4" />
+                  <path d="M452 216 L452 208" stroke-width="1.4" />
+                </g>
+              </g>
+              <!-- ALTERGO — ground plane strip along the bottom, full width -->
+              <g stroke="var(--color-text-muted)" fill="none">
+                <path d="M24 264 L616 264" stroke-width="1.1" />
+                <path d="M72 300 L568 300" stroke-width="0.9" opacity="0.65" />
+                <path d="M24 264 L72 300" stroke-width="0.7" opacity="0.5" />
+                <path d="M616 264 L568 300" stroke-width="0.7" opacity="0.5" />
+                <g stroke-width="1.1" transform="translate(90 276)">
+                  <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+                  <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M18 3 L18 8 M18 3 L23 3 M18 5.5 L22 5.5 M18 8 L23 8" stroke-width="0.8" opacity="0.8" />
+                  <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+                </g>
+                <g stroke-width="1.1" transform="translate(220 276)">
+                  <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+                  <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M18 3 L18 8 M18 3 L22 3 Q23 3 23 4 L23 5 Q23 6 22 6 L18 6 M18 6 L22 6 Q23 6 23 7 L23 8 Q23 9 22 9 L18 8" stroke-width="0.8" opacity="0.8" />
+                  <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+                </g>
+                <g stroke-width="1.1" transform="translate(350 276)">
+                  <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+                  <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M23 3 Q18 3 18 5.5 Q18 8 23 8" stroke-width="0.8" opacity="0.8" fill="none" />
+                  <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+                </g>
+                <g stroke-width="1.1" transform="translate(480 276)">
+                  <path d="M0 0 L0 10 M0 0 L3 0 M0 10 L3 10" />
+                  <path d="M8 2 L8 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M13 2 L13 8" stroke-width="0.9" opacity="0.85" />
+                  <path d="M18 3 L18 8 M23 3 L23 8 M18 5.5 L23 5.5" stroke-width="0.8" opacity="0.8" />
+                  <path d="M45 0 L45 10 M45 0 L42 0 M45 10 L42 10" />
+                </g>
+                <g stroke-width="0.8" opacity="0.5">
+                  <g transform="translate(140 292)">
+                    <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+                    <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+                    <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+                  </g>
+                  <g transform="translate(260 292)">
+                    <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+                    <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+                    <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+                  </g>
+                  <g transform="translate(380 292)">
+                    <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+                    <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+                    <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+                  </g>
+                  <g transform="translate(500 292)">
+                    <path d="M0 0 L0 6 M0 0 L2 0 M0 6 L2 6" />
+                    <path d="M13 0 L13 6 M13 0 L11 0 M13 6 L11 6" />
+                    <path d="M5 2 L5 4 M7 2 L7 4 M9 3 L9 4" />
+                  </g>
+                </g>
+              </g>
+              <!-- CONNECTING ARC — phone → desktop → altergo pulse -->
+              <g fill="none" stroke="var(--color-accent)">
+                <path d="M117 106 C 180 130, 230 150, 280 180 S 360 210, 420 240 S 460 280, 438 282" stroke-width="5" stroke-linecap="round" opacity="0.18" />
+                <path d="M117 106 C 180 130, 230 150, 280 180 S 360 210, 420 240 S 460 280, 438 282" stroke-width="2" stroke-linecap="round" />
+                <circle cx="438" cy="282" r="3" fill="var(--color-accent)" stroke="none" />
+                <circle cx="438" cy="282" r="7" stroke="var(--color-accent)" stroke-width="1" opacity="0.55" />
+                <circle cx="438" cy="282" r="12" stroke="var(--color-accent)" stroke-width="0.9" opacity="0.3" />
+              </g>
+            </svg>
+          </div>
+
+          <h2 class="rv-threetogether-headline">One stack. Three surfaces.</h2>
+
+          <p class="rv-verb-trio">
+            altergo runs it <span class="rv-sep">&middot;</span> Dispatch oversees it <span class="rv-sep">&middot;</span> Rover reaches it
+          </p>
+
+          <p class="rv-threetogether-body">
+            <strong>Dispatch</strong> is the desktop cockpit for your AI coding agents &mdash; Claude, Codex, Gemini, Copilot &mdash; running in one place. <strong>altergo</strong> is the runtime underneath that keeps every account and session alive across restarts. <strong>Rover</strong> is the pocket terminal: SSH from your phone to your Mac and check, launch, or kill any agent in two keystrokes. One stack, three surfaces: altergo runs it, Dispatch oversees it, Rover reaches it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider" data-color="cyan-indigo" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 3 — WHAT ROVER DOES (3 benefits, dry voice)
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="benefits" class="section" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-head section-head--center">
+          <p class="section-label">// what rover does</p>
+          <h2 class="section-title">Four chords, one phone, no laptop.</h2>
+          <p class="section-desc">
+            Three things Rover is for. Everything else is in the README.
+          </p>
+        </div>
+
+        <div class="rv-benefits-grid">
+          <article class="rv-benefit-card" data-reveal data-reveal-delay="1">
+            <div class="rv-benefit-icon" aria-hidden="true">D</div>
+            <h3 class="rv-benefit-title">Check on agents from the couch.</h3>
+            <p class="rv-benefit-body">
+              Lid's closed. Night shift is running. You pull the phone out, SSH in, hit <code>D</code>. Eighteen agents laid out in two columns. Everyone's fine. You put the phone down.
+            </p>
+          </article>
+
+          <article class="rv-benefit-card" data-reveal data-reveal-delay="2">
+            <div class="rv-benefit-icon" aria-hidden="true">Y</div>
+            <h3 class="rv-benefit-title">Unblock a stuck agent in two keystrokes.</h3>
+            <p class="rv-benefit-body">
+              Agent stopped on a permission prompt. You're in bed. <code>Y</code> to select it, <code>Y</code> again to yolo-resume. It's running. You didn't open a laptop.
+            </p>
+          </article>
+
+          <article class="rv-benefit-card" data-reveal data-reveal-delay="3">
+            <div class="rv-benefit-icon" aria-hidden="true">X</div>
+            <h3 class="rv-benefit-title">Kill a runaway without opening the lid.</h3>
+            <p class="rv-benefit-body">
+              Something's spiraling. Token counter is climbing. You SSH in, <code>X</code>, confirm. Dead. The codebase fears you.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider" data-color="cyan-indigo" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 4 — INSTALL COMMANDS (4 tabs)
+         Platform-smart default, keyboard-accessible, click-to-copy.
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="install" class="section" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-head section-head--center">
+          <p class="section-label">// install</p>
+          <h2 class="section-title">Paste one line.</h2>
+          <p class="section-desc">
+            Pick your flavor. Rover ships on Homebrew, pipx, uv, and a curl-to-shell fallback.
+          </p>
+        </div>
+
+        <div class="rv-install">
+          <div class="rv-tabs" role="tablist" aria-label="Install method">
+            <button type="button" class="rv-tab" role="tab" id="rv-tab-homebrew" aria-controls="rv-panel-homebrew" aria-selected="false" data-channel="homebrew" data-rover-event="rover.install.tab_homebrew">Homebrew</button>
+            <button type="button" class="rv-tab" role="tab" id="rv-tab-pipx" aria-controls="rv-panel-pipx" aria-selected="true" data-channel="pipx" data-rover-event="rover.install.tab_pipx">pipx</button>
+            <button type="button" class="rv-tab" role="tab" id="rv-tab-uv" aria-controls="rv-panel-uv" aria-selected="false" data-channel="uv" data-rover-event="rover.install.tab_uv">uv</button>
+            <button type="button" class="rv-tab" role="tab" id="rv-tab-script" aria-controls="rv-panel-script" aria-selected="false" data-channel="script" data-rover-event="rover.install.tab_script">Script</button>
+          </div>
+
+          <div class="rv-tabpanels">
+            <div class="rv-tabpanel" role="tabpanel" id="rv-panel-homebrew" aria-labelledby="rv-tab-homebrew" data-active="false">
+              <button type="button" class="rv-install-snippet" data-channel="homebrew" data-cmd="brew install thepixelabs/tap/rover" data-rover-event="rover.install.copy_homebrew" aria-label="Copy Homebrew install command to clipboard">
+                <span class="rv-prompt" aria-hidden="true">$</span>
+                <span class="rv-cmd">brew install thepixelabs/tap/rover</span>
+                <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+            <div class="rv-tabpanel" role="tabpanel" id="rv-panel-pipx" aria-labelledby="rv-tab-pipx" data-active="true">
+              <button type="button" class="rv-install-snippet" data-channel="pipx" data-cmd="pipx install rover" data-rover-event="rover.install.copy_pipx" aria-label="Copy pipx install command to clipboard">
+                <span class="rv-prompt" aria-hidden="true">$</span>
+                <span class="rv-cmd">pipx install rover</span>
+                <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+            <div class="rv-tabpanel" role="tabpanel" id="rv-panel-uv" aria-labelledby="rv-tab-uv" data-active="false">
+              <button type="button" class="rv-install-snippet" data-channel="uv" data-cmd="uv tool install rover" data-rover-event="rover.install.copy_uv" aria-label="Copy uv install command to clipboard">
+                <span class="rv-prompt" aria-hidden="true">$</span>
+                <span class="rv-cmd">uv tool install rover</span>
+                <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+            <div class="rv-tabpanel" role="tabpanel" id="rv-panel-script" aria-labelledby="rv-tab-script" data-active="false">
+              <button type="button" class="rv-install-snippet" data-channel="script" data-cmd="curl -LsSf https://rover.thepixelabs.dev/install.sh | bash" data-rover-event="rover.install.copy_script" aria-label="Copy install script command to clipboard">
+                <span class="rv-prompt" aria-hidden="true">$</span>
+                <span class="rv-cmd">curl -LsSf https://rover.thepixelabs.dev/install.sh | bash</span>
+                <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <p class="rv-install-note">
+            pipx or uv works on any Linux box with Python 3.11+. Homebrew is the macOS one-liner.
+          </p>
+
+          <div class="rv-win-banner" id="rv-win-banner" role="note">
+            Rover runs on macOS and Linux. Windows isn't supported yet &mdash; try WSL.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider" data-color="cyan-green" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 5 — KEYBINDS with inline phone screenshots
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="keybinds" class="section" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-head section-head--center">
+          <p class="section-label">// keybinds</p>
+          <h2 class="section-title">Four chords deep.</h2>
+        </div>
+
+        <ul class="rv-chord-row" aria-label="Rover main keybinds">
+          <li class="rv-chord"><kbd class="rv-chord-key">Y</kbd><span class="rv-chord-label">yolo</span></li>
+          <li class="rv-chord"><kbd class="rv-chord-key">D</kbd><span class="rv-chord-label">dashboard</span></li>
+          <li class="rv-chord"><kbd class="rv-chord-key">A</kbd><span class="rv-chord-label">altergo</span></li>
+          <li class="rv-chord"><kbd class="rv-chord-key">Q</kbd><span class="rv-chord-label">quit</span></li>
+        </ul>
+
+        <p class="rv-keybinds-footer">
+          Four keys get you 80% of the way. The rest is in <a href="https://github.com/thepixelabs/dispatch/blob/main/rover/README.md" target="_blank" rel="noopener noreferrer">the README</a>.
+        </p>
+
+        <div class="rv-phone-pair">
+          <figure class="rv-phone-screen">
+            <!-- Inlined: src/assets/rover/phone-screen-menu.svg -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 560" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Rover main menu — phone screen mock">
+              <g stroke="var(--color-text-primary)" stroke-width="2" fill="none">
+                <path d="M34 18 Q24 18 24 28 L24 532 Q24 542 34 542 L266 542 Q276 542 276 532 L276 28 Q276 18 266 18 Z" />
+                <path d="M124 18 L176 18" stroke-width="1.75" />
+              </g>
+              <g stroke="var(--color-border)" stroke-width="1" fill="none">
+                <path d="M36 40 L264 40 L264 520 L36 520 Z" />
+              </g>
+              <g stroke="var(--color-text-primary)" fill="none">
+                <path d="M50 62 L58 62" stroke-width="2.5" />
+                <path d="M62 62 L70 62" stroke-width="2.5" />
+                <path d="M74 62 L82 62" stroke-width="2.5" />
+                <path d="M86 62 L94 62" stroke-width="2.5" />
+                <path d="M98 62 L106 62" stroke-width="2.5" />
+                <circle cx="114" cy="62" r="1.5" fill="var(--color-text-muted)" stroke="none" />
+                <path d="M120 62 L128 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+                <path d="M132 62 L140 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+                <path d="M144 62 L152 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+                <path d="M156 62 L164 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+                <path d="M50 72 L250 72" stroke="var(--color-border)" stroke-width="1" />
+              </g>
+              <g fill="none">
+                <g stroke="var(--color-text-muted)" stroke-width="1.25">
+                  <path d="M50 96 L250 96 L250 132 L50 132 Z" />
+                  <path d="M64 114 L74 114" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M78 114 L88 114" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M92 114 L102 114" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M106 114 L116 114" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <circle cx="232" cy="114" r="3.5" fill="var(--color-text-muted)" stroke="none" />
+                </g>
+                <g>
+                  <path d="M50 144 L54 144 L54 180 L50 180 Z" fill="var(--color-accent)" stroke="none" />
+                  <path d="M56 144 Q54 144 54 146 L54 178 Q54 180 56 180 L248 180 Q250 180 250 178 L250 146 Q250 144 248 144 Z" stroke="var(--color-accent)" stroke-width="1.5" fill="none" />
+                  <path d="M64 162 L74 162" stroke-width="2" stroke="var(--color-accent)" />
+                  <path d="M78 162 L88 162" stroke-width="2" stroke="var(--color-accent)" />
+                  <path d="M92 162 L102 162" stroke-width="2" stroke="var(--color-accent)" />
+                  <path d="M106 162 L116 162" stroke-width="2" stroke="var(--color-accent)" />
+                  <path d="M120 162 L130 162" stroke-width="2" stroke="var(--color-accent)" />
+                  <rect x="134" y="156" width="6" height="12" fill="var(--color-accent)" stroke="none" />
+                  <circle cx="232" cy="162" r="3.5" fill="var(--color-accent)" stroke="none" />
+                </g>
+                <g stroke="var(--color-text-muted)" stroke-width="1.25">
+                  <path d="M50 192 L250 192 L250 228 L50 228 Z" />
+                  <path d="M64 210 L74 210" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M78 210 L88 210" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M92 210 L102 210" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <circle cx="232" cy="210" r="3.5" fill="var(--color-text-muted)" stroke="none" />
+                </g>
+                <g stroke="var(--color-text-muted)" stroke-width="1.25">
+                  <path d="M50 240 L250 240 L250 276 L50 276 Z" />
+                  <path d="M64 258 L74 258" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M78 258 L88 258" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M92 258 L102 258" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M106 258 L116 258" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M120 258 L130 258" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <path d="M134 258 L144 258" stroke-width="2" stroke="var(--color-text-primary)" />
+                  <circle cx="232" cy="258" r="3.5" fill="var(--color-text-muted)" stroke="none" />
+                </g>
+              </g>
+              <g stroke="var(--color-text-muted)" fill="none">
+                <path d="M50 320 L58 327 L50 334" stroke-width="1.5" stroke="var(--color-text-primary)" />
+                <path d="M66 327 L100 327" stroke-width="1.25" />
+                <path d="M104 327 L130 327" stroke-width="1.25" />
+                <path d="M134 327 L164 327" stroke-width="1.25" />
+              </g>
+              <g fill="none">
+                <path d="M50 462 L250 462" stroke="var(--color-border)" stroke-width="1" />
+                <g>
+                  <path d="M50 480 L70 480 L70 498 L50 498 Z" stroke="var(--color-text-primary)" stroke-width="1.25" fill="none" />
+                  <path d="M60 485 L60 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+                  <path d="M74 490 L84 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                  <path d="M88 490 L94 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                </g>
+                <g>
+                  <path d="M100 480 L120 480 L120 498 L100 498 Z" stroke="var(--color-text-primary)" stroke-width="1.25" fill="none" />
+                  <path d="M110 485 L110 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+                  <path d="M124 490 L134 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                  <path d="M138 490 L148 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                </g>
+                <g>
+                  <path d="M154 480 L174 480 L174 498 L154 498 Z" stroke="var(--color-text-primary)" stroke-width="1.25" fill="none" />
+                  <path d="M164 485 L164 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+                  <path d="M178 490 L188 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                  <path d="M192 490 L202 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                </g>
+                <g>
+                  <path d="M208 480 L228 480 L228 498 L208 498 Z" stroke="var(--color-text-primary)" stroke-width="1.25" fill="none" />
+                  <path d="M218 485 L218 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+                  <path d="M232 490 L242 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                </g>
+              </g>
+            </svg>
+            <figcaption class="rv-phone-caption">Main menu. Four chords deep.</figcaption>
+          </figure>
+
+          <figure class="rv-phone-screen">
+            <!-- Inlined: src/assets/rover/phone-screen-dashboard.svg -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 560" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Rover dashboard — phone screen mock">
+              <g stroke="var(--color-text-primary)" stroke-width="2" fill="none">
+                <path d="M34 18 Q24 18 24 28 L24 532 Q24 542 34 542 L266 542 Q276 542 276 532 L276 28 Q276 18 266 18 Z" />
+                <path d="M124 18 L176 18" stroke-width="1.75" />
+              </g>
+              <g stroke="var(--color-border)" stroke-width="1" fill="none">
+                <path d="M36 40 L264 40 L264 520 L36 520 Z" />
+              </g>
+              <g stroke="var(--color-text-primary)" fill="none">
+                <path d="M50 62 L58 62" stroke-width="2.5" />
+                <path d="M62 62 L70 62" stroke-width="2.5" />
+                <path d="M74 62 L82 62" stroke-width="2.5" />
+                <path d="M86 62 L94 62" stroke-width="2.5" />
+                <path d="M98 62 L106 62" stroke-width="2.5" />
+                <circle cx="114" cy="62" r="1.5" fill="var(--color-text-muted)" stroke="none" />
+                <path d="M120 62 L128 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+                <path d="M132 62 L140 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+                <path d="M144 62 L152 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+                <path d="M156 62 L164 62" stroke-width="2.5" stroke="var(--color-text-muted)" />
+                <path d="M50 72 L250 72" stroke="var(--color-border)" stroke-width="1" />
+              </g>
+              <g fill="none">
+                <path d="M50 90 Q48 90 48 92 L48 146 Q48 148 50 148 L250 148 Q252 148 252 146 L252 92 Q252 90 250 90 Z" stroke="var(--color-border)" stroke-width="1" />
+                <path d="M58 102 L66 102" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M70 102 L78 102" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M58 138 L242 138" stroke="var(--color-border)" stroke-width="0.75" />
+                <polyline points="58,132 78,124 94,128 110,118 126,112 142,120 160,108 182,114 206,100 242,118" stroke="var(--color-accent)" stroke-width="1.75" fill="none" />
+                <circle cx="242" cy="118" r="2.25" fill="var(--color-accent)" stroke="none" />
+              </g>
+              <g stroke="var(--color-text-muted)" stroke-width="1.5" fill="none">
+                <path d="M60 168 L74 168" />
+                <path d="M78 168 L92 168" />
+                <path d="M148 168 L162 168" />
+                <path d="M186 168 L200 168" />
+                <path d="M204 168 L214 168" />
+                <path d="M226 168 L240 168" />
+              </g>
+              <path d="M50 178 L250 178" stroke="var(--color-border)" stroke-width="1" fill="none" />
+              <g fill="none">
+                <path d="M60 196 L70 196" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M74 196 L84 196" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M88 196 L98 196" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M102 196 L112 196" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M116 196 L126 196" stroke="var(--color-text-primary)" stroke-width="2" />
+                <circle cx="154" cy="196" r="3.25" fill="var(--color-text-muted)" stroke="none" />
+                <path d="M186 196 L196 196" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M200 196 L210 196" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M226 196 L234 196" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M238 196 L246 196" stroke="var(--color-text-muted)" stroke-width="1.75" />
+              </g>
+              <g fill="none">
+                <path d="M50 214 L54 214 L54 250 L50 250 Z" fill="var(--color-accent)" stroke="none" />
+                <path d="M56 214 Q54 214 54 216 L54 248 Q54 250 56 250 L248 250 Q250 250 250 248 L250 216 Q250 214 248 214 Z" stroke="var(--color-accent)" stroke-width="1.5" fill="none" />
+                <path d="M60 232 L70 232" stroke="var(--color-accent)" stroke-width="2" />
+                <path d="M74 232 L84 232" stroke="var(--color-accent)" stroke-width="2" />
+                <path d="M88 232 L98 232" stroke="var(--color-accent)" stroke-width="2" />
+                <path d="M102 232 L112 232" stroke="var(--color-accent)" stroke-width="2" />
+                <path d="M116 232 L126 232" stroke="var(--color-accent)" stroke-width="2" />
+                <path d="M130 232 L140 232" stroke="var(--color-accent)" stroke-width="2" />
+                <rect x="143" y="226" width="5" height="12" fill="var(--color-accent)" stroke="none" />
+                <circle cx="163" cy="232" r="3.5" fill="var(--color-accent)" stroke="none" />
+                <path d="M186 232 L196 232" stroke="var(--color-accent)" stroke-width="1.75" />
+                <path d="M200 232 L210 232" stroke="var(--color-accent)" stroke-width="1.75" />
+                <path d="M214 232 L220 232" stroke="var(--color-accent)" stroke-width="1.75" />
+                <path d="M226 232 L234 232" stroke="var(--color-accent)" stroke-width="1.75" />
+                <path d="M238 232 L246 232" stroke="var(--color-accent)" stroke-width="1.75" />
+              </g>
+              <g fill="none">
+                <path d="M60 268 L70 268" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M74 268 L84 268" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M88 268 L98 268" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M102 268 L112 268" stroke="var(--color-text-primary)" stroke-width="2" />
+                <circle cx="154" cy="268" r="3" stroke="var(--color-text-muted)" stroke-width="1.25" fill="none" />
+                <path d="M186 268 L196 268" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M226 268 L234 268" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M238 268 L246 268" stroke="var(--color-text-muted)" stroke-width="1.75" />
+              </g>
+              <g fill="none">
+                <path d="M60 304 L70 304" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M74 304 L84 304" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M88 304 L98 304" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M149 304 L154 309 L162 299" stroke="var(--color-text-muted)" stroke-width="1.5" fill="none" />
+                <path d="M186 304 L196 304" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M200 304 L210 304" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M214 304 L220 304" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M226 304 L234 304" stroke="var(--color-text-muted)" stroke-width="1.75" />
+              </g>
+              <g fill="none">
+                <path d="M60 340 L70 340" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M74 340 L84 340" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M88 340 L98 340" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M102 340 L112 340" stroke="var(--color-text-primary)" stroke-width="2" />
+                <path d="M116 340 L126 340" stroke="var(--color-text-primary)" stroke-width="2" />
+                <circle cx="154" cy="340" r="3.25" fill="var(--color-text-muted)" stroke="none" />
+                <path d="M186 340 L196 340" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M200 340 L210 340" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M226 340 L234 340" stroke="var(--color-text-muted)" stroke-width="1.75" />
+                <path d="M238 340 L246 340" stroke="var(--color-text-muted)" stroke-width="1.75" />
+              </g>
+              <path d="M50 370 L250 370" stroke="var(--color-border)" stroke-width="1" fill="none" />
+              <g stroke="var(--color-text-muted)" fill="none">
+                <path d="M50 400 L58 407 L50 414" stroke-width="1.5" stroke="var(--color-text-primary)" />
+                <path d="M66 407 L100 407" stroke-width="1.25" />
+                <path d="M104 407 L130 407" stroke-width="1.25" />
+                <path d="M134 407 L164 407" stroke-width="1.25" />
+              </g>
+              <g fill="none">
+                <path d="M50 462 L250 462" stroke="var(--color-border)" stroke-width="1" />
+                <g>
+                  <path d="M50 480 L70 480 L70 498 L50 498 Z" stroke="var(--color-text-primary)" stroke-width="1.25" fill="none" />
+                  <path d="M60 485 L60 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+                  <path d="M74 490 L84 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                  <path d="M88 490 L94 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                </g>
+                <g>
+                  <path d="M100 480 L120 480 L120 498 L100 498 Z" stroke="var(--color-text-primary)" stroke-width="1.25" fill="none" />
+                  <path d="M110 485 L110 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+                  <path d="M124 490 L134 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                  <path d="M138 490 L148 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                </g>
+                <g>
+                  <path d="M154 480 L174 480 L174 498 L154 498 Z" stroke="var(--color-text-primary)" stroke-width="1.25" fill="none" />
+                  <path d="M164 485 L164 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+                  <path d="M178 490 L188 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                  <path d="M192 490 L202 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                </g>
+                <g>
+                  <path d="M208 480 L228 480 L228 498 L208 498 Z" stroke="var(--color-text-primary)" stroke-width="1.25" fill="none" />
+                  <path d="M218 485 L218 493" stroke="var(--color-text-primary)" stroke-width="2.25" />
+                  <path d="M232 490 L242 490" stroke="var(--color-text-muted)" stroke-width="1.5" />
+                </g>
+              </g>
+            </svg>
+            <figcaption class="rv-phone-caption">Dashboard. Eighteen agents. One screen.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider" data-color="cyan-indigo" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 6 — SELF-QUALIFY (Yes / Not yet)
+         Dry voice. Filters the wrong audience away.
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="is-it-for-me" class="section" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-head section-head--center">
+          <p class="section-label">// is rover for me?</p>
+          <h2 class="section-title">Two columns. Be honest.</h2>
+        </div>
+
+        <div class="rv-qualify-grid">
+          <div class="rv-qualify-col rv-qualify-col--yes">
+            <p class="rv-qualify-head">Yes, if&hellip;</p>
+            <ul class="rv-qualify-list">
+              <li>You run agents overnight and want to check on them from your phone.</li>
+              <li>You already SSH from your phone (Blink, Termius, a-Shell, a browser terminal).</li>
+              <li>Your host is macOS or Linux.</li>
+            </ul>
+          </div>
+          <div class="rv-qualify-col rv-qualify-col--notyet">
+            <p class="rv-qualify-head">Not yet, if&hellip;</p>
+            <ul class="rv-qualify-list">
+              <li>You don't own a phone you'd SSH from.</li>
+              <li>Your host is Windows. WSL works; native Windows doesn't yet.</li>
+              <li>You've never run a Dispatch agent. Install Dispatch first &mdash; Rover reaches Dispatch, it doesn't replace it.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider" data-color="cyan-indigo" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 7 — FOOTER CTA
+         ═══════════════════════════════════════════════════════════════ -->
+    <section class="cta-section" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="cta-card">
+          <p class="section-label">// rover</p>
+          <h2 class="section-title">Your fleet, one SSH away.</h2>
+          <p class="rv-footer-kicker">
+            Paste one line. Start SSHing from the couch.
+          </p>
+
+          <div class="cta-actions">
+            <button
+              type="button"
+              class="btn btn-primary rv-cta-primary"
+              id="rv-footer-copy-btn"
+              data-rover-copy="pipx"
+              data-rover-event="rover.footer.cta_copy"
+              aria-label="Copy install command"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="width:18px;height:18px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy install command
+            </button>
+            <a
+              class="btn btn-secondary"
+              href="https://github.com/thepixelabs/dispatch/blob/main/rover/README.md"
+              target="_blank" rel="noopener noreferrer"
+              data-rover-event="rover.footer.cta_readme"
+              aria-label="Open the Rover README (opens in new tab)"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Open README
+            </a>
+          </div>
+
+          <p class="rv-lockup">Part of Dispatch <span class="rv-sep">&middot;</span> altergo + Dispatch + Rover</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Copy confirmation toast (fixed). role=status + aria-live=polite +
+       aria-atomic=true so screen readers announce the whole message on change. -->
+  <div class="rv-toast" id="rv-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- FOOTER (inherited from landing.html with Rover link added) -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-main">
+        <div class="footer-brand-col">
+          <a class="footer-brand-mark" href="landing.html" aria-label="Dispatch home">
+            <span class="footer-brand-dot" aria-hidden="true"></span>
+            DISPATCH
+          </a>
+          <p class="footer-brand-desc">
+            Open-source mission control for AI coding agents. Monitor Claude, Codex, Copilot, and Gemini from one real-time dashboard.
+          </p>
+        </div>
+
+        <div class="footer-nav-col">
+          <p class="footer-nav-label">Navigate</p>
+          <ul class="footer-nav-links">
+            <li><a href="landing.html#features">Features</a></li>
+            <li><a href="landing.html#how">How it works</a></li>
+            <li><a href="landing.html#screenshots">Screenshots</a></li>
+            <li><a href="landing.html#character-system">Character System</a></li>
+            <li><a href="#" aria-disabled="true" onclick="return false;">Rover</a></li>
+            <li><a href="https://dispatch.pixelabs.net/docs/" target="_blank" rel="noopener noreferrer" class="footer-docs-link">Documentation</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-social-col">
+          <p class="footer-nav-label">Links</p>
+          <div class="footer-social-links">
+            <a class="footer-social-link" href="https://github.com/thepixelabs/dispatch" target="_blank" rel="noopener noreferrer" aria-label="Dispatch on GitHub">
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            </a>
+            <a class="footer-social-link" href="https://github.com/thepixelabs" target="_blank" rel="noopener noreferrer" aria-label="@thepixelabs on GitHub">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </a>
+            <a class="footer-social-link" href="https://pixelabs.net" target="_blank" rel="noopener noreferrer" aria-label="Pixelabs website">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 thepixelabs &middot; PolyForm-Shield-1.0.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    /* ─── Theme management (duplicated from landing.html) ──────────── */
+    (function () {
+      var THEMES = ['dark', 'light', 'system'];
+      var LABELS = {
+        dark:   'Toggle color theme (currently dark)',
+        light:  'Toggle color theme (currently light)',
+        system: 'Toggle color theme (currently system / auto)'
+      };
+
+      function getStored() {
+        try { return localStorage.getItem('dispatch-theme') || 'dark'; } catch (e) { return 'dark'; }
+      }
+
+      function setStored(t) {
+        try { localStorage.setItem('dispatch-theme', t); } catch (e) {}
+      }
+
+      function resolveTheme(t) {
+        if (t !== 'system') return t;
+        return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+
+      function fullApply(t) {
+        var resolved = resolveTheme(t);
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-choice', t);
+        var btn = document.getElementById('theme-toggle');
+        if (btn) btn.setAttribute('aria-label', LABELS[t] || LABELS.dark);
+      }
+
+      var current = getStored();
+      fullApply(current);
+
+      var mq = window.matchMedia('(prefers-color-scheme: light)');
+      mq.addEventListener('change', function () {
+        if (getStored() === 'system') fullApply('system');
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+
+        fullApply(getStored());
+
+        btn.addEventListener('click', function () {
+          var t = getStored();
+          var next = THEMES[(THEMES.indexOf(t) + 1) % THEMES.length];
+          setStored(next);
+          fullApply(next);
+        });
+
+        btn.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+    })();
+
+    /* ─── GitHub stars (duplicated) ────────────────────────────────── */
+    (function () {
+      var CACHE_KEY = 'dispatch-stars';
+      var CACHE_TS_KEY = 'dispatch-stars-ts';
+      var ONE_HOUR = 60 * 60 * 1000;
+
+      function formatCount(count) {
+        return count >= 1000
+          ? (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
+          : String(count);
+      }
+
+      function setStars(formatted) {
+        var ns = document.getElementById('nav-stars');
+        if (ns) ns.textContent = formatted;
+      }
+
+      var cached = localStorage.getItem(CACHE_KEY);
+      var cachedTs = parseInt(localStorage.getItem(CACHE_TS_KEY), 10);
+      if (cached) setStars(cached);
+
+      if (cached && cachedTs && (Date.now() - cachedTs < ONE_HOUR)) return;
+
+      fetch('https://api.github.com/repos/thepixelabs/dispatch')
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          var count = data.stargazers_count;
+          if (typeof count !== 'number') return;
+          var formatted = formatCount(count);
+          localStorage.setItem(CACHE_KEY, formatted);
+          localStorage.setItem(CACHE_TS_KEY, String(Date.now()));
+          setStars(formatted);
+        })
+        .catch(function () { /* ignore */ });
+    })();
+
+    /* ─── Reveal observer (duplicated) ─────────────────────────────── */
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var els = document.querySelectorAll('[data-reveal]');
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: '0px 0px -32px 0px' }
+      );
+      els.forEach(function (el) { observer.observe(el); });
+    })();
+
+    /* ─── Mobile hamburger (duplicated) ────────────────────────────── */
+    (function () {
+      var hamburger = document.getElementById('nav-hamburger');
+      var nav       = document.querySelector('.site-nav');
+      if (!hamburger || !nav) return;
+
+      function isOpen() { return nav.classList.contains('nav-open'); }
+
+      function openMenu() {
+        nav.classList.add('nav-open');
+        hamburger.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeMenu() {
+        nav.classList.remove('nav-open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+
+      hamburger.addEventListener('click', function () {
+        isOpen() ? closeMenu() : openMenu();
+      });
+
+      var navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(function (link) {
+        link.addEventListener('click', function () { closeMenu(); });
+      });
+    })();
+
+    /* ─── Rover install tabs, platform-smart default, copy, toast ── */
+    (function () {
+      var WIN_TOOLTIP = "Rover runs on macOS and Linux. Windows isn't supported yet — try WSL.";
+
+      var tabs   = document.querySelectorAll('.rv-tab');
+      var panels = document.querySelectorAll('.rv-tabpanel');
+      var snippets = document.querySelectorAll('.rv-install-snippet');
+      var toast = document.getElementById('rv-toast');
+      var winBanner = document.getElementById('rv-win-banner');
+      var heroBtn = document.getElementById('rv-hero-copy-btn');
+      var footerBtn = document.getElementById('rv-footer-copy-btn');
+
+      /* Platform sniff — Windows disabled per spec. */
+      function detectPlatform() {
+        var ua = (navigator.userAgent || '').toLowerCase();
+        if (/win/i.test(ua) && !/mac/i.test(ua)) return 'windows';
+        if (/mac|darwin/i.test(ua)) return 'mac';
+        if (/linux|x11/i.test(ua) && !/android/i.test(ua)) return 'linux';
+        return 'unknown';
+      }
+
+      var platform = detectPlatform();
+      var defaultChannel;
+      switch (platform) {
+        case 'mac':   defaultChannel = 'homebrew'; break;
+        case 'linux': defaultChannel = 'pipx'; break;
+        default:      defaultChannel = 'pipx'; break;
+      }
+
+      /* Windows: show banner, disable tabs (tooltip on any click) */
+      var isWindows = platform === 'windows';
+      if (isWindows && winBanner) {
+        winBanner.setAttribute('data-visible', 'true');
+      }
+      if (isWindows) {
+        tabs.forEach(function (t) {
+          t.setAttribute('aria-disabled', 'true');
+          t.setAttribute('title', WIN_TOOLTIP);
+        });
+        snippets.forEach(function (s) {
+          s.setAttribute('aria-disabled', 'true');
+          s.setAttribute('title', WIN_TOOLTIP);
+        });
+      }
+
+      function selectTab(channel) {
+        tabs.forEach(function (t) {
+          var isMatch = t.getAttribute('data-channel') === channel;
+          t.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+        });
+        panels.forEach(function (p) {
+          var panelChannel = p.querySelector('[data-channel]');
+          var c = panelChannel ? panelChannel.getAttribute('data-channel') : '';
+          p.setAttribute('data-active', c === channel ? 'true' : 'false');
+        });
+        /* Update hero + footer button's copy target */
+        if (heroBtn)   heroBtn.setAttribute('data-rover-copy', channel);
+        if (footerBtn) footerBtn.setAttribute('data-rover-copy', channel);
+      }
+
+      /* Initial selection */
+      selectTab(defaultChannel);
+
+      /* Tab click */
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () {
+          if (isWindows) { showToast(WIN_TOOLTIP); return; }
+          var channel = t.getAttribute('data-channel');
+          selectTab(channel);
+        });
+        /* Arrow-key navigation */
+        t.addEventListener('keydown', function (e) {
+          var idx = Array.prototype.indexOf.call(tabs, t);
+          var nextIdx = idx;
+          if (e.key === 'ArrowRight') nextIdx = (idx + 1) % tabs.length;
+          else if (e.key === 'ArrowLeft') nextIdx = (idx - 1 + tabs.length) % tabs.length;
+          else if (e.key === 'Home') nextIdx = 0;
+          else if (e.key === 'End') nextIdx = tabs.length - 1;
+          else return;
+          e.preventDefault();
+          var nextTab = tabs[nextIdx];
+          if (isWindows) { showToast(WIN_TOOLTIP); return; }
+          var channel = nextTab.getAttribute('data-channel');
+          selectTab(channel);
+          nextTab.focus();
+        });
+      });
+
+      /* Install-snippet copy */
+      function copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text);
+        }
+        /* Fallback for older browsers */
+        return new Promise(function (resolve, reject) {
+          try {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            resolve();
+          } catch (err) { reject(err); }
+        });
+      }
+
+      var toastTimer = null;
+      function showToast(msg) {
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.setAttribute('data-visible', 'true');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toast.setAttribute('data-visible', 'false');
+        }, 2200);
+      }
+
+      snippets.forEach(function (snip) {
+        function doCopy() {
+          if (isWindows) { showToast(WIN_TOOLTIP); return; }
+          var cmd = snip.getAttribute('data-cmd');
+          copyToClipboard(cmd).then(function () {
+            showToast('Copied. Paste it in your terminal.');
+          }).catch(function () {
+            showToast("Couldn't copy — select the text and copy manually.");
+          });
+        }
+        snip.addEventListener('click', doCopy);
+        snip.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            doCopy();
+          }
+        });
+      });
+
+      /* Hero + footer "Copy install command" buttons */
+      var COMMANDS = {
+        homebrew: 'brew install thepixelabs/tap/rover',
+        pipx:     'pipx install rover',
+        uv:       'uv tool install rover',
+        script:   'curl -LsSf https://rover.thepixelabs.dev/install.sh | bash'
+      };
+
+      function wireCopyBtn(btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          if (isWindows) { showToast(WIN_TOOLTIP); return; }
+          var channel = btn.getAttribute('data-rover-copy') || 'pipx';
+          var cmd = COMMANDS[channel] || COMMANDS.pipx;
+          copyToClipboard(cmd).then(function () {
+            showToast('Copied. Paste it in your terminal.');
+          }).catch(function () {
+            showToast("Couldn't copy — open the install block below to copy manually.");
+          });
+        });
+      }
+      wireCopyBtn(heroBtn);
+      wireCopyBtn(footerBtn);
+    })();
+  </script>
+
+</body>
+</html>
