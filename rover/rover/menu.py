@@ -32,8 +32,8 @@ from typing import Any
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
-from textual.screen import Screen
-from textual.widgets import DataTable, Label, Static
+from textual.screen import ModalScreen, Screen
+from textual.widgets import DataTable, Input, Label, LoadingIndicator, Static
 
 from rover import __version__
 from rover.api import MenuStats, fetch_menu_stats
@@ -111,8 +111,13 @@ def _figlet_renderable(font: str, width: int = 80):
 # Yolo submenu screen
 # ---------------------------------------------------------------------------
 
-class YoloSubmenuScreen(Screen):
-    """Inline yolo submenu — y/r/p/Esc."""
+class YoloSubmenuScreen(ModalScreen):
+    """Inline yolo submenu — y/r/p/Esc.
+
+    ModalScreen (not Screen) so key events route exclusively to this screen
+    after push_screen — avoids a race where the first y after Y is delivered
+    while the parent screen still holds focus.
+    """
 
     BINDINGS = [
         Binding("escape", "cancel", "Back", show=False),
@@ -201,6 +206,271 @@ class YoloSubmenuScreen(Screen):
 
     def action_yolo_pick(self) -> None:
         self.app.exit(result={"action": "yolo_pick"})
+
+
+# ---------------------------------------------------------------------------
+# Confirm / input modals — replace former _blocking helpers
+# ---------------------------------------------------------------------------
+
+_MODAL_CSS = """
+ModalScreen {
+    align: center middle;
+}
+
+#modal-box {
+    width: auto;
+    min-width: 48;
+    max-width: 80;
+    height: auto;
+    border: solid #404060;
+    padding: 1 2;
+    background: #0d0d1a;
+}
+
+#modal-title {
+    text-style: bold;
+    color: #00d7ff;
+    margin-bottom: 1;
+}
+
+#modal-divider {
+    color: #404060;
+    margin-bottom: 1;
+}
+
+.modal-line {
+    color: #c0c0e0;
+    height: 1;
+}
+
+.modal-line.dim {
+    color: #808080;
+}
+
+.modal-line.ok {
+    color: green;
+}
+
+.modal-line.err {
+    color: red;
+}
+
+#modal-hint {
+    margin-top: 1;
+    color: #606080;
+}
+
+#modal-input {
+    margin-top: 1;
+    margin-bottom: 1;
+}
+
+LoadingIndicator {
+    height: 1;
+    color: #00d7ff;
+}
+"""
+
+
+class KillConfirmModalScreen(ModalScreen):
+    """Confirm-kill modal — y/n on a single session."""
+
+    BINDINGS = [
+        Binding("y",      "confirm", "Yes",    show=False),
+        Binding("n",      "cancel",  "No",     show=False),
+        Binding("escape", "cancel",  "Cancel", show=False),
+    ]
+
+    DEFAULT_CSS = _MODAL_CSS
+
+    def __init__(self, session_name: str) -> None:
+        super().__init__()
+        self.session_name = session_name
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="modal-box"):
+            yield Label("Kill tmux session", id="modal-title")
+            yield Label("─" * 40, id="modal-divider")
+            yield Label(f"Kill [bold]{self.session_name}[/bold]?",
+                        classes="modal-line")
+            yield Label("[dim]This permanently ends the session.[/dim]",
+                        classes="modal-line dim")
+            yield Label("[dim]y confirm  ·  n / Esc cancel[/dim]",
+                        id="modal-hint")
+
+    def action_confirm(self) -> None:
+        from rover.telemetry import _emit
+        ok = kill_session(self.session_name)
+        _emit({"event": "kill_session", "confirmed": True,
+               "session": self.session_name})
+        self.dismiss({"killed": ok})
+
+    def action_cancel(self) -> None:
+        from rover.telemetry import _emit
+        _emit({"event": "kill_session", "confirmed": False,
+               "session": self.session_name})
+        self.dismiss({"killed": False, "cancelled": True})
+
+
+class NewSessionInputModalScreen(ModalScreen):
+    """Prompt for a tmux session name and create it."""
+
+    BINDINGS = [
+        Binding("escape", "cancel",  "Cancel", show=False),
+        Binding("ctrl+c", "cancel",  "Cancel", show=False),
+    ]
+
+    DEFAULT_CSS = _MODAL_CSS
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="modal-box"):
+            yield Label("New tmux session", id="modal-title")
+            yield Label("─" * 40, id="modal-divider")
+            yield Label("Session name (no spaces, no `:` or `.`):",
+                        classes="modal-line dim")
+            yield Input(placeholder="my-session", id="modal-input")
+            yield Label("", id="modal-result", classes="modal-line")
+            yield Label("[dim]Enter create  ·  Esc cancel[/dim]",
+                        id="modal-hint")
+
+    def on_mount(self) -> None:
+        self.query_one("#modal-input", Input).focus()
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        from rover.session_manager import new_session
+        name = event.value.strip()
+        if not name:
+            self.dismiss({"created": False, "cancelled": True})
+            return
+        ok = new_session(name)
+        result = self.query_one("#modal-result", Label)
+        if ok:
+            result.update(f"[green]✓[/green] created [bold]{name}[/bold]")
+            self.set_timer(0.8, lambda: self.dismiss(
+                {"created": True, "name": name}))
+        else:
+            result.update(f"[red]✗[/red] failed (collision?)")
+            self.set_timer(1.4, lambda: self.dismiss(
+                {"created": False, "name": name}))
+
+    def action_cancel(self) -> None:
+        self.dismiss({"created": False, "cancelled": True})
+
+
+class ServerToggleModalScreen(ModalScreen):
+    """Start/stop the dispatch server — confirm → work → result."""
+
+    BINDINGS = [
+        Binding("y",      "confirm", "Yes",    show=False),
+        Binding("n",      "cancel",  "No",     show=False),
+        Binding("escape", "cancel",  "Cancel", show=False),
+    ]
+
+    DEFAULT_CSS = _MODAL_CSS
+
+    def __init__(self, config: dict) -> None:
+        super().__init__()
+        from rover import server_manager
+        self.config = config
+        self.port = int(config.get("dispatch_port", 4242))
+        self.status = server_manager.server_status(port=self.port)
+        self._phase = "confirm"   # confirm → running → result
+        self._result_ok = False
+        self._result_msg = ""
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="modal-box"):
+            yield Label("Dispatch server", id="modal-title")
+            yield Label("─" * 40, id="modal-divider")
+            yield Label("", id="modal-msg", classes="modal-line")
+            yield LoadingIndicator(id="modal-spinner")
+            yield Label("", id="modal-hint")
+
+    def on_mount(self) -> None:
+        self.query_one("#modal-spinner", LoadingIndicator).display = False
+        self._repaint()
+
+    def _repaint(self) -> None:
+        msg = self.query_one("#modal-msg", Label)
+        hint = self.query_one("#modal-hint", Label)
+        spinner = self.query_one("#modal-spinner", LoadingIndicator)
+
+        if self._phase == "confirm":
+            spinner.display = False
+            if self.status["running"]:
+                msg.update(
+                    f"Stop dispatch server "
+                    f"[dim](pid {self.status['pid']})[/dim]?"
+                )
+            else:
+                msg.update(
+                    f"Start dispatch server "
+                    f"[dim](port {self.port})[/dim]?"
+                )
+            hint.update("[dim]y confirm  ·  n / Esc cancel[/dim]")
+
+        elif self._phase == "running":
+            spinner.display = True
+            msg.update(
+                "[dim]stopping...[/dim]" if self.status["running"]
+                else "[dim]starting (up to 15s)...[/dim]"
+            )
+            hint.update("")
+
+        elif self._phase == "result":
+            spinner.display = False
+            if self._result_ok:
+                msg.update(f"[green]✓[/green] {self._result_msg}")
+            else:
+                msg.update(f"[red]✗[/red] {self._result_msg}")
+            hint.update("[dim]press any key to close[/dim]")
+
+    def action_confirm(self) -> None:
+        if self._phase == "result":
+            self.dismiss({"ok": self._result_ok})
+            return
+        if self._phase != "confirm":
+            return
+        self._phase = "running"
+        self._repaint()
+        self.run_worker(self._do_work, thread=True, exclusive=True)
+
+    def action_cancel(self) -> None:
+        if self._phase == "running":
+            # Don't interrupt in-flight work; ignore Esc while spinning.
+            return
+        if self._phase == "result":
+            self.dismiss({"ok": self._result_ok})
+            return
+        self.dismiss({"cancelled": True})
+
+    def on_key(self, event) -> None:
+        # In result phase, any key dismisses (consistent with old UX).
+        if self._phase == "result":
+            event.prevent_default()
+            event.stop()
+            self.dismiss({"ok": self._result_ok})
+
+    def _do_work(self) -> None:
+        from rover import server_manager
+        if self.status["running"]:
+            ok, msg = server_manager.stop_server(port=self.port)
+        else:
+            repo = server_manager.find_dispatch_repo(self.config)
+            if repo is None:
+                ok, msg = False, (
+                    "Could not find the dispatch repo. "
+                    "Set dispatch_repo_path in ~/.rover/config.json"
+                )
+            else:
+                ok, msg = server_manager.start_server(repo, port=self.port)
+        self.app.call_from_thread(self._on_done, ok, msg)
+
+    def _on_done(self, ok: bool, msg: str) -> None:
+        self._result_ok = ok
+        self._result_msg = msg
+        self._phase = "result"
+        self._repaint()
 
 
 # ---------------------------------------------------------------------------
@@ -660,7 +930,10 @@ class MainMenuScreen(Screen):
 
     def action_server_toggle(self) -> None:
         self._number_buffer = ""
-        self.app.exit(result={"action": "server_toggle"})
+        self.app.push_screen(
+            ServerToggleModalScreen(self.config),
+            callback=lambda _r: self._refresh_data(),
+        )
 
     def action_kill_session(self) -> None:
         self._number_buffer = ""
@@ -668,7 +941,10 @@ class MainMenuScreen(Screen):
         cursor = tbl.cursor_row
         if cursor is not None and 0 <= cursor < len(self._sessions):
             sess = self._sessions[cursor]
-            self.app.exit(result={"action": "kill", "session": sess.name})
+            self.app.push_screen(
+                KillConfirmModalScreen(sess.name),
+                callback=lambda _r: self._refresh_data(),
+            )
 
     def action_force_refresh(self) -> None:
         self._number_buffer = ""
@@ -676,7 +952,10 @@ class MainMenuScreen(Screen):
 
     def action_new_session(self) -> None:
         self._number_buffer = ""
-        self.app.exit(result={"action": "new_tmux_session"})
+        self.app.push_screen(
+            NewSessionInputModalScreen(),
+            callback=lambda _r: self._refresh_data(),
+        )
 
     def action_caffeinate(self) -> None:
         if caffeinate.is_available():
@@ -800,119 +1079,6 @@ class MainMenuApp(App):
 
 
 # ---------------------------------------------------------------------------
-# Server toggle helper  (called synchronously outside Textual)
-# ---------------------------------------------------------------------------
-
-def _toggle_dispatch_server_blocking(config: dict) -> None:
-    """Start or stop the dispatch server.  Runs OUTSIDE Textual (no TTY fight)."""
-    from rich.console import Console
-    from rover import server_manager
-
-    console = Console()
-    port = int(config.get("dispatch_port", 4242))
-    status = server_manager.server_status(port=port)
-
-    if status["running"]:
-        console.print(
-            f"  [dim]Stop dispatch server (pid {status['pid']})? [y/N][/dim] ",
-            end="",
-        )
-        try:
-            key = input().strip().lower()
-        except (EOFError, KeyboardInterrupt):
-            key = "n"
-        if key != "y":
-            return
-        with console.status("[dim]stopping dispatch server...[/dim]", spinner="dots"):
-            ok, msg = server_manager.stop_server(port=port)
-        console.print(
-            f"\n  [green]\u2713[/green] {msg}" if ok else f"\n  [red]\u2717[/red] {msg}"
-        )
-        import time; time.sleep(1.2)
-        return
-
-    repo = server_manager.find_dispatch_repo(config)
-    if repo is None:
-        console.print(
-            "\n  [red]\u2717[/red] Could not find the dispatch repo.\n"
-            "  [dim]Set [bold]dispatch_repo_path[/bold] in ~/.rover/config.json[/dim]"
-        )
-        import time; time.sleep(2.5)
-        return
-
-    console.print(
-        f"  [dim]Start dispatch server from {repo}? [y/N][/dim] ", end=""
-    )
-    try:
-        key = input().strip().lower()
-    except (EOFError, KeyboardInterrupt):
-        key = "n"
-    if key != "y":
-        return
-
-    with console.status("[dim]starting dispatch server (up to 15s)...[/dim]", spinner="dots"):
-        ok, msg = server_manager.start_server(repo, port=port)
-    if ok:
-        console.print(f"\n  [green]\u2713[/green] {msg}")
-        console.print(f"  [dim]log: {server_manager.LOG_FILE}[/dim]")
-    else:
-        console.print(f"\n  [red]\u2717[/red] {msg}")
-    import time; time.sleep(1.5)
-
-
-# ---------------------------------------------------------------------------
-# Kill confirmation helper  (called synchronously outside Textual)
-# ---------------------------------------------------------------------------
-
-def _confirm_kill_blocking(session_name: str) -> None:
-    """Print an inline Kill confirmation and read one line.  Outside Textual."""
-    from rich.console import Console
-    from rover.telemetry import _emit
-
-    console = Console()
-    console.print(
-        f"[dim]  Kill [/dim][bold]{session_name}[/bold][dim]? [y/N][/dim] ",
-        end="",
-    )
-    try:
-        key = input().strip().lower()
-    except (EOFError, KeyboardInterrupt):
-        key = "n"
-
-    confirmed = key == "y"
-    _emit({"event": "kill_session", "confirmed": confirmed, "session": session_name})
-    if confirmed:
-        ok = kill_session(session_name)
-        if not ok:
-            console.print("[dim]  (kill failed)[/dim]")
-
-
-# ---------------------------------------------------------------------------
-# New tmux session helper  (called synchronously outside Textual)
-# ---------------------------------------------------------------------------
-
-def _new_tmux_session_blocking() -> None:
-    """Prompt for a session name and create it.  Outside Textual."""
-    from rich.console import Console
-    from rover.session_manager import new_session
-
-    console = Console()
-    console.print("[dim]  New tmux session name:[/dim] ", end="")
-    try:
-        name = input().strip()
-    except (EOFError, KeyboardInterrupt):
-        return
-    if not name:
-        return
-    ok = new_session(name)
-    if ok:
-        console.print(f"  [green]\u2713[/green] session [bold]{name}[/bold] created")
-    else:
-        console.print(f"  [red]\u2717[/red] failed to create session [bold]{name}[/bold]")
-    import time; time.sleep(0.8)
-
-
-# ---------------------------------------------------------------------------
 # Public entry point
 # ---------------------------------------------------------------------------
 
@@ -973,20 +1139,6 @@ def run_menu(config: dict, hours: float = 2.0) -> MenuAction:
             from rover.altergo_launcher import run_yolo_resume_pick
             from rover.config import save_config
             run_yolo_resume_pick(config, save_config)
-            continue
-
-        if action == "server_toggle":
-            _toggle_dispatch_server_blocking(config)
-            continue
-
-        if action == "kill":
-            sess_name = result.get("session", "")
-            if sess_name:
-                _confirm_kill_blocking(sess_name)
-            continue
-
-        if action == "new_tmux_session":
-            _new_tmux_session_blocking()
             continue
 
         # Unknown action — just quit safely

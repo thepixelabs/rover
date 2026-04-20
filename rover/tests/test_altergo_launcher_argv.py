@@ -160,27 +160,16 @@ class TestRunYoloResumePickEmptySessions:
     def test_returns_without_calling_execvp_when_no_sessions(self, monkeypatch, fake_execvp):
         """When list_altergo_sessions returns [], run_yolo_resume_pick must return
         without ever calling os.execvp."""
-        # list_altergo_sessions is imported via 'from sessions_index import ...'
-        # inside run_yolo_resume_pick, so patch on the sessions_index module.
         import rover.sessions_index as si
         monkeypatch.setattr(si, "list_altergo_sessions", lambda: [])
 
-        # Patch terminal calls so the function doesn't block on stdin
-        monkeypatch.setattr(
-            "rover.altergo_launcher.select.select",
-            lambda *a, **kw: ([], [], []),
-        )
-        monkeypatch.setattr("rover.altergo_launcher.tty.setraw", lambda fd: None)
-        monkeypatch.setattr(
-            "rover.altergo_launcher.termios.tcgetattr", lambda fd: []
-        )
-        monkeypatch.setattr(
-            "rover.altergo_launcher.termios.tcsetattr", lambda *a: None
-        )
+        # The empty-sessions path shows a Textual error screen; stub it so the
+        # test doesn't try to allocate a real TTY for the Textual app.
+        import rover.altergo_launcher as al
+        monkeypatch.setattr(al, "_show_yolo_pick_no_sessions", lambda: None)
 
         from rover.altergo_launcher import run_yolo_resume_pick
 
-        # Should return without raising (no SystemExit from fake_execvp)
         run_yolo_resume_pick({}, lambda cfg: None)
 
         assert fake_execvp == [], "execvp must not be called when sessions list is empty"
@@ -195,8 +184,15 @@ class TestAltergoNotFound:
         """When shutil.which returns None, show the error and do NOT exec."""
         import shutil as _shutil
         monkeypatch.setattr(_shutil, "which", lambda name: None)
-        # Short-circuit the "press Enter" prompt.
-        monkeypatch.setattr("builtins.input", lambda: "")
+
+        # _show_altergo_not_found renders a Textual error screen; stub it so
+        # the test doesn't try to allocate a real TTY for the Textual app.
+        import rover.altergo_launcher as al
+        shown: list = []
+        monkeypatch.setattr(
+            al, "_show_altergo_not_found",
+            lambda: shown.append("shown"),
+        )
         monkeypatch.setattr(
             "rover.altergo_launcher.os.chdir", lambda p: None
         )
@@ -211,6 +207,7 @@ class TestAltergoNotFound:
             yolo_resume=False,
         )
 
+        assert shown == ["shown"], "not-found screen should be shown"
         assert fake_execvp == [], "execvp must not be called when altergo is not on PATH"
 
 

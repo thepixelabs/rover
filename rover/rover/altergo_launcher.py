@@ -72,21 +72,22 @@ def _check_native_ssh_token(console: Console) -> bool:
     if size > 0:
         return True
 
-    console.print(
-        "\n  [bold yellow]native account not available over SSH[/bold yellow]\n"
-        "  [dim]Claude Code reads native-account credentials from the macOS\n"
-        "  Keychain, which is locked for SSH sessions.[/dim]\n\n"
-        "  [bold]Fix — works from SSH too:[/bold]\n"
-        "    rover --setup-native-ssh\n\n"
-        f"  [dim]Generates a long-lived OAuth token (via [bold]claude\n"
-        f"  setup-token[/bold], which prints a URL you open in your phone\n"
-        f"  browser — no local browser needed) and writes it to\n  {token_path}\n"
-        "  which SSH sessions export automatically.[/dim]\n"
+    _run_error_screen(
+        "rover  \u00b7  native account needs SSH bridge",
+        [
+            "Claude Code reads native-account credentials from the macOS",
+            "Keychain, which is locked for SSH sessions.",
+            "",
+            "Fix (works from SSH too):",
+            "",
+            "  rover --setup-native-ssh",
+            "",
+            "Generates a long-lived OAuth token (via claude setup-token,",
+            "which prints a URL you can open in your phone browser).",
+            f"Token is written to {token_path}",
+            "and exported automatically for SSH sessions.",
+        ],
     )
-    try:
-        console.input("  [dim]press Enter to return to menu…[/dim] ")
-    except (EOFError, KeyboardInterrupt):
-        pass
     return False
 
 
@@ -739,27 +740,107 @@ def _show_yolo_pick_no_sessions() -> None:
 # ── Prompt attach-or-new (runs outside Textual using Rich) ────────────────────
 
 def _prompt_attach_or_new(console: Console, session_name: str) -> str:
-    """Inline prompt: Attach (default) / New instance / Cancel.
+    """Modal prompt: Attach (default) / New instance / Cancel.
 
-    Runs outside Textual using a simple Rich console.input() call.
-    Returns 'attach', 'new', or 'cancel'.
+    Runs a short Textual app so the prompt matches the rest of rover's UI.
+    The ``console`` argument is accepted for test-compat and ignored at
+    runtime.  Returns 'attach', 'new', or 'cancel'.
     """
-    console.print(
-        f"\n  [bold {_CYAN}]\u21ba[/bold {_CYAN}] tmux session "
-        f"[bold]{session_name}[/bold] already exists."
-    )
-    try:
-        raw = console.input(
-            "  [dim][A][/dim]ttach  \u00b7  [dim][N][/dim]ew instance  \u00b7  "
-            "[dim][C][/dim]ancel  [dim](default: A)[/dim]: "
-        ).strip().lower()
-    except (EOFError, KeyboardInterrupt):
-        raw = "a"
+    from textual.app import App, ComposeResult
+    from textual.binding import Binding
+    from textual.containers import Vertical
+    from textual.screen import Screen
+    from textual.widgets import Label
 
-    if raw.startswith("n"):
-        return "new"
-    if raw.startswith("c"):
-        return "cancel"
+    class AttachOrNewScreen(Screen):
+        BINDINGS = [
+            Binding("a",      "attach", "Attach", show=False),
+            Binding("enter",  "attach", "Attach", show=False),
+            Binding("n",      "new",    "New",    show=False),
+            Binding("c",      "cancel", "Cancel", show=False),
+            Binding("escape", "cancel", "Cancel", show=False),
+            Binding("q",      "cancel", "Cancel", show=False),
+        ]
+
+        DEFAULT_CSS = """
+        AttachOrNewScreen {
+            align: center middle;
+            background: #0d0d1a;
+        }
+
+        #aon-box {
+            width: auto;
+            min-width: 52;
+            max-width: 80;
+            height: auto;
+            border: solid #404060;
+            padding: 1 2;
+            background: #0d0d1a;
+        }
+
+        #aon-title {
+            text-style: bold;
+            color: #00d7ff;
+            margin-bottom: 1;
+        }
+
+        #aon-divider {
+            color: #404060;
+            margin-bottom: 1;
+        }
+
+        .aon-line {
+            color: #c0c0e0;
+            height: 1;
+        }
+
+        .aon-line.dim {
+            color: #808080;
+        }
+
+        #aon-hint {
+            margin-top: 1;
+            color: #606080;
+        }
+        """
+
+        def compose(self) -> ComposeResult:
+            with Vertical(id="aon-box"):
+                yield Label("Session already exists", id="aon-title")
+                yield Label("\u2500" * 48, id="aon-divider")
+                yield Label(
+                    f"[bold]{session_name}[/bold] is already a tmux session.",
+                    classes="aon-line",
+                )
+                yield Label(
+                    "[dim]A[/dim]ttach  \u00b7  [dim]N[/dim]ew instance  "
+                    "\u00b7  [dim]C[/dim]ancel",
+                    classes="aon-line",
+                )
+                yield Label(
+                    "[dim]Enter / a attach  \u00b7  n new  \u00b7  "
+                    "c / Esc cancel[/dim]",
+                    id="aon-hint",
+                )
+
+        def action_attach(self) -> None:
+            self.app.exit(result="attach")
+
+        def action_new(self) -> None:
+            self.app.exit(result="new")
+
+        def action_cancel(self) -> None:
+            self.app.exit(result="cancel")
+
+    class AttachOrNewApp(App):
+        CSS = "Screen { background: #0d0d1a; }"
+
+        def on_mount(self) -> None:
+            self.push_screen(AttachOrNewScreen())
+
+    result = AttachOrNewApp().run()
+    if result in ("attach", "new", "cancel"):
+        return result
     return "attach"
 
 
@@ -881,15 +962,14 @@ def run_altergo_launcher(
     # ── Step 2: pick a project ────────────────────────────────────────────────
     projects_data = _list_git_projects_with_mtime(workspace)
     if not projects_data:
-        console.print(
-            f"\n  [yellow]No git repos found in[/yellow] [bold]{workspace}[/bold]\n"
-            "  [dim]Subdirectories need a .git folder to appear here.[/dim]\n\n"
-            "  [dim]Press Enter to continue.[/dim]"
+        _run_error_screen(
+            "rover  \u00b7  no git repos",
+            [
+                f"No git repos found in {workspace}",
+                "",
+                "Subdirectories need a .git folder to appear here.",
+            ],
         )
-        try:
-            input()
-        except (EOFError, KeyboardInterrupt):
-            pass
         return
 
     project_names  = [name  for name, _     in projects_data]
