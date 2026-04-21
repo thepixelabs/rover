@@ -3,10 +3,24 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "rover"
+name = "rover-tui"
 version = "0.3.4"
 description = "On-the-go session manager and agent monitor for dispatch"
+readme = "README.md"
+license = {text = "PolyForm-Shield-1.0.0"}
 requires-python = ">=3.11"
+keywords = ["tui", "terminal", "ai", "agents", "claude", "dispatch"]
+classifiers = [
+    "Environment :: Console",
+    "License :: Other/Proprietary License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Terminals",
+    "Topic :: System :: Monitoring",
+    "Topic :: Software Development :: User Interfaces",
+]
 dependencies = [
     "textual>=0.80.0",
     "rich>=13.0",
@@ -14,6 +28,11 @@ dependencies = [
     "rich-pyfiglet>=0.2.0",
     "httpx>=0.27.0",
 ]
+
+[project.urls]
+Homepage = "https://rover.thepixelabs.dev"
+Repository = "https://github.com/thepixelabs/dispatch"
+Changelog = "https://github.com/thepixelabs/dispatch/releases"
 
 [project.scripts]
 rover = "rover.__main__:main"
