@@ -1525,6 +1525,65 @@
     @media (min-width: 1600px) {
       .rv-hero-inner { gap: 72px; }
     }
+
+    /* ================================================================
+       Teleport-trail ghost mascots inside #benefits.
+       Four absolutely-positioned copies of b7-fleet-running.png,
+       opacity-fading right-to-left on desktop, stacked down the left
+       on mobile. The #benefits section is already position:relative
+       (via .section), so these anchor to it.
+       ================================================================ */
+
+    .rv-benefits-trail-mascot {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .rv-benefits-trail-mascot img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      object-position: center center;
+    }
+
+    /* Desktop placement — staggered along the right half, fading left */
+    .rv-benefits-trail-mascot--1 { width: 22%; right:  8%; top: 15%; opacity: 0.42; }
+    .rv-benefits-trail-mascot--2 { width: 20%; right: 20%; top: 40%; opacity: 0.22; }
+    .rv-benefits-trail-mascot--3 { width: 18%; right: 33%; top: 60%; opacity: 0.17; }
+    .rv-benefits-trail-mascot--4 { width: 17%; right: 48%; top: 78%; opacity: 0.12; }
+
+    /* Light-theme opacity overrides */
+    [data-theme="light"] .rv-benefits-trail-mascot--1 { opacity: 0.24; }
+    [data-theme="light"] .rv-benefits-trail-mascot--2 { opacity: 0.14; }
+    [data-theme="light"] .rv-benefits-trail-mascot--3 { opacity: 0.10; }
+    [data-theme="light"] .rv-benefits-trail-mascot--4 { opacity: 0.07; }
+
+    /* Mobile: trail moves to left edge, copy shifts right */
+    @media (max-width: 720px) {
+      #benefits .container { padding-left: calc(40% + 12px); }
+      .rv-benefits-trail-mascot {
+        width: 38%;
+        left: 1%;
+        right: auto;
+        top: auto;
+        transform: none;
+      }
+      .rv-benefits-trail-mascot--1 { top:  4%; opacity: 0.58; }
+      .rv-benefits-trail-mascot--2 { top: 28%; opacity: 0.40; }
+      .rv-benefits-trail-mascot--3 { top: 54%; opacity: 0.30; }
+      .rv-benefits-trail-mascot--4 { top: 78%; opacity: 0.22; }
+      [data-theme="light"] .rv-benefits-trail-mascot--1 { opacity: 0.34; }
+      [data-theme="light"] .rv-benefits-trail-mascot--2 { opacity: 0.24; }
+      [data-theme="light"] .rv-benefits-trail-mascot--3 { opacity: 0.18; }
+      [data-theme="light"] .rv-benefits-trail-mascot--4 { opacity: 0.13; }
+    }
+
+    @media (max-width: 480px) {
+      #benefits .container { padding-left: calc(36% + 8px); }
+      .rv-benefits-trail-mascot { width: 34%; }
+    }
   </style>
 </head>
 <body>
@@ -1910,6 +1969,22 @@
          BLOCK 3 — WHAT ROVER DOES (3 benefits, dry voice)
          ═══════════════════════════════════════════════════════════════ -->
     <section id="benefits" class="section" data-reveal>
+
+      <!-- Teleport trail — four mascot residuals fading right-to-left (desktop)
+           or stacked down the left edge (mobile). All aria-hidden: purely decorative. -->
+      <div class="rv-benefits-trail-mascot rv-benefits-trail-mascot--1" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
+      <div class="rv-benefits-trail-mascot rv-benefits-trail-mascot--2" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
+      <div class="rv-benefits-trail-mascot rv-benefits-trail-mascot--3" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
+      <div class="rv-benefits-trail-mascot rv-benefits-trail-mascot--4" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
+
       <div class="container" style="position:relative;z-index:1;">
         <div class="section-head section-head--center">
           <p class="section-label">// what rover does</p>
