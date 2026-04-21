@@ -258,3 +258,104 @@ def check_health(port: int = 4242) -> bool:
         return True
     except Exception:
         return False
+
+
+@dataclass
+class ActivityEvent:
+    """A single activity event from /api/activity."""
+    event_id: str           # UUID string
+    timestamp_ms: int       # epoch ms
+    event_type: str         # e.g. "phase_hint", "agent_synced", "agent.spawn"
+    project_name: str
+    epic_name: Optional[str]
+    epic_title: Optional[str]
+    session_id: Optional[str]
+    agent_name: Optional[str]
+    phase_id: Optional[str]
+
+    def format_time(self) -> str:
+        from datetime import datetime
+        dt = datetime.fromtimestamp(self.timestamp_ms / 1000)
+        return dt.strftime("%H:%M:%S")
+
+    def format_age(self) -> str:
+        delta = int(time.time() - self.timestamp_ms / 1000)
+        if delta < 60:
+            return f"{delta}s"
+        if delta < 3600:
+            return f"{delta // 60}m"
+        return f"{delta // 3600}h{(delta % 3600) // 60}m"
+
+
+def _parse_activity_event(raw: dict) -> ActivityEvent:
+    return ActivityEvent(
+        event_id    = str(raw.get("id", "")),
+        timestamp_ms = int(raw.get("timestamp") or 0),
+        event_type  = str(raw.get("type", "unknown")),
+        project_name = str(raw.get("projectName", "")),
+        epic_name   = raw.get("epicName") or None,
+        epic_title  = raw.get("epicTitle") or None,
+        session_id  = raw.get("sessionId") or None,
+        agent_name  = raw.get("agentName") or None,
+        phase_id    = raw.get("phaseId") or None,
+    )
+
+
+def fetch_activity(
+    port: int = 4242,
+    since: int = 0,
+    limit: int = 100,
+) -> tuple[list[ActivityEvent], bool]:
+    """Fetch activity events from /api/activity.
+
+    Returns (events, server_online). Events are oldest-first.
+    Returns ([], False) if the server is unreachable.
+    """
+    try:
+        import httpx
+    except ImportError:
+        return [], False
+
+    url = f"http://127.0.0.1:{port}/api/activity"
+    try:
+        response = httpx.get(
+            url,
+            params={"since": since, "limit": limit},
+            timeout=_TIMEOUT,
+        )
+        response.raise_for_status()
+        payload = response.json()
+    except Exception:
+        return [], False
+
+    raw_events = payload.get("events")
+    if not isinstance(raw_events, list):
+        return [], True
+
+    events: list[ActivityEvent] = []
+    for raw in raw_events:
+        if not isinstance(raw, dict):
+            continue
+        try:
+            events.append(_parse_activity_event(raw))
+        except Exception:
+            continue
+
+    return events, True
+
+
+def fetch_single_session(
+    port: int = 4242,
+    session_id: str = "",
+) -> tuple[Optional[Session], bool]:
+    """Re-fetch a single session by ID from /api/state.
+
+    Returns (session, server_online). Returns (None, online) if not found.
+    """
+    sessions, online = fetch_state(port=port, hours=48.0)
+    if not session_id:
+        return None, online
+    for s in sessions:
+        if s.session_id == session_id:
+            return s, online
+    return None, online
