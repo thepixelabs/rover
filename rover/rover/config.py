@@ -22,7 +22,7 @@ DEFAULT_CONFIG: dict = {
     "refresh_seconds": 30,
     "theme": "cyber",         # cyber | sunset | ocean | mono
     "show_tmux": True,
-    "greeting_enabled": True,
+    "show_nickname_in_header": True,  # big figlet: nickname (on) vs "rover" (off)
     "dispatch_port": 4242,
     "git_workspace": "",      # path to git projects root (used by altergo launcher)
     "header_font": "thin",    # pyfiglet font for the rover banner / menu header

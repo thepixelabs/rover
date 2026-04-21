@@ -148,6 +148,26 @@ def main() -> None:
     if not args.no_path_check and not config.get("path_prompt_answered", False):
         _check_path(config, save_config)
 
+    # Git workspace onboarding (first run only).
+    # Lazy fallback still exists inside altergo/yolo flows — this just nudges
+    # the user to configure it once on first launch so yolo/altergo don't
+    # pop a workspace prompt mid-session-creation. Esc is honored as "later"
+    # and we flag it so we don't nag on every launch.
+    if (
+        not config.get("workspace_prompt_answered", False)
+        and not config.get("git_workspace", "").strip()
+    ):
+        try:
+            from rover.altergo_launcher import _run_workspace_prompt
+            ws = _run_workspace_prompt()
+            if ws:
+                config["git_workspace"] = ws
+            config["workspace_prompt_answered"] = True
+            save_config(config)
+        except Exception:
+            # Never block launch on onboarding failure.
+            pass
+
     # Check for an interactive terminal early — before the banner wastes time.
     # Without a PTY (e.g. SSH without -t), both stdin and /dev/tty will fail.
     import termios, io as _io
@@ -196,6 +216,7 @@ def main() -> None:
             _run_dispatch(config, hours)
         elif action == MenuAction.SETTINGS:
             _run_settings(config, hours)
+            config = load_config()
         # If attach was selected, run_menu returned after the user detached from tmux.
         # The while loop re-enters the menu so the user can pick another action.
 

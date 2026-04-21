@@ -42,6 +42,18 @@ _PAGE_SIZE = 26
 
 _KNOWN_PROVIDERS = ("claude", "gemini", "codex", "copilot")
 
+# Sentinel return values from the project picker — matched on exact string
+# equality after _run_picker returns. Never collide with real project names
+# because real names can't contain "::" (dirnames are sanitized upstream).
+_PROJECT_NEW        = "::new-project::"
+_PROJECT_WORKSPACE  = "::workspace-root::"
+
+# Sentinel returned by _run_picker when the user pressed q / Backspace and
+# the picker was launched with back_enabled=True. Callers loop back to the
+# previous step in the multi-step project → account → provider flow instead
+# of exiting entirely (which is what None means).
+_PICKER_BACK        = "::back::"
+
 
 # ── Native SSH bridge ─────────────────────────────────────────────────────────
 
@@ -263,8 +275,20 @@ def _run_picker(
     subtitle: str = "",
     display_items: list[str] | None = None,
     sort_keys: list[float] | None = None,
+    pin_top_count: int = 0,
+    back_enabled: bool = False,
 ) -> str | None:
-    """Show a letter-keyed paginated Textual picker. Returns selected item or None."""
+    """Show a letter-keyed paginated Textual picker. Returns selected item or None.
+
+    ``pin_top_count`` keeps the first N items of ``items`` pinned at the top of
+    the list regardless of sort order — used for action sentinels like
+    "create new project" that should always be reachable on page 1.
+
+    ``back_enabled`` turns ``q`` and ``Backspace`` into a "back one step"
+    action that returns the ``_PICKER_BACK`` sentinel. ``Esc`` still exits
+    the whole flow (returns None). When False (the default), ``q`` and
+    ``Backspace`` also exit entirely — there's no previous step to return to.
+    """
     from textual.app import App, ComposeResult
     from textual.binding import Binding
     from textual.containers import Vertical
@@ -278,13 +302,26 @@ def _run_picker(
 
     class PickerScreen(Screen):
         BINDINGS = [
-            Binding("escape", "cancel", "Cancel", show=False),
-            Binding("q",      "cancel", "Cancel", show=False),
-            Binding("ctrl+c", "cancel", "Cancel", show=False),
-            Binding("]",      "next_page",  "Next",  show=False),
-            Binding("[",      "prev_page",  "Prev",  show=False),
-            Binding("right",  "next_page",  "Next",  show=False),
-            Binding("left",   "prev_page",  "Prev",  show=False),
+            # Esc + Ctrl+C always exit the whole multi-step flow (return None).
+            # Backspace routes through `action_back`: when back_enabled is
+            # True the picker exits with _PICKER_BACK so the caller re-runs
+            # the previous step; when False it behaves like cancel.
+            #
+            # `q` is deliberately NOT bound here — it's one of the a-z
+            # pick-letter slots (items 17 on a 26-item page are keyed `q`).
+            # Binding it to back as well would shadow the letter-pick and
+            # make the 17th item unselectable.
+            Binding("escape",    "cancel", "Cancel", show=False),
+            Binding("ctrl+c",    "cancel", "Cancel", show=False),
+            Binding("backspace", "back",   "Back",   show=False),
+            Binding("]",         "next_page", "Next", show=False),
+            Binding("[",         "prev_page", "Prev", show=False),
+            Binding("right",     "next_page", "Next", show=False),
+            Binding("left",      "prev_page", "Prev", show=False),
+            # Tab is the discoverable mobile-keyboard paging key; priority=True
+            # so Textual's default focus-cycling binding doesn't win first.
+            Binding("tab",       "next_page", "Next", show=False, priority=True),
+            Binding("shift+tab", "prev_page", "Prev", show=False, priority=True),
         ] + [
             Binding(ch, f"pick_letter('{ch}')", "", show=False)
             for ch in _LETTERS
@@ -300,13 +337,15 @@ def _run_picker(
         PickerScreen {
             align: center middle;
             background: #0d0d1a;
+            overflow-y: auto;
         }
 
         #picker-box {
-            width: 80%;
-            min-width: 40;
+            width: 90%;
+            min-width: 30;
             max-width: 90;
             height: auto;
+            overflow-x: hidden;
             border: solid #404060;
             padding: 0 1;
             background: #0d0d1a;
@@ -331,6 +370,7 @@ def _run_picker(
 
         PickerTable {
             height: auto;
+            min-height: 5;
             max-height: 28;
             border: none;
             margin: 0;
@@ -343,12 +383,13 @@ def _run_picker(
         }
 
         PickerTable > .datatable--cursor {
-            background: #0d0d1a;
+            background: #1a2040;
+            color: #ffffff;
         }
 
         #picker-hint {
-            color: #404060;
-            height: 1;
+            color: #6060a0;
+            height: auto;
             padding-bottom: 1;
         }
         """
@@ -359,9 +400,13 @@ def _run_picker(
             self._sort = "name"
 
         def _sorted_indices(self) -> list[int]:
+            pinned = list(range(min(pin_top_count, len(items))))
+            rest = list(range(pin_top_count, len(items)))
             if self._sort == "modified" and sort_keys is not None:
-                return sorted(range(len(items)), key=lambda i: -(sort_keys[i] or 0.0))
-            return sorted(range(len(items)), key=lambda i: items[i].lower())
+                rest.sort(key=lambda i: -(sort_keys[i] or 0.0))
+            else:
+                rest.sort(key=lambda i: items[i].lower())
+            return pinned + rest
 
         def _total_pages(self) -> int:
             return max(1, (len(items) + _PAGE_SIZE - 1) // _PAGE_SIZE)
@@ -385,6 +430,19 @@ def _run_picker(
 
         def on_mount(self) -> None:
             self._repaint()
+            self.query_one("#picker-table", PickerTable).focus()
+
+        def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+            try:
+                local_idx = int(event.row_key.value)
+            except (TypeError, ValueError):
+                return
+            sorted_idx = self._sorted_indices()
+            page_slice = sorted_idx[
+                self._page * _PAGE_SIZE: (self._page + 1) * _PAGE_SIZE
+            ]
+            if 0 <= local_idx < len(page_slice):
+                self.app.exit(result=items[page_slice[local_idx]])
 
         def _repaint(self) -> None:
             sorted_idx = self._sorted_indices()
@@ -420,15 +478,18 @@ def _run_picker(
 
             # Hint bar
             try:
-                hint_parts = ["  a\u2013z select"]
+                hint_parts = ["  ↑↓/Enter select  ·  a–z jump"]
                 if total > 1:
                     hint_parts.append(
-                        f"  \u00b7  ] next  [ prev"
+                        f"  \u00b7  Tab/] next  \u00b7  Shift+Tab/[ prev"
                         f"  \u00b7  page {self._page + 1}/{total}"
                     )
                 if sort_keys is not None:
                     hint_parts.append("  \u00b7  s sort")
-                hint_parts.append("  \u00b7  q cancel")
+                if back_enabled:
+                    hint_parts.append("  \u00b7  Backspace back  \u00b7  Esc cancel")
+                else:
+                    hint_parts.append("  \u00b7  Esc cancel")
                 self.query_one("#picker-hint", Label).update(
                     "[dim]" + "".join(hint_parts) + "[/dim]"
                 )
@@ -437,6 +498,15 @@ def _run_picker(
 
         def action_cancel(self) -> None:
             self.app.exit(result=None)
+
+        def action_back(self) -> None:
+            # q / Backspace: step back one level in a multi-step flow when
+            # back_enabled, otherwise behave like cancel (matches what the
+            # top-level picker expects — no previous step to return to).
+            if back_enabled:
+                self.app.exit(result=_PICKER_BACK)
+            else:
+                self.app.exit(result=None)
 
         def action_next_page(self) -> None:
             total = self._total_pages()
@@ -470,8 +540,8 @@ def _run_picker(
         def on_mount(self) -> None:
             self.show_header = False
             self.add_columns("Key", "Label")
-            self.cursor_type = "none"
-            self.show_cursor = False
+            self.cursor_type = "row"
+            self.show_cursor = True
 
     class PickerApp(App):
         CSS = """
@@ -510,8 +580,11 @@ def _run_workspace_prompt() -> str | None:
         }
 
         #ws-box {
-            width: 70;
+            width: 90%;
+            min-width: 30;
+            max-width: 70;
             height: auto;
+            overflow-x: hidden;
             border: solid #404060;
             padding: 1 2;
             background: #0d0d1a;
@@ -598,6 +671,148 @@ def _run_workspace_prompt() -> str | None:
             self.push_screen(WorkspaceScreen())
 
     return WorkspaceApp().run()
+
+
+# ── New-project prompt ────────────────────────────────────────────────────────
+
+def _run_new_project_prompt(workspace: str) -> pathlib.Path | None:
+    """Prompt for a new project dir name under ``workspace``, create it, return the path.
+
+    Creates ``workspace/<name>/`` with ``mkdir -p`` semantics and runs
+    ``git init`` inside it so the repo shows up in future project-pick scans
+    (``_list_git_projects_with_mtime`` filters for ``.git`` presence).
+    Returns None on cancel / invalid name.
+    """
+    from textual.app import App, ComposeResult
+    from textual.binding import Binding
+    from textual.containers import Vertical
+    from textual.screen import Screen
+    from textual.widgets import Button, Input, Label
+
+    class NewProjectScreen(Screen):
+        BINDINGS = [
+            Binding("escape", "cancel", "Cancel", show=False),
+            Binding("ctrl+c", "cancel", "Cancel", show=False),
+        ]
+
+        DEFAULT_CSS = """
+        NewProjectScreen {
+            align: center middle;
+            background: #0d0d1a;
+        }
+
+        #np-box {
+            width: 90%;
+            min-width: 30;
+            max-width: 70;
+            height: auto;
+            overflow-x: hidden;
+            border: solid #404060;
+            padding: 1 2;
+            background: #0d0d1a;
+        }
+
+        #np-title {
+            color: #00d7ff;
+            text-style: bold;
+            margin-bottom: 1;
+        }
+
+        #np-divider {
+            color: #404060;
+            margin-bottom: 1;
+        }
+
+        .np-hint {
+            color: #505070;
+            height: 1;
+        }
+
+        #np-input {
+            margin-top: 1;
+            margin-bottom: 1;
+            width: 100%;
+        }
+
+        #np-error {
+            color: red;
+            height: 1;
+            display: none;
+        }
+
+        #np-error.visible {
+            display: block;
+        }
+
+        #np-btn {
+            margin-top: 1;
+        }
+        """
+
+        def compose(self) -> ComposeResult:
+            with Vertical(id="np-box"):
+                yield Label("rover  \u00b7  new project", id="np-title")
+                yield Label("\u2500" * 55, id="np-divider")
+                yield Label(f"Create a new project folder under:", classes="np-hint")
+                yield Label(f"  [dim]{workspace}[/dim]", classes="np-hint")
+                yield Label("", classes="np-hint")
+                yield Label("No spaces or slashes. `git init` runs automatically.",
+                            classes="np-hint")
+                yield Input(placeholder="my-new-project", id="np-input")
+                yield Label("", id="np-error")
+                yield Button("Create", variant="primary", id="np-confirm")
+
+        def on_mount(self) -> None:
+            self.query_one("#np-input", Input).focus()
+
+        def _validate_and_submit(self) -> None:
+            raw = self.query_one("#np-input", Input).value.strip()
+            err = self.query_one("#np-error", Label)
+            if not raw:
+                return
+            # Reject path traversal + anything tmux/fs-unfriendly. Matches
+            # the sanitization applied to session-name segments elsewhere.
+            if any(ch in raw for ch in "/\\ \t:.") or raw.startswith("-"):
+                err.update("\u2717 Name can't contain spaces, slashes, colons, or dots.")
+                err.add_class("visible")
+                return
+            target = pathlib.Path(workspace).expanduser() / raw
+            if target.exists():
+                err.update(f"\u2717 Already exists: {target.name}")
+                err.add_class("visible")
+                return
+            try:
+                target.mkdir(parents=True, exist_ok=False)
+                subprocess.run(
+                    ["git", "init", "-q"],
+                    cwd=str(target),
+                    check=False,
+                    timeout=5,
+                )
+            except (OSError, subprocess.SubprocessError) as exc:
+                err.update(f"\u2717 {exc}")
+                err.add_class("visible")
+                return
+            self.app.exit(result=str(target))
+
+        def on_input_submitted(self, _event: Input.Submitted) -> None:
+            self._validate_and_submit()
+
+        def on_button_pressed(self, event: Button.Pressed) -> None:
+            if event.button.id == "np-confirm":
+                self._validate_and_submit()
+
+        def action_cancel(self) -> None:
+            self.app.exit(result=None)
+
+    class NewProjectApp(App):
+        CSS = "Screen { background: #0d0d1a; }"
+
+        def on_mount(self) -> None:
+            self.push_screen(NewProjectScreen())
+
+    result = NewProjectApp().run()
+    return pathlib.Path(result) if result else None
 
 
 # ── Error screens ─────────────────────────────────────────────────────────────
@@ -975,66 +1190,125 @@ def run_altergo_launcher(
     project_names  = [name  for name, _     in projects_data]
     project_mtimes = [mtime for _,    mtime in projects_data]
 
-    chosen_project = _run_picker(
-        "rover  \u00b7  pick a project",
-        project_names,
-        subtitle=workspace,
-        sort_keys=project_mtimes,
-    )
-    if chosen_project is None:
-        return
+    # Prepend two action sentinels to the picker. pin_top_count=2 keeps them
+    # on page 1 regardless of sort mode. display_items styles them distinctly
+    # from real project rows so the user doesn't mistake them for repos.
+    workspace_basename = pathlib.Path(workspace).name or workspace
+    picker_items    = [_PROJECT_NEW, _PROJECT_WORKSPACE] + project_names
+    picker_display  = [
+        "[bold #00d7ff]+ create new project\u2026[/bold #00d7ff]",
+        f"[#00d7ff]\u00b7[/#00d7ff] [dim]use workspace root[/dim]  "
+        f"[dim]({workspace_basename})[/dim]",
+    ] + project_names
+    picker_mtimes   = [0.0, 0.0] + project_mtimes
 
-    project_path = pathlib.Path(workspace) / chosen_project
+    # ── State machine: project → account → (provider if native) → exec ────────
+    # Each step can return to the previous one via q/Backspace (the pickers
+    # launched with back_enabled=True). Esc still exits the whole flow.
+    # The project picker is the first step so it has back_enabled=False —
+    # q/Backspace there behave like cancel.
+    step: str = "project"
+    project_path: pathlib.Path | None = None
+    chosen_account: str | None = None
+    chosen_provider: str | None = None
 
-    # ── Step 3: pick an account ───────────────────────────────────────────────
-    if _account_override:
-        chosen_account = _account_override
-        chosen_provider = None
-    else:
-        accounts_data = _list_accounts_with_mtime()
+    while True:
+        if step == "project":
+            chosen_project = _run_picker(
+                "rover  \u00b7  pick a project",
+                picker_items,
+                subtitle=workspace,
+                display_items=picker_display,
+                sort_keys=picker_mtimes,
+                pin_top_count=2,
+                back_enabled=False,
+            )
+            if chosen_project is None or chosen_project == _PICKER_BACK:
+                return
 
-        if not accounts_data:
-            _show_no_accounts(chosen_project)
-            return
+            if chosen_project == _PROJECT_NEW:
+                new_path = _run_new_project_prompt(workspace)
+                if new_path is None:
+                    # Cancelled the name prompt — stay on the project picker
+                    # instead of exiting the whole flow.
+                    continue
+                project_path = new_path
+            elif chosen_project == _PROJECT_WORKSPACE:
+                project_path = pathlib.Path(workspace)
+            else:
+                project_path = pathlib.Path(workspace) / chosen_project
 
-        account_names  = [name  for name, _     in accounts_data]
-        account_mtimes = [mtime for _,    mtime in accounts_data]
+            step = "account"
+            continue
 
-        display_labels = []
-        for name in account_names:
-            provider  = _get_account_provider(name)
-            label_pad = max(1, 24 - len(name))
+        if step == "account":
+            assert project_path is not None
+
+            if _account_override:
+                chosen_account = _account_override
+                chosen_provider = None
+                break
+
+            accounts_data = _list_accounts_with_mtime()
+            if not accounts_data:
+                _show_no_accounts(project_path.name)
+                return
+
+            account_names  = [name  for name, _     in accounts_data]
+            account_mtimes = [mtime for _,    mtime in accounts_data]
+
+            display_labels = []
+            for name in account_names:
+                provider  = _get_account_provider(name)
+                label_pad = max(1, 24 - len(name))
+                display_labels.append(
+                    name + " " * label_pad + f"[dim][{provider}][/dim]"
+                )
+
+            account_names.append("native")
+            account_mtimes.append(0.0)
             display_labels.append(
-                name + " " * label_pad + f"[dim][{provider}][/dim]"
+                "native" + " " * max(1, 24 - len("native")) + "[dim][real $HOME][/dim]"
             )
 
-        account_names.append("native")
-        account_mtimes.append(0.0)
-        display_labels.append(
-            "native" + " " * max(1, 24 - len("native")) + "[dim][real $HOME][/dim]"
-        )
+            chosen_account = _run_picker(
+                "rover  \u00b7  pick an account",
+                account_names,
+                subtitle=f"project: {project_path.name}",
+                display_items=display_labels,
+                sort_keys=account_mtimes,
+                back_enabled=True,
+            )
+            if chosen_account is None:
+                return
+            if chosen_account == _PICKER_BACK:
+                step = "project"
+                continue
 
-        chosen_account = _run_picker(
-            "rover  \u00b7  pick an account",
-            account_names,
-            subtitle=f"project: {project_path.name}",
-            display_items=display_labels,
-            sort_keys=account_mtimes,
-        )
-        if chosen_account is None:
-            return
+            if chosen_account == "native":
+                step = "provider"
+                continue
 
-        chosen_provider = None
-        if chosen_account == "native":
+            chosen_provider = None
+            break
+
+        if step == "provider":
+            assert project_path is not None
             chosen_provider = _run_picker(
                 "rover  \u00b7  pick a provider",
                 list(_KNOWN_PROVIDERS),
                 subtitle="native  \u00b7  real $HOME, no isolation",
+                back_enabled=True,
             )
             if chosen_provider is None:
                 return
+            if chosen_provider == _PICKER_BACK:
+                step = "account"
+                continue
+            break
 
     # ── Step 4: hand off to altergo ───────────────────────────────────────────
+    assert project_path is not None and chosen_account is not None
     _exec_altergo(
         console,
         project_path=project_path,

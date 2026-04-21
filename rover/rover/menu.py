@@ -72,8 +72,13 @@ def _now_str() -> str:
     return datetime.now().strftime("%a %b %d  %H:%M:%S")
 
 
-def _figlet_renderable(font: str, width: int = 80):
-    """Return a Rich Text object for the figlet 'rover' header.
+def _figlet_renderable(
+    font: str,
+    text: str = "rover",
+    width: int = 80,
+    colors: list[str] | None = None,
+):
+    """Return a Rich Text object for the figlet header.
 
     Previous version returned a raw ANSI string + used `Static(..., markup=True)`,
     but markup=True tells Textual to parse Rich markup like `[bold]…[/bold]` —
@@ -82,6 +87,10 @@ def _figlet_renderable(font: str, width: int = 80):
 
     Text.from_ansi parses ANSI escapes into a proper Rich Text object that
     Textual renders with the correct colours and layout.
+
+    ``colors`` lets callers override the default green gradient — useful for
+    the small "rover" sub-label beneath a colored nickname where we want a
+    distinct, bright-white look instead of more green-on-green.
     """
     from rich.text import Text
     try:
@@ -89,9 +98,11 @@ def _figlet_renderable(font: str, width: int = 80):
         from io import StringIO
         from rich.console import Console
         fig = RichFiglet(
-            "rover",
+            text,
             font=font,
-            colors=["#5fff87", "#00d75f", "#005f00"],
+            colors=colors if colors is not None else [
+                "#5fff87", "#00d75f", "#005f00",
+            ],
             horizontal=True,
         )
         buf = StringIO()
@@ -104,7 +115,7 @@ def _figlet_renderable(font: str, width: int = 80):
         con.print(fig)
         return Text.from_ansi(buf.getvalue().rstrip("\n"))
     except Exception:
-        return Text("rover", style="bold #5fff87")
+        return Text(text, style="bold #5fff87")
 
 
 # ---------------------------------------------------------------------------
@@ -133,10 +144,11 @@ class YoloSubmenuScreen(ModalScreen):
     }
 
     #yolo-box {
-        width: auto;
-        min-width: 44;
+        width: 90%;
+        min-width: 40;
         max-width: 80;
         height: auto;
+        overflow-x: hidden;
         border: solid #404060;
         padding: 1 2;
         background: #0d0d1a;
@@ -170,6 +182,7 @@ class YoloSubmenuScreen(ModalScreen):
 
     #yolo-hint {
         margin-top: 1;
+        height: auto;
         color: #606080;
     }
     """
@@ -218,10 +231,11 @@ ModalScreen {
 }
 
 #modal-box {
-    width: auto;
-    min-width: 48;
+    width: 90%;
+    min-width: 40;
     max-width: 80;
     height: auto;
+    overflow-x: hidden;
     border: solid #404060;
     padding: 1 2;
     background: #0d0d1a;
@@ -547,6 +561,18 @@ class MainMenuScreen(Screen):
         color: #5fff87;
     }
 
+    #menu-rover-label {
+        width: 100%;
+        content-align: center middle;
+        text-align: center;
+        /* Color comes from the embedded ANSI gradient inside the figlet
+           renderable — the CSS color here would only apply to non-ANSI text
+           fallback (e.g. rich_pyfiglet import failure). Keep it white so
+           the fallback is readable too. */
+        color: #ffffff;
+        padding-bottom: 0;
+    }
+
     #menu-box {
         width: 100%;
         height: auto;
@@ -701,6 +727,9 @@ class MainMenuScreen(Screen):
 
     def compose(self) -> ComposeResult:
         header_font = self.config.get("header_font", "thin") or "thin"
+        nickname = self.config.get("nickname", "").strip()
+        show_nickname = bool(self.config.get("show_nickname_in_header", True))
+        use_nickname = bool(nickname) and show_nickname
         try:
             sz = os.get_terminal_size()
             term_w, term_h = sz.columns, sz.lines
@@ -709,7 +738,22 @@ class MainMenuScreen(Screen):
         # Keep the figlet at any reasonable size; only drop it on pathologically
         # short terminals where even the action rows wouldn't fit.
         if term_w >= 40 and term_h >= 14:
-            yield Static(_figlet_renderable(header_font, term_w), id="menu-figlet")
+            figlet_text = nickname if use_nickname else "rover"
+            yield Static(_figlet_renderable(header_font, figlet_text, term_w), id="menu-figlet")
+            if use_nickname:
+                # Small figlet of "rover" beneath the big nickname, so users
+                # can still tell which app they're in. White gradient so it
+                # reads clearly against the bright-green nickname above and
+                # doesn't blend into it.
+                yield Static(
+                    _figlet_renderable(
+                        "small",
+                        "rover",
+                        term_w,
+                        colors=["#ffffff", "#e0e0e0", "#a0a0a0"],
+                    ),
+                    id="menu-rover-label",
+                )
         # Textual requires a Container/Vertical/Horizontal for nested widgets;
         # Static is leaf-only and silently overlaps children when used as a
         # container, which produced the broken-looking stacked render.
@@ -980,6 +1024,19 @@ class MainMenuScreen(Screen):
         cursor = tbl.cursor_row
         if cursor is not None and 0 <= cursor < len(self._sessions):
             self.app.exit(result={"action": "attach", "session": self._sessions[cursor].name})
+
+    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+        """Intercept Enter inside the session table.
+
+        The Screen-level `Binding("enter", "attach_current", ...)` never fires
+        when focus is on the DataTable, because DataTable has its own `enter`
+        binding that emits RowSelected. Routing that message back into
+        action_attach_current makes Enter attach the cursor row (and keeps
+        the number-buffer path — e.g. "3<Enter>" — working, since
+        action_attach_current checks the buffer first).
+        """
+        event.stop()
+        self.action_attach_current()
 
     def action_cursor_up(self) -> None:
         self._number_buffer = ""
