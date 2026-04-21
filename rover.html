@@ -153,6 +153,21 @@
 
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
       --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+
+      /* PCB trace decoration */
+      --pcb-trace-color: #00f0c8;
+      --pcb-wrapper-opacity: 0.33;
+      --pcb-mobile-opacity: 0.22;
+
+      /* Fleet background */
+      --fleet-opacity: 0.65;
+      --fleet-mobile-opacity: 0.50;
+
+      /* SVG token bridge — Electron-style var names → landing tokens */
+      --color-text-primary: var(--text);
+      --color-text-muted:   var(--text-muted);
+      --color-border:       var(--border);
+      --color-accent:       var(--neon-cyan);
     }
 
     /* ================================================================
@@ -200,6 +215,15 @@
       --section-tint: rgba(99, 102, 241, 0.03);
 
       --ribbon-bg:    rgba(99, 102, 241, 0.06);
+
+      /* PCB trace decoration — light overrides */
+      --pcb-trace-color: #00967a;
+      --pcb-wrapper-opacity: 0.18;
+      --pcb-mobile-opacity: 0.14;
+
+      /* Fleet background — light overrides */
+      --fleet-opacity: 0.38;
+      --fleet-mobile-opacity: 0.32;
     }
 
     /* ================================================================
@@ -1504,6 +1528,293 @@
       margin: 0 auto 28px;
     }
 
+    /* ================================================================
+       BLOCK 3 — TELEPORT TRAIL MASCOTS
+       Four copies of b7-fleet-running.png staggered right → left,
+       each at decreasing opacity to read as motion residuals.
+       ================================================================ */
+    #benefits {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* SSH bullets sub-copy beneath the section-head */
+    .rv-benefits-ssh-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 640px;
+      margin: 0 auto 40px;
+      padding: 0;
+      list-style: none;
+      text-align: left;
+    }
+    .rv-benefits-ssh-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+    .rv-benefits-ssh-list li::before {
+      content: '//';
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      flex-shrink: 0;
+      letter-spacing: 0.04em;
+    }
+    [data-theme="light"] .rv-benefits-ssh-list li::before {
+      color: var(--neon-cyan);
+    }
+
+    /* Trail mascot containers */
+    .rv-benefits-trail-mascot {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .rv-benefits-trail-mascot img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      object-position: center center;
+    }
+
+    /* Desktop placement — staggered along the right half, fading left */
+    .rv-benefits-trail-mascot--1 {
+      width: 22%;
+      right: 8%;
+      top: 15%;
+      opacity: 0.42;
+    }
+    .rv-benefits-trail-mascot--2 {
+      width: 20%;
+      right: 20%;
+      top: 40%;
+      opacity: 0.22;
+    }
+    .rv-benefits-trail-mascot--3 {
+      width: 18%;
+      right: 33%;
+      top: 60%;
+      opacity: 0.17;
+    }
+    .rv-benefits-trail-mascot--4 {
+      width: 17%;
+      right: 48%;
+      top: 78%;
+      opacity: 0.12;
+    }
+
+    /* Light-theme opacity overrides */
+    [data-theme="light"] .rv-benefits-trail-mascot--1 { opacity: 0.24; }
+    [data-theme="light"] .rv-benefits-trail-mascot--2 { opacity: 0.14; }
+    [data-theme="light"] .rv-benefits-trail-mascot--3 { opacity: 0.10; }
+    [data-theme="light"] .rv-benefits-trail-mascot--4 { opacity: 0.07; }
+
+    /* Mobile: trail moves to left edge, copy shifts right */
+    @media (max-width: 720px) {
+      #benefits .container {
+        padding-left: calc(40% + 12px);
+      }
+
+      .rv-benefits-trail-mascot {
+        width: 38%;
+        left: 1%;
+        right: auto;
+        top: auto;
+        transform: none;
+      }
+
+      .rv-benefits-trail-mascot--1 { top: 4%;  opacity: 0.58; }
+      .rv-benefits-trail-mascot--2 { top: 28%; opacity: 0.40; }
+      .rv-benefits-trail-mascot--3 { top: 54%; opacity: 0.30; }
+      .rv-benefits-trail-mascot--4 { top: 78%; opacity: 0.22; }
+
+      [data-theme="light"] .rv-benefits-trail-mascot--1 { opacity: 0.34; }
+      [data-theme="light"] .rv-benefits-trail-mascot--2 { opacity: 0.24; }
+      [data-theme="light"] .rv-benefits-trail-mascot--3 { opacity: 0.18; }
+      [data-theme="light"] .rv-benefits-trail-mascot--4 { opacity: 0.13; }
+    }
+
+    /* On narrow viewports (below the 720 breakpoint the grid already stacks),
+       reset the padding-left that would over-compress the benefit cards */
+    @media (max-width: 480px) {
+      #benefits .container {
+        padding-left: calc(36% + 8px);
+      }
+      .rv-benefits-trail-mascot { width: 34%; }
+    }
+
+    /* ================================================================
+       BLOCK 7 — OUTRO / FULL-BODY MASCOT FOOTER CTA
+       ================================================================ */
+    .rv-outro {
+      padding: clamp(56px, 9vw, 96px) 0 clamp(48px, 7vw, 72px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rv-outro-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: clamp(32px, 5vw, 72px);
+      align-items: center;
+    }
+
+    .rv-outro-copy {
+      position: relative;
+      z-index: 2;
+    }
+
+    .rv-outro-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .rv-outro-title {
+      font-size: clamp(1.75rem, 4.5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: clamp(-0.5px, -0.03em, -1.5px);
+      margin-bottom: 18px;
+      color: var(--text);
+    }
+
+    .rv-outro-title-accent {
+      background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--indigo-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .rv-outro-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-width: 520px;
+      margin-bottom: 32px;
+    }
+
+    .rv-outro-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .rv-outro-inline-cmd {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+    }
+    .rv-outro-inline-cmd code {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: var(--radius-xs);
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      color: var(--neon-cyan);
+      font-size: 0.88em;
+    }
+    [data-theme="light"] .rv-outro-inline-cmd code {
+      background: rgba(0, 122, 184, 0.07);
+      border-color: rgba(0, 122, 184, 0.22);
+      color: #006092;
+    }
+
+    /* Mascot column */
+    .rv-outro-mascot-wrap {
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+      width: clamp(200px, 28vw, 360px);
+      align-self: flex-end;
+    }
+
+    .rv-outro-mascot {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      object-position: bottom center;
+      -webkit-mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+    }
+
+    /* Ambient glow behind mascot */
+    .rv-outro-mascot-wrap::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120%;
+      height: 60%;
+      background: radial-gradient(ellipse at 50% 100%, var(--neon-cyan-glow) 0%, transparent 65%);
+      pointer-events: none;
+      opacity: 0.45;
+      filter: blur(18px);
+      z-index: 0;
+    }
+    [data-theme="light"] .rv-outro-mascot-wrap::before { opacity: 0.18; }
+
+    .rv-outro-mascot-wrap > img { position: relative; z-index: 1; }
+
+    /* PCB-trace accent line across top of section */
+    .rv-outro::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0, 229, 255, 0.55) 30%,
+        rgba(99, 102, 241, 0.65) 65%,
+        transparent 100%
+      );
+    }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .rv-outro-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .rv-outro-copy { order: 2; }
+      .rv-outro-desc { margin-left: auto; margin-right: auto; }
+      .rv-outro-actions { justify-content: center; }
+      .rv-outro-mascot-wrap {
+        order: 1;
+        width: clamp(140px, 38vw, 240px);
+        margin: 0 auto;
+      }
+      .rv-outro-mascot {
+        -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .rv-outro-mascot-wrap {
+        width: clamp(120px, 32vw, 180px);
+      }
+    }
+
     /* Mobile tightening */
     @media (max-width: 480px) {
       .rv-hero { padding: 90px 0 44px; }
@@ -1524,6 +1835,200 @@
        doesn't become awkward at >1440. Subtle safeguard. */
     @media (min-width: 1600px) {
       .rv-hero-inner { gap: 72px; }
+    }
+
+    /* ================================================================
+       PCB TRACE DECORATION — Block 1 hero
+       ================================================================ */
+    .rv-hero-pcb {
+      position: absolute;
+      top: 0; right: 0;
+      width: 75%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: var(--pcb-wrapper-opacity);
+    }
+
+    /* PCB pulse animations — 3 staggered signal-flow pulses */
+    @keyframes pcbPulse1 {
+      0%   { stroke-dashoffset: 800; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes pcbPulse2 {
+      0%   { stroke-dashoffset: 600; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes pcbPulse3 {
+      0%   { stroke-dashoffset: 1000; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .rv-pcb-trace-animated {
+      stroke-dasharray: 800;
+      stroke-dashoffset: 800;
+    }
+    .rv-pcb-pulse-1 { animation: pcbPulse1 7s  linear infinite; }
+    .rv-pcb-pulse-2 { animation: pcbPulse2 9s  linear infinite 1.2s; }
+    .rv-pcb-pulse-3 { animation: pcbPulse3 12s linear infinite 2.8s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rv-pcb-trace-animated { animation: none; stroke-dashoffset: 0; }
+    }
+
+    /* ================================================================
+       FLEET BACKGROUND — Block 1 hero
+       ================================================================ */
+    .rv-hero-fleet-wrap {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 62%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .rv-hero-fleet-bg {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      object-position: right bottom;
+      opacity: var(--fleet-opacity);
+      -webkit-mask-image: linear-gradient(to left, black 35%, transparent 75%);
+      mask-image: linear-gradient(to left, black 35%, transparent 75%);
+    }
+
+    /* Ensure hero copy column floats above all decorative layers */
+    .rv-hero-copy { position: relative; z-index: 2; }
+
+    /* Keep the existing ::before conic beam but softer */
+    .rv-hero::before {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      right: -5%;
+      width: 55%;
+      aspect-ratio: 1;
+      background: conic-gradient(
+        from 200deg at 80% 80%,
+        transparent 0deg,
+        rgba(0, 229, 255, 0.07) 30deg,
+        transparent 60deg
+      );
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.12;
+    }
+    [data-theme="light"] .rv-hero::before { opacity: 0.06; }
+
+    /* ================================================================
+       BLOCK 2 — THREE-TOGETHER REDESIGN
+       2-col grid: text left, mascot right
+       ================================================================ */
+    .rv-threetogether {
+      display: grid !important;
+      grid-template-columns: minmax(0, 560px) 440px;
+      gap: 32px;
+      align-items: center;
+      text-align: left !important;
+    }
+
+    /* Text column content — stacked naturally */
+    .rv-threetogether-copy {
+      justify-self: end;
+    }
+
+    .rv-threetogether-copy .rv-threetogether-headline { margin-bottom: 12px; }
+    .rv-threetogether-copy .rv-verb-trio               { margin-bottom: 18px; display: block; }
+    .rv-threetogether-copy .rv-threetogether-body      { max-width: 560px; }
+
+    /* Mascot diagram column — slight leftward overlap */
+    .rv-threetogether-diagram-wrap {
+      position: relative;
+      z-index: 2;
+      transform: translateX(-60px);
+    }
+
+    .rv-threetogether-mascot {
+      width: 100%;
+      max-width: 440px;
+      height: auto;
+      display: block;
+    }
+
+    /* Hide the old inline SVG diagram in Block 2 when mascot is present */
+    .rv-threetogether-diagram { display: none !important; }
+
+    @media (max-width: 900px) {
+      .rv-threetogether {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+        justify-items: center;
+      }
+      .rv-threetogether-copy {
+        justify-self: center;
+        order: 2;
+      }
+      .rv-threetogether-copy .rv-threetogether-body { max-width: 600px; }
+      .rv-threetogether-diagram-wrap {
+        order: 1;
+        transform: none !important;
+      }
+    }
+
+    /* ================================================================
+       BLOCK 5 — KEYCAP CLUSTER MASCOT
+       ================================================================ */
+    .rv-keybinds-mascot-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .rv-keybinds-mascot {
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+    }
+
+    /* ================================================================
+       MOBILE — Hero, Block 2, shared
+       @media (max-width: 720px)
+       ================================================================ */
+    @media (max-width: 720px) {
+      /* Hero padding tighten */
+      .rv-hero {
+        padding: 100px 0 52px;
+        min-height: unset;
+      }
+
+      /* Headline lower bound */
+      .rv-hero-title {
+        font-size: clamp(1.7rem, 5.6vw, 3.6rem);
+      }
+
+      /* Fleet — narrower, more aggressive mask fade */
+      .rv-hero-fleet-wrap {
+        width: 65%;
+      }
+      .rv-hero-fleet-bg {
+        opacity: var(--fleet-mobile-opacity);
+        -webkit-mask-image: linear-gradient(to left, black 20%, transparent 55%);
+        mask-image: linear-gradient(to left, black 20%, transparent 55%);
+      }
+
+      /* PCB — pull back opacity */
+      .rv-hero-pcb {
+        opacity: var(--pcb-mobile-opacity);
+      }
     }
   </style>
 </head>
@@ -1620,6 +2125,86 @@
          Earnest headline, branded strap, primary copy-to-clipboard CTA.
          ═══════════════════════════════════════════════════════════════ -->
     <section class="rv-hero" id="top" data-reveal>
+
+      <!-- PCB trace decoration — stays behind all content -->
+      <svg class="rv-hero-pcb"
+           xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 1200 500"
+           preserveAspectRatio="xMaxYMid meet"
+           aria-hidden="true"
+           focusable="false">
+        <defs>
+          <filter id="pcbGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <g filter="url(#pcbGlow)" stroke="var(--pcb-trace-color)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Trace 1: main horizontal fan from right edge, curves left -->
+          <path class="rv-pcb-trace-animated rv-pcb-pulse-1"
+                d="M 1200 180 L 1020 180 L 960 140 L 760 140 L 700 110 L 520 110"
+                stroke-width="1.2" opacity="0.75"/>
+          <circle cx="520" cy="110" r="3.5" fill="var(--pcb-trace-color)" opacity="0.75"/>
+          <circle cx="1020" cy="180" r="2.5" fill="none" stroke="var(--pcb-trace-color)" stroke-width="1" opacity="0.5"/>
+
+          <!-- Trace 2: drops down then fans left, with branch -->
+          <path class="rv-pcb-trace-animated rv-pcb-pulse-2"
+                d="M 1200 260 L 1060 260 L 1000 300 L 820 300 L 760 260 L 580 260"
+                stroke-width="0.9" opacity="0.60"/>
+          <circle cx="580" cy="260" r="3" fill="var(--pcb-trace-color)" opacity="0.60"/>
+
+          <!-- Trace 2 branch — splits off upward at 820 -->
+          <path d="M 820 300 L 820 240 L 740 240 L 680 200 L 540 200"
+                stroke-width="0.8" opacity="0.45"/>
+          <circle cx="540" cy="200" r="2.5" fill="var(--pcb-trace-color)" opacity="0.45"/>
+
+          <!-- Trace 3: lower sweep with right-angle turns -->
+          <path class="rv-pcb-trace-animated rv-pcb-pulse-3"
+                d="M 1200 380 L 1080 380 L 1040 340 L 900 340 L 900 400 L 700 400 L 640 360 L 460 360"
+                stroke-width="1.4" opacity="0.90"/>
+          <circle cx="460" cy="360" r="4" fill="var(--pcb-trace-color)" opacity="0.90"/>
+          <circle cx="900" cy="340" r="2.5" fill="none" stroke="var(--pcb-trace-color)" stroke-width="1" opacity="0.55"/>
+
+          <!-- Trace 4: tight branch off trace 3 at 1040 -->
+          <path d="M 1040 340 L 1040 280 L 960 280 L 900 250 L 800 250"
+                stroke-width="0.8" opacity="0.50"/>
+          <circle cx="800" cy="250" r="2.5" fill="var(--pcb-trace-color)" opacity="0.50"/>
+
+          <!-- Trace 5: near-top thin line -->
+          <path d="M 1200 80 L 1100 80 L 1060 120 L 880 120 L 840 90 L 660 90"
+                stroke-width="0.8" opacity="0.45"/>
+          <circle cx="660" cy="90" r="2.5" fill="var(--pcb-trace-color)" opacity="0.45"/>
+
+          <!-- Trace 6: bottom edge trace -->
+          <path d="M 1200 450 L 1000 450 L 960 420 L 740 420 L 700 450 L 560 450"
+                stroke-width="1" opacity="0.55"/>
+          <circle cx="560" cy="450" r="3" fill="var(--pcb-trace-color)" opacity="0.55"/>
+
+          <!-- Via pads along main traces -->
+          <circle cx="1060" cy="260" r="4"  fill="none" stroke="var(--pcb-trace-color)" stroke-width="1" opacity="0.40"/>
+          <circle cx="1060" cy="260" r="1.5" fill="var(--pcb-trace-color)" opacity="0.40"/>
+          <circle cx="760" cy="140" r="4"   fill="none" stroke="var(--pcb-trace-color)" stroke-width="1" opacity="0.40"/>
+          <circle cx="760" cy="140" r="1.5" fill="var(--pcb-trace-color)" opacity="0.40"/>
+          <circle cx="1040" cy="380" r="4"  fill="none" stroke="var(--pcb-trace-color)" stroke-width="1" opacity="0.40"/>
+          <circle cx="1040" cy="380" r="1.5" fill="var(--pcb-trace-color)" opacity="0.40"/>
+        </g>
+      </svg>
+
+      <!-- Fleet illustration — runs in from the right, behind copy column -->
+      <div class="rv-hero-fleet-wrap" aria-hidden="true">
+        <img
+          class="rv-hero-fleet-bg"
+          src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png"
+          alt=""
+          draggable="false"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
       <div class="container" style="position:relative;z-index:1;">
         <div class="rv-hero-inner">
           <div class="rv-hero-copy">
@@ -1777,6 +2362,9 @@
     <section id="three-together" class="section" data-reveal>
       <div class="container" style="position:relative;z-index:1;">
         <div class="rv-threetogether">
+          <!-- Text column -->
+          <div class="rv-threetogether-copy">
+
           <div class="rv-threetogether-diagram" aria-hidden="true">
             <!-- Inlined: src/assets/rover/rover-landing.svg (horizontal variant).
                  Phone rotation stripped for this block so the trio reads as a
@@ -1900,6 +2488,20 @@
           <p class="rv-threetogether-body">
             <strong>Dispatch</strong> is the desktop cockpit for your AI coding agents &mdash; Claude, Codex, Gemini, Copilot &mdash; running in one place. <strong>altergo</strong> is the runtime underneath that keeps every account and session alive across restarts. <strong>Rover</strong> is the pocket terminal: SSH from your phone to your Mac and check, launch, or kill any agent in two keystrokes. One stack, three surfaces: altergo runs it, Dispatch oversees it, Rover reaches it.
           </p>
+
+          </div><!-- /rv-threetogether-copy -->
+
+          <!-- Mascot column — shifts 60px leftward to overlap text column edge -->
+          <div class="rv-threetogether-diagram-wrap" aria-hidden="true">
+            <img
+              class="rv-threetogether-mascot"
+              src="src/assets/rover/packs/pack-a-relay-noir/b2-mascot-hero.png"
+              alt=""
+              draggable="false"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -1910,6 +2512,22 @@
          BLOCK 3 — WHAT ROVER DOES (3 benefits, dry voice)
          ═══════════════════════════════════════════════════════════════ -->
     <section id="benefits" class="section" data-reveal>
+
+      <!-- Teleport trail — four mascot residuals fading right-to-left (desktop)
+           or stacked down the left edge (mobile). All aria-hidden: purely decorative. -->
+      <div class="rv-benefits-trail-mascot rv-benefits-trail-mascot--1" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
+      <div class="rv-benefits-trail-mascot rv-benefits-trail-mascot--2" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
+      <div class="rv-benefits-trail-mascot rv-benefits-trail-mascot--3" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
+      <div class="rv-benefits-trail-mascot rv-benefits-trail-mascot--4" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b7-fleet-running.png" alt="" draggable="false" loading="lazy" decoding="async" />
+      </div>
+
       <div class="container" style="position:relative;z-index:1;">
         <div class="section-head section-head--center">
           <p class="section-label">// what rover does</p>
@@ -1918,6 +2536,13 @@
             Three things Rover is for. Everything else is in the README.
           </p>
         </div>
+
+        <!-- SSH promise bullets — the real value prop beneath the headline -->
+        <ul class="rv-benefits-ssh-list">
+          <li>Works over 4G and 5G — no Wi-Fi required, no VPN drama.</li>
+          <li>Any SSH client on Android or iOS: Blink, Termius, a-Shell, or a browser terminal.</li>
+          <li>No Mac app to install on your phone. SSH in, Rover is already there.</li>
+        </ul>
 
         <div class="rv-benefits-grid">
           <article class="rv-benefit-card" data-reveal data-reveal-delay="1">
@@ -2026,57 +2651,109 @@
           <p class="section-label">// install</p>
           <h2 class="section-title">Paste one line.</h2>
           <p class="section-desc">
-            Pick your flavor. Rover ships on Homebrew, pipx, uv, and a curl-to-shell fallback.
+            One command. No config. Rover is in your terminal in under ten seconds.
           </p>
         </div>
 
         <div class="rv-install">
-          <div class="rv-tabs" role="tablist" aria-label="Install method">
-            <button type="button" class="rv-tab" role="tab" id="rv-tab-homebrew" aria-controls="rv-panel-homebrew" aria-selected="false" data-channel="homebrew" data-rover-event="rover.install.tab_homebrew">Homebrew</button>
-            <button type="button" class="rv-tab" role="tab" id="rv-tab-pipx" aria-controls="rv-panel-pipx" aria-selected="true" data-channel="pipx" data-rover-event="rover.install.tab_pipx">pipx</button>
-            <button type="button" class="rv-tab" role="tab" id="rv-tab-uv" aria-controls="rv-panel-uv" aria-selected="false" data-channel="uv" data-rover-event="rover.install.tab_uv">uv</button>
-            <button type="button" class="rv-tab" role="tab" id="rv-tab-script" aria-controls="rv-panel-script" aria-selected="false" data-channel="script" data-rover-event="rover.install.tab_script">Script</button>
+
+          <!-- Recommended badge -->
+          <div style="text-align:center;margin-bottom:16px;">
+            <span class="rv-recommended-badge" aria-hidden="true">
+              <span class="rv-recommended-badge-dot"></span>
+              recommended
+            </span>
           </div>
 
-          <div class="rv-tabpanels">
-            <div class="rv-tabpanel" role="tabpanel" id="rv-panel-homebrew" aria-labelledby="rv-tab-homebrew" data-active="false">
-              <button type="button" class="rv-install-snippet" data-channel="homebrew" data-cmd="brew install thepixelabs/tap/rover" data-rover-event="rover.install.copy_homebrew" aria-label="Copy Homebrew install command to clipboard">
-                <span class="rv-prompt" aria-hidden="true">$</span>
-                <span class="rv-cmd">brew install thepixelabs/tap/rover</span>
-                <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              </button>
-            </div>
-            <div class="rv-tabpanel" role="tabpanel" id="rv-panel-pipx" aria-labelledby="rv-tab-pipx" data-active="true">
-              <button type="button" class="rv-install-snippet" data-channel="pipx" data-cmd="pipx install rover" data-rover-event="rover.install.copy_pipx" aria-label="Copy pipx install command to clipboard">
-                <span class="rv-prompt" aria-hidden="true">$</span>
-                <span class="rv-cmd">pipx install rover</span>
-                <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              </button>
-            </div>
-            <div class="rv-tabpanel" role="tabpanel" id="rv-panel-uv" aria-labelledby="rv-tab-uv" data-active="false">
-              <button type="button" class="rv-install-snippet" data-channel="uv" data-cmd="uv tool install rover" data-rover-event="rover.install.copy_uv" aria-label="Copy uv install command to clipboard">
-                <span class="rv-prompt" aria-hidden="true">$</span>
-                <span class="rv-cmd">uv tool install rover</span>
-                <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              </button>
-            </div>
-            <div class="rv-tabpanel" role="tabpanel" id="rv-panel-script" aria-labelledby="rv-tab-script" data-active="false">
-              <button type="button" class="rv-install-snippet" data-channel="script" data-cmd="curl -LsSf https://rover.thepixelabs.dev/install.sh | bash" data-rover-event="rover.install.copy_script" aria-label="Copy install script command to clipboard">
-                <span class="rv-prompt" aria-hidden="true">$</span>
-                <span class="rv-cmd">curl -LsSf https://rover.thepixelabs.dev/install.sh | bash</span>
-                <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              </button>
-            </div>
-          </div>
+          <!-- Terminal card — primary install command spotlight -->
+          <div class="rv-terminal-card">
 
-          <p class="rv-install-note">
-            pipx or uv works on any Linux box with Python 3.11+. Homebrew is the macOS one-liner.
-          </p>
+            <!-- Faux macOS terminal chrome -->
+            <div class="rv-terminal-chrome" aria-hidden="true">
+              <span class="rv-tl-dot rv-tl-dot--close"></span>
+              <span class="rv-tl-dot rv-tl-dot--min"></span>
+              <span class="rv-tl-dot rv-tl-dot--max"></span>
+              <span class="rv-terminal-title">zsh — rover-install</span>
+            </div>
+
+            <!-- Primary command body -->
+            <div class="rv-terminal-body">
+
+              <!-- Hero command row -->
+              <button
+                type="button"
+                class="rv-primary-snippet"
+                data-channel="pipx"
+                data-cmd="pipx install rover"
+                data-rover-event="rover.install.copy_pipx"
+                aria-label="Copy pipx install command to clipboard"
+              >
+                <span class="rv-primary-prompt" aria-hidden="true">$</span>
+                <span class="rv-primary-cmd">pipx install rover<span class="rv-primary-cursor" aria-hidden="true"></span></span>
+                <span class="rv-primary-copy-btn" aria-hidden="true">
+                  <svg class="rv-primary-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy
+                </span>
+              </button>
+
+              <!-- More ways accordion -->
+              <div class="rv-more-install" style="margin-top:20px;">
+                <button
+                  type="button"
+                  class="rv-more-install-toggle"
+                  aria-expanded="false"
+                  aria-controls="rv-more-panel"
+                  data-rover-event="rover.install.more_ways_toggle"
+                >
+                  <svg class="rv-more-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 12 15 18 9"/></svg>
+                  more ways to install
+                </button>
+
+                <div class="rv-more-panel" id="rv-more-panel" data-open="false">
+                  <div class="rv-tabs" role="tablist" aria-label="Install method">
+                    <button type="button" class="rv-tab" role="tab" id="rv-tab-homebrew" aria-controls="rv-panel-homebrew" aria-selected="true" data-channel="homebrew" data-rover-event="rover.install.tab_homebrew">Homebrew</button>
+                    <button type="button" class="rv-tab" role="tab" id="rv-tab-uv" aria-controls="rv-panel-uv" aria-selected="false" data-channel="uv" data-rover-event="rover.install.tab_uv">uv</button>
+                    <button type="button" class="rv-tab" role="tab" id="rv-tab-script" aria-controls="rv-panel-script" aria-selected="false" data-channel="script" data-rover-event="rover.install.tab_script">Script</button>
+                  </div>
+
+                  <div class="rv-tabpanels">
+                    <div class="rv-tabpanel" role="tabpanel" id="rv-panel-homebrew" aria-labelledby="rv-tab-homebrew" data-active="true">
+                      <button type="button" class="rv-install-snippet" data-channel="homebrew" data-cmd="brew install thepixelabs/tap/rover" data-rover-event="rover.install.copy_homebrew" aria-label="Copy Homebrew install command to clipboard">
+                        <span class="rv-prompt" aria-hidden="true">$</span>
+                        <span class="rv-cmd">brew install thepixelabs/tap/rover</span>
+                        <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      </button>
+                    </div>
+                    <div class="rv-tabpanel" role="tabpanel" id="rv-panel-uv" aria-labelledby="rv-tab-uv" data-active="false">
+                      <button type="button" class="rv-install-snippet" data-channel="uv" data-cmd="uv tool install rover" data-rover-event="rover.install.copy_uv" aria-label="Copy uv install command to clipboard">
+                        <span class="rv-prompt" aria-hidden="true">$</span>
+                        <span class="rv-cmd">uv tool install rover</span>
+                        <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      </button>
+                    </div>
+                    <div class="rv-tabpanel" role="tabpanel" id="rv-panel-script" aria-labelledby="rv-tab-script" data-active="false">
+                      <button type="button" class="rv-install-snippet" data-channel="script" data-cmd="curl -LsSf https://rover.thepixelabs.dev/install.sh | bash" data-rover-event="rover.install.copy_script" aria-label="Copy install script command to clipboard">
+                        <span class="rv-prompt" aria-hidden="true">$</span>
+                        <span class="rv-cmd">curl -LsSf https://rover.thepixelabs.dev/install.sh | bash</span>
+                        <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <p class="rv-install-note">
+                    pipx and uv work on any Linux box with Python 3.11+. Homebrew is the macOS one-liner.
+                  </p>
+                </div><!-- /rv-more-panel -->
+              </div><!-- /rv-more-install -->
+
+            </div><!-- /rv-terminal-body -->
+          </div><!-- /rv-terminal-card -->
 
           <div class="rv-win-banner" id="rv-win-banner" role="note">
             Rover runs on macOS and Linux. Windows isn't supported yet &mdash; try WSL.
           </div>
-        </div>
+
+        </div><!-- /rv-install -->
       </div>
     </section>
 
@@ -2090,6 +2767,18 @@
         <div class="section-head section-head--center">
           <p class="section-label">// keybinds</p>
           <h2 class="section-title">Four chords deep.</h2>
+        </div>
+
+        <!-- Keycap cluster mascot — bottom-fade mask dissolves into section bg -->
+        <div class="rv-keybinds-mascot-wrap" aria-hidden="true">
+          <img
+            class="rv-keybinds-mascot"
+            src="src/assets/rover/packs/pack-a-relay-noir/b5-keycap-cluster.png"
+            alt=""
+            draggable="false"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
 
         <ul class="rv-chord-row" aria-label="Rover main keybinds">
@@ -2639,11 +3328,13 @@
       }
 
       var platform = detectPlatform();
+      /* Primary card always shows pipx (the recommended default).
+         Secondary tabs default-select homebrew on mac, uv on linux/unknown. */
       var defaultChannel;
       switch (platform) {
         case 'mac':   defaultChannel = 'homebrew'; break;
-        case 'linux': defaultChannel = 'pipx'; break;
-        default:      defaultChannel = 'pipx'; break;
+        case 'linux': defaultChannel = 'uv'; break;
+        default:      defaultChannel = 'homebrew'; break;
       }
 
       /* Windows: show banner, disable tabs (tooltip on any click) */
@@ -2677,8 +3368,11 @@
         if (footerBtn) footerBtn.setAttribute('data-rover-copy', channel);
       }
 
-      /* Initial selection */
+      /* Initial selection for secondary accordion tabs */
       selectTab(defaultChannel);
+      /* Hero + footer copy buttons always default to pipx (primary card recommendation) */
+      if (heroBtn)   heroBtn.setAttribute('data-rover-copy', 'pipx');
+      if (footerBtn) footerBtn.setAttribute('data-rover-copy', 'pipx');
 
       /* Tab click */
       tabs.forEach(function (t) {
@@ -2756,6 +3450,37 @@
           }
         });
       });
+
+      /* Primary spotlight snippet (terminal card hero command) */
+      var primarySnippet = document.querySelector('.rv-primary-snippet');
+      if (primarySnippet) {
+        primarySnippet.addEventListener('click', function () {
+          if (isWindows) { showToast(WIN_TOOLTIP); return; }
+          var cmd = primarySnippet.getAttribute('data-cmd');
+          copyToClipboard(cmd).then(function () {
+            showToast('Copied. Paste it in your terminal.');
+          }).catch(function () {
+            showToast("Couldn't copy — select the text and copy manually.");
+          });
+        });
+        primarySnippet.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            primarySnippet.click();
+          }
+        });
+      }
+
+      /* More ways accordion toggle */
+      var moreToggle = document.querySelector('.rv-more-install-toggle');
+      var morePanel  = document.getElementById('rv-more-panel');
+      if (moreToggle && morePanel) {
+        moreToggle.addEventListener('click', function () {
+          var isOpen = moreToggle.getAttribute('aria-expanded') === 'true';
+          moreToggle.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+          morePanel.setAttribute('data-open', isOpen ? 'false' : 'true');
+        });
+      }
 
       /* Hero + footer "Copy install command" buttons */
       var COMMANDS = {
