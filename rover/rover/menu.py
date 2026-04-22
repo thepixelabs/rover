@@ -215,16 +215,7 @@ class YoloSubmenuScreen(ModalScreen):
         self.app.exit(result={"action": "altergo", "yolo": True})
 
     def action_yolo_resume(self) -> None:
-        # The old "resume last" path (yolo_resume=True with no ID) is broken —
-        # it picks an account but then guesses the last session, which is
-        # unreliable. Open RecallScreen instead so the user can pick exactly
-        # which session to resume.
-        from rover.screens.recall import RecallScreen
-        self.app.pop_screen()   # close the yolo submenu first
-        self.app.push_screen(
-            RecallScreen(),
-            callback=lambda _r: None,
-        )
+        self.app.exit(result={"action": "altergo_recall"})
 
     def action_yolo_pick(self) -> None:
         self.app.exit(result={"action": "yolo_pick"})
@@ -1002,17 +993,7 @@ class MainMenuScreen(Screen):
 
     def action_recall(self) -> None:
         self._number_buffer = ""
-        from rover.screens.recall import RecallScreen
-        self.app.push_screen(
-            RecallScreen(),
-            callback=self._on_recall_dismissed,
-        )
-
-    def _on_recall_dismissed(self, result) -> None:
-        # RecallScreen exits the whole app via self.app.exit() — it never
-        # dismisses back to this screen. This callback fires only if the screen
-        # is popped without an exit (Escape), so we just refresh.
-        self._refresh_data()
+        self.app.exit(result={"action": "altergo_recall"})
 
     def action_new_session(self) -> None:
         self._number_buffer = ""
@@ -1218,24 +1199,10 @@ def run_menu(config: dict, hours: float = 2.0) -> MenuAction:
             run_yolo_resume_pick(config, save_config)
             continue
 
-        if action == "recall_resume":
-            from rover.altergo_launcher import _exec_altergo
-            from rich.console import Console
-            import pathlib
-            session_id = result.get("session_id", "")
-            account = result.get("account", "native")
-            provider = result.get("provider") or None
-            project_path_str = result.get("project_path", "")
-            if session_id:
-                _exec_altergo(
-                    Console(),
-                    project_path=pathlib.Path(project_path_str) if project_path_str else pathlib.Path.cwd(),
-                    chosen_account=account,
-                    chosen_provider=provider,
-                    yolo=True,
-                    yolo_resume=session_id,
-                )
-            continue
+        if action == "altergo_recall":
+            import os
+            os.execvp("altergo", ["altergo", "--recall"])
+            continue  # unreachable; satisfies linter
 
         # Unknown action — just quit safely
         return MenuAction.QUIT

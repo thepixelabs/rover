@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rover-tui"
-version = "0.3.5"
+version = "0.3.6"
 description = "On-the-go session manager and agent monitor for dispatch"
 readme = "README.md"
 license = {text = "PolyForm-Shield-1.0.0"}
