@@ -215,7 +215,16 @@ class YoloSubmenuScreen(ModalScreen):
         self.app.exit(result={"action": "altergo", "yolo": True})
 
     def action_yolo_resume(self) -> None:
-        self.app.exit(result={"action": "altergo", "yolo_resume": True})
+        # The old "resume last" path (yolo_resume=True with no ID) is broken —
+        # it picks an account but then guesses the last session, which is
+        # unreliable. Open RecallScreen instead so the user can pick exactly
+        # which session to resume.
+        from rover.screens.recall import RecallScreen
+        self.app.pop_screen()   # close the yolo submenu first
+        self.app.push_screen(
+            RecallScreen(),
+            callback=lambda _r: None,
+        )
 
     def action_yolo_pick(self) -> None:
         self.app.exit(result={"action": "yolo_pick"})
@@ -503,7 +512,7 @@ class MainMenuScreen(Screen):
         Binding("y",      "yolo",           "Yolo",     show=False),
         Binding("b",      "server_toggle",  "Server",   show=False),
         Binding("x",      "kill_session",   "Kill",     show=False),
-        Binding("r",      "force_refresh",  "Refresh",  show=False),
+        Binding("r",      "recall",         "Recall",   show=False),
         Binding("n",      "new_session",    "New tmux", show=False),
         Binding("c",      "caffeinate",     "Caff.",    show=False),
         Binding("enter",  "attach_current", "Attach",   show=False),
@@ -909,6 +918,7 @@ class MainMenuScreen(Screen):
             ("D", "Dispatch Dashboard", ""),
             ("A", "New altergo session", ""),
             ("Y", "Yolo session  [dim](skip confirm)[/dim]", ""),
+            ("R", "Recall session  [dim](resume by picker)[/dim]", ""),
             ("B", srv_label, srv_status),
         ]
         if caffeinate.is_available():
@@ -990,8 +1000,18 @@ class MainMenuScreen(Screen):
                 callback=lambda _r: self._refresh_data(),
             )
 
-    def action_force_refresh(self) -> None:
+    def action_recall(self) -> None:
         self._number_buffer = ""
+        from rover.screens.recall import RecallScreen
+        self.app.push_screen(
+            RecallScreen(),
+            callback=self._on_recall_dismissed,
+        )
+
+    def _on_recall_dismissed(self, result) -> None:
+        # RecallScreen exits the whole app via self.app.exit() — it never
+        # dismisses back to this screen. This callback fires only if the screen
+        # is popped without an exit (Escape), so we just refresh.
         self._refresh_data()
 
     def action_new_session(self) -> None:
@@ -1196,6 +1216,25 @@ def run_menu(config: dict, hours: float = 2.0) -> MenuAction:
             from rover.altergo_launcher import run_yolo_resume_pick
             from rover.config import save_config
             run_yolo_resume_pick(config, save_config)
+            continue
+
+        if action == "recall_resume":
+            from rover.altergo_launcher import _exec_altergo
+            from rich.console import Console
+            import pathlib
+            session_id = result.get("session_id", "")
+            account = result.get("account", "native")
+            provider = result.get("provider") or None
+            project_path_str = result.get("project_path", "")
+            if session_id:
+                _exec_altergo(
+                    Console(),
+                    project_path=pathlib.Path(project_path_str) if project_path_str else pathlib.Path.cwd(),
+                    chosen_account=account,
+                    chosen_provider=provider,
+                    yolo=True,
+                    yolo_resume=session_id,
+                )
             continue
 
         # Unknown action — just quit safely
