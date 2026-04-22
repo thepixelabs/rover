@@ -327,6 +327,12 @@
       height: 48px;
     }
 
+    .nav-brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .nav-brand {
       font-family: var(--font-mono);
       font-weight: 700;
@@ -354,7 +360,6 @@
       color: var(--neon-cyan);
       opacity: 0.7;
       letter-spacing: 1px;
-      margin-left: -4px;
       user-select: none;
     }
     .nav-breadcrumb-sep {
@@ -2414,11 +2419,13 @@
   <!-- NAV (inherited from landing.html with Rover highlighted) -->
   <header class="site-nav" role="banner">
     <div class="container nav-inner">
-      <a class="nav-brand" href="landing.html" aria-label="Dispatch — home">
-        <span class="nav-brand-dot" aria-hidden="true"></span>
-        DISPATCH
-      </a>
-      <span class="nav-breadcrumb" aria-hidden="true"><span class="nav-breadcrumb-sep">/</span>rover</span>
+      <div class="nav-brand-wrap">
+        <a class="nav-brand" href="landing.html" aria-label="Dispatch — home">
+          <span class="nav-brand-dot" aria-hidden="true"></span>
+          DISPATCH
+        </a>
+        <span class="nav-breadcrumb" aria-hidden="true"><span class="nav-breadcrumb-sep">/</span>rover</span>
+      </div>
 
       <nav aria-label="Main navigation">
         <ul class="nav-links" id="nav-links-list">
