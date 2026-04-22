@@ -616,7 +616,7 @@
 
     .section-label {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
       font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -625,7 +625,7 @@
     }
 
     .section-title {
-      font-size: clamp(1.55rem, 3.5vw, 3.2rem);
+      font-size: clamp(2rem, 4.5vw, 4rem);
       font-weight: 800;
       letter-spacing: clamp(-0.5px, -0.03em, -1.5px);
       line-height: 1.12;
@@ -1416,20 +1416,6 @@
       transform: translateY(-3px);
       box-shadow: var(--card-shadow-hover);
     }
-    .rv-benefit-icon {
-      width: 36px; height: 36px;
-      border-radius: var(--radius-sm);
-      background: rgba(0, 229, 255, 0.1);
-      border: 1px solid rgba(0, 229, 255, 0.24);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--neon-cyan);
-      margin-bottom: 14px;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 0.88rem;
-    }
     .rv-benefit-title {
       font-size: 1.02rem;
       font-weight: 700;
@@ -1526,48 +1512,45 @@
       [data-theme="light"] .rv-benefits-trail-mascot--4 img { opacity: 0.13; }
     }
 
-    /* ---- INSTALL TABS (Block 4) ---- */
-    /* 2-col layout: install left, mascot right — mascot stretches full block height */
-    .rv-install-layout {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 48px;
-      align-items: stretch; /* both columns fill the same height */
+    /* ---- INSTALL SECTION (Block 4) — mascot as background layer ---- */
+    .rv-install-section {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
     }
-    @media (max-width: 860px) {
-      .rv-install-layout {
-        grid-template-columns: 1fr;
-        gap: 32px;
-        align-items: start;
-      }
-      .rv-install-side-mascot {
-        display: flex;
-        justify-content: center;
-      }
-    }
-    .rv-install-side-mascot {
-      flex-shrink: 0;
-      width: 340px; /* wider — was 280px */
+    .rv-install-bg-mascot {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
       display: flex;
-      align-items: center; /* vertically center within the stretched height */
-      justify-content: center;
+      align-items: center;
+      justify-content: flex-end;
     }
-    .rv-install-side-mascot-img {
-      width: 100%;
+    .rv-install-bg-mascot-img {
+      width: 62%;
+      max-width: 700px;
       height: auto;
       display: block;
-      border-radius: var(--radius);
-      opacity: 0.92;
-      filter: drop-shadow(0 16px 48px rgba(0, 229, 255, 0.18));
+      opacity: 0.22;
+      filter: drop-shadow(0 0 60px rgba(0, 229, 255, 0.12));
+      transform: translateX(8%);
     }
-    [data-theme="light"] .rv-install-side-mascot-img {
-      opacity: 0.96;
-      filter: drop-shadow(0 8px 28px rgba(0, 122, 184, 0.15));
+    [data-theme="light"] .rv-install-bg-mascot-img {
+      opacity: 0.12;
+      filter: none;
     }
     @media (max-width: 860px) {
-      .rv-install-side-mascot { width: 100%; max-width: 380px; }
+      .rv-install-bg-mascot-img {
+        width: 90%;
+        opacity: 0.15;
+        transform: translateX(15%);
+      }
     }
-
+    /* install content takes full width — no grid split */
+    .rv-install-layout {
+      display: block;
+    }
     .rv-install {
       max-width: 760px;
       margin: 0 auto;
@@ -1863,71 +1846,206 @@
       text-align: center;
     }
 
-    /* ---- SELF-QUALIFY (Block 6) ---- */
-    .rv-qualify-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      max-width: 860px;
-      margin: 0 auto;
+    /* ---- REQUIREMENTS (Block 6) ---- */
+    #is-it-for-me {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    /* Background illustration */
+    .rv-requirements-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .rv-requirements-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: left center;
+      opacity: 0.28;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 55%, transparent 95%);
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 55%, transparent 95%);
+    }
+    [data-theme="light"] .rv-requirements-bg img {
+      opacity: 0.14;
     }
     @media (max-width: 720px) {
-      .rv-qualify-grid { grid-template-columns: 1fr; }
+      .rv-requirements-bg img {
+        opacity: 0.18;
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 18%, black 50%, transparent 82%);
+        mask-image: linear-gradient(to right, transparent 0%, black 18%, black 50%, transparent 82%);
+      }
+      [data-theme="light"] .rv-requirements-bg img {
+        opacity: 0.10;
+      }
     }
-    .rv-qualify-col {
-      padding: 24px;
-      border-radius: var(--radius);
-      border: 1px solid var(--glass-border);
-      background: var(--glass-bg);
-    }
-    .rv-qualify-col--yes {
-      border-color: rgba(15, 250, 122, 0.22);
-    }
-    .rv-qualify-col--notyet {
-      border-color: rgba(245, 158, 11, 0.22);
-    }
-    .rv-qualify-head {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-    .rv-qualify-col--yes .rv-qualify-head { color: var(--neon-green); }
-    .rv-qualify-col--notyet .rv-qualify-head { color: var(--amber); }
-    [data-theme="light"] .rv-qualify-col--yes .rv-qualify-head { color: #008f43; }
 
-    .rv-qualify-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .rv-requirements-lede {
+      max-width: 640px;
+      margin: 0 auto 2rem;
+      text-align: center;
+      color: var(--text-muted, #9aa3b2);
+      font-size: 1rem;
     }
-    .rv-qualify-list li {
-      position: relative;
-      padding-left: 24px;
+
+    /* Corner-bracket decoration via pseudo-elements */
+    .rv-requirements-block {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem;
+      background: var(--glass-bg, rgba(255,255,255,0.03));
+      background-image: repeating-linear-gradient(
+        180deg,
+        transparent 0,
+        transparent 3px,
+        rgba(0,229,255,0.015) 3px,
+        rgba(0,229,255,0.015) 4px
+      );
+      border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-left: 2px solid var(--neon-cyan, #00e5ff);
+      border-radius: 10px;
+      box-shadow: inset 3px 0 0 -1px rgba(0,229,255,0.25);
+      font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
       font-size: 0.95rem;
-      color: var(--text);
-      line-height: 1.55;
+      line-height: 1.8;
+      position: relative;
+      transition: box-shadow 0.25s ease;
     }
-    .rv-qualify-col--yes .rv-qualify-list li::before {
-      content: '✓';
+
+    /* Corner bracket marks — top-left and bottom-right via ::before/::after */
+    .rv-requirements-block::before,
+    .rv-requirements-block::after {
+      content: "";
       position: absolute;
-      left: 0;
-      top: 0;
-      color: var(--neon-green);
-      font-weight: 700;
+      width: 14px;
+      height: 14px;
+      border-color: var(--neon-cyan, #00e5ff);
+      border-style: solid;
+      opacity: 0.55;
+      transition: opacity 0.25s ease;
     }
-    .rv-qualify-col--notyet .rv-qualify-list li::before {
-      content: '—';
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: var(--amber);
-      font-weight: 700;
+    .rv-requirements-block::before {
+      top: -1px;
+      right: -1px;
+      border-width: 2px 2px 0 0;
+      border-radius: 0 10px 0 0;
     }
-    [data-theme="light"] .rv-qualify-col--yes .rv-qualify-list li::before { color: #008f43; }
+    .rv-requirements-block::after {
+      bottom: -1px;
+      right: -1px;
+      border-width: 0 2px 2px 0;
+      border-radius: 0 0 10px 0;
+    }
+    .rv-requirements-block:hover,
+    .rv-requirements-block:focus-within {
+      box-shadow: inset 3px 0 0 -1px rgba(0,229,255,0.25), 0 8px 32px rgba(0,229,255,0.08);
+    }
+    .rv-requirements-block:hover::before,
+    .rv-requirements-block:hover::after,
+    .rv-requirements-block:focus-within::before,
+    .rv-requirements-block:focus-within::after {
+      opacity: 1;
+    }
+
+    [data-theme="light"] .rv-requirements-block::before,
+    [data-theme="light"] .rv-requirements-block::after {
+      border-color: var(--neon-cyan, #0097b2);
+      opacity: 0.4;
+    }
+    [data-theme="light"] .rv-requirements-block:hover::before,
+    [data-theme="light"] .rv-requirements-block:hover::after,
+    [data-theme="light"] .rv-requirements-block:focus-within::before,
+    [data-theme="light"] .rv-requirements-block:focus-within::after {
+      opacity: 0.75;
+    }
+    [data-theme="light"] .rv-requirements-block {
+      border-left-color: #0097b2;
+      box-shadow: inset 3px 0 0 -1px rgba(0,151,178,0.25);
+    }
+
+    .rv-requirement-row {
+      display: grid;
+      grid-template-columns: 14ch 1fr;
+      gap: 0 1.25rem;
+      align-items: baseline;
+    }
+    .rv-requirement-row + .rv-requirement-row {
+      margin-top: 0.5rem;
+    }
+    .rv-requirement-row dt {
+      color: var(--text-muted, #8892a6);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: lowercase;
+    }
+    .rv-requirement-row dd {
+      margin: 0;
+      color: var(--text, #e6ebf5);
+    }
+
+    /* Asterisk footnote marker */
+    .rv-req-asterisk {
+      color: var(--neon-cyan, #00e5ff);
+      font-size: 0.75em;
+      vertical-align: super;
+      line-height: 1;
+    }
+    [data-theme="light"] .rv-req-asterisk {
+      color: #0097b2;
+    }
+
+    /* Footnote below the dl */
+    .rv-requirements-footnote {
+      max-width: 640px;
+      margin: 1.25rem auto 0;
+      text-align: center;
+      color: var(--text-muted, #9aa3b2);
+      font-size: 0.82rem;
+      opacity: 0.75;
+      line-height: 1.6;
+    }
+    .rv-requirements-footnote code {
+      font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+      color: var(--neon-cyan, #00e5ff);
+      background: rgba(0,229,255,0.07);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+    [data-theme="light"] .rv-requirements-footnote {
+      color: rgba(0,0,0,0.5);
+    }
+    [data-theme="light"] .rv-requirements-footnote code {
+      color: #0097b2;
+      background: rgba(0,151,178,0.08);
+    }
+
+    .rv-requirements-epilogue {
+      max-width: 720px;
+      margin: 2rem auto 0;
+      text-align: center;
+      color: var(--text-muted, #9aa3b2);
+      opacity: 0.8;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    [data-theme="light"] .rv-requirements-lede,
+    [data-theme="light"] .rv-requirements-epilogue {
+      color: rgba(0,0,0,0.55);
+    }
+    [data-theme="light"] .rv-requirement-row dt {
+      color: rgba(0,0,0,0.55);
+    }
+
+    @media (max-width: 640px) {
+      .rv-requirements-block { padding: 1.25rem 1.25rem; font-size: 0.85rem; }
+      .rv-requirement-row { grid-template-columns: 1fr; gap: 0.2rem 0; }
+      .rv-requirement-row + .rv-requirement-row { margin-top: 1rem; }
+      .rv-requirement-row dt { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    }
 
     /* ---- FOOTER CTA LOCKUP (Block 7) ---- */
     .rv-lockup {
@@ -1962,25 +2080,6 @@
       flex-shrink: 0;
       width: 14px;
       height: 14px;
-    }
-
-    /* ---- BENEFIT ICON (Block 3) — Pack PNG variant ---- */
-    .rv-benefit-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-sm);
-      background: rgba(0, 229, 255, 0.08);
-      border: 1px solid rgba(0, 229, 255, 0.22);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-    }
-    .rv-pack-icon {
-      width: 32px;
-      height: 32px;
-      display: block;
-      object-fit: contain;
     }
 
     /* ---- BLOCK 3b — background mascot + glossy cards ---- */
@@ -2265,7 +2364,6 @@
       .rv-hero { padding: 90px 0 44px; }
       .section-head { margin-bottom: 28px; }
       .rv-benefit-card { padding: 20px; }
-      .rv-qualify-col { padding: 20px; }
       /* Install snippet — shrink monospace and allow overflow ellipsis
          on extra-narrow screens so the copy button and icon stay visible. */
       .rv-install-snippet {
@@ -2284,7 +2382,7 @@
       .rv-threetogether-mascot { max-width: 520px; } /* was 320px, scaled up for 4K */
       .rv-chords-mascot-wrap { max-width: 440px; }
       .rv-install-mascot-img { max-width: 760px; }
-      .rv-install-side-mascot { width: 400px; }
+      .rv-install-bg-mascot-img { width: 55%; max-width: 820px; }
     }
   </style>
 </head>
@@ -2666,15 +2764,6 @@
 
         <div class="rv-benefits-grid">
           <article class="rv-benefit-card" data-reveal data-reveal-delay="1">
-            <div class="rv-benefit-icon">
-              <img
-                src="src/assets/rover/packs/pack-a-relay-noir/b3-icon-dashboard.png"
-                alt=""
-                width="32" height="32"
-                class="rv-pack-icon"
-                aria-hidden="true"
-              />
-            </div>
             <h3 class="rv-benefit-title">Check on agents from the couch.</h3>
             <p class="rv-benefit-body">
               Lid's closed. Night shift is running. You pull the phone out, SSH in, hit <code>D</code>. Eighteen agents laid out in two columns. Everyone's fine. You put the phone down.
@@ -2682,15 +2771,6 @@
           </article>
 
           <article class="rv-benefit-card" data-reveal data-reveal-delay="2">
-            <div class="rv-benefit-icon">
-              <img
-                src="src/assets/rover/packs/pack-a-relay-noir/b3-icon-unblock.png"
-                alt=""
-                width="32" height="32"
-                class="rv-pack-icon"
-                aria-hidden="true"
-              />
-            </div>
             <h3 class="rv-benefit-title">Unblock a stuck agent in two keystrokes.</h3>
             <p class="rv-benefit-body">
               Agent stopped on a permission prompt. You're in bed. <code>Y</code> to select it, <code>Y</code> again to yolo-resume. It's running. You didn't open a laptop.
@@ -2698,15 +2778,6 @@
           </article>
 
           <article class="rv-benefit-card" data-reveal data-reveal-delay="3">
-            <div class="rv-benefit-icon">
-              <img
-                src="src/assets/rover/packs/pack-a-relay-noir/b3-icon-kill.png"
-                alt=""
-                width="32" height="32"
-                class="rv-pack-icon"
-                aria-hidden="true"
-              />
-            </div>
             <h3 class="rv-benefit-title">Kill a runaway without opening the lid.</h3>
             <p class="rv-benefit-body">
               Something's spiraling. Token counter is climbing. You SSH in, <code>X</code>, confirm. Dead. The codebase fears you.
@@ -2731,11 +2802,9 @@
 
       <div class="container" style="position:relative;z-index:1;">
         <div class="section-head section-head--center">
-          <p class="section-label">// spoken</p>
-          <h2 class="section-title">Just say the thing.</h2>
-          <p class="section-desc">
-            You are not typing. Your keyboard's mic mode is transcribing. Somewhere, Claude is moving.
-          </p>
+          <p class="section-label">// voice input</p>
+          <h2 class="section-title">Dictate. Agent moves.</h2>
+          <p class="section-desc">Keyboard mic. Three sentences. Claude is already working.</p>
         </div>
 
         <div class="rv-benefits-grid">
@@ -2771,7 +2840,17 @@
          BLOCK 4 — INSTALL COMMANDS (4 tabs)
          Platform-smart default, keyboard-accessible, click-to-copy.
          ═══════════════════════════════════════════════════════════════ -->
-    <section id="install" class="section" data-reveal>
+    <section id="install" class="section rv-install-section" data-reveal>
+      <!-- Mascot background layer — decorative, behind all content -->
+      <div class="rv-install-bg-mascot" aria-hidden="true">
+        <img
+          src="src/assets/rover/packs/pack-a-relay-noir/b1-hero-illustration.png"
+          alt=""
+          width="640" height="640"
+          class="rv-install-bg-mascot-img"
+        />
+      </div>
+
       <div class="container" style="position:relative;z-index:1;">
         <div class="section-head section-head--center">
           <p class="section-label">// install</p>
@@ -2842,15 +2921,6 @@
             </div>
           </div>
 
-          <!-- Mascot cameo — side of the install box -->
-          <div class="rv-install-side-mascot" aria-hidden="true">
-            <img
-              src="src/assets/rover/packs/pack-a-relay-noir/b1-hero-illustration.png"
-              alt=""
-              width="640" height="640"
-              class="rv-install-side-mascot-img"
-            />
-          </div>
         </div>
       </div>
     </section>
@@ -2896,34 +2966,44 @@
     <div class="section-divider" data-color="cyan-indigo" aria-hidden="true"></div>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         BLOCK 6 — SELF-QUALIFY (Yes / Not yet)
-         Dry voice. Filters the wrong audience away.
+         BLOCK 6 — REQUIREMENTS (terminal SYNOPSIS register)
          ═══════════════════════════════════════════════════════════════ -->
     <section id="is-it-for-me" class="section" data-reveal>
+      <div class="rv-requirements-bg" aria-hidden="true">
+        <img src="src/assets/rover/packs/pack-a-relay-noir/b6-requirements-bg.png" alt="">
+      </div>
       <div class="container" style="position:relative;z-index:1;">
         <div class="section-head section-head--center">
-          <p class="section-label">// is rover for me?</p>
-          <h2 class="section-title">Two columns. Be honest.</h2>
+          <p class="section-label">// requirements</p>
+          <h2 class="section-title">Three things. No substitutes.</h2>
         </div>
 
-        <div class="rv-qualify-grid">
-          <div class="rv-qualify-col rv-qualify-col--yes">
-            <p class="rv-qualify-head">Yes, if&hellip;</p>
-            <ul class="rv-qualify-list">
-              <li>You run agents overnight and want to check on them from your phone.</li>
-              <li>You already SSH from your phone (Blink, Termius, a-Shell, a browser terminal).</li>
-              <li>Your host is macOS or Linux.</li>
-            </ul>
+        <p class="rv-requirements-lede">
+          Rover is a terminal client. It needs a terminal to reach.
+        </p>
+
+        <dl class="rv-requirements-block" aria-label="Rover requirements">
+          <div class="rv-requirement-row">
+            <dt>host</dt>
+            <dd>macOS or Linux — Windows is WSL-only, not native yet</dd>
           </div>
-          <div class="rv-qualify-col rv-qualify-col--notyet">
-            <p class="rv-qualify-head">Not yet, if&hellip;</p>
-            <ul class="rv-qualify-list">
-              <li>You don't own a phone you'd SSH from.</li>
-              <li>Your host is Windows. WSL works; native Windows doesn't yet.</li>
-              <li>You've never run a Dispatch agent. Install Dispatch first &mdash; Rover reaches Dispatch, it doesn't replace it.</li>
-            </ul>
+          <div class="rv-requirement-row">
+            <dt>phone</dt>
+            <dd>any SSH client (Blink, Termius, a-Shell, browser terminal)<sup class="rv-req-asterisk" aria-describedby="rv-req-note">*</sup></dd>
           </div>
-        </div>
+          <div class="rv-requirement-row">
+            <dt>agent stack</dt>
+            <dd><a href="https://github.com/thepixelabs/altergo" target="_blank" rel="noopener noreferrer"><code>altergo</code></a> — Rover drives altergo sessions, not raw provider CLIs</dd>
+          </div>
+        </dl>
+
+        <p id="rv-req-note" class="rv-requirements-footnote">
+          <span class="rv-req-asterisk" aria-hidden="true">*</span> Or just run <code>rover</code> on your laptop — same TUI, no SSH, when you're already at the desk.
+        </p>
+
+        <p class="rv-requirements-epilogue">
+          Already running overnight agents and checking on them from bed. That is the use case. If the stack above is not complete, fix the shortest missing piece and come back.
+        </p>
       </div>
     </section>
 
