@@ -1,15 +1,15 @@
-"""RecallScreen — full-screen session picker for rover.
+"""RecallScreen — conversation history picker for rover.
 
-Shows all altergo sessions discovered by sessions_index.list_altergo_sessions()
+Shows all conversations discovered by sessions_index.list_altergo_sessions()
 and lets the user resume one via --yolo-resume=<UUID>.
 
 Keybindings
 -----------
   ↑/↓ / j/k   navigate rows
-  /            focus search input; live-filters by project + preview
+  /            focus search input; live-filters by project + topic
   f            cycle provider filter: all → claude → gemini → codex → copilot → all
   s            cycle sort: time (default) → project → provider
-  Enter        resume selected session
+  Enter        resume selected conversation
   I            open session-ID input modal, then resume by raw UUID
   Escape       close screen and return to menu
 """
@@ -32,10 +32,10 @@ from rover.sessions_index import SessionRecord, list_altergo_sessions
 # ── Constants ──────────────────────────────────────────────────────────────────
 
 _PROVIDER_BADGE: dict[str, str] = {
-    "claude":  "[bold blue]CLA[/bold blue]",
-    "gemini":  "[bold green]GEM[/bold green]",
-    "codex":   "[bold yellow]CDX[/bold yellow]",
-    "copilot": "[bold cyan]CPL[/bold cyan]",
+    "claude":  "[bold blue]claude[/bold blue]",
+    "gemini":  "[bold green]gemini[/bold green]",
+    "codex":   "[bold yellow]codex[/bold yellow]",
+    "copilot": "[bold cyan]copilot[/bold cyan]",
 }
 
 _PROVIDER_FILTERS: list[Optional[str]] = [
@@ -44,14 +44,26 @@ _PROVIDER_FILTERS: list[Optional[str]] = [
 
 _SORT_CYCLES: list[str] = ["time", "project", "provider"]
 
-_PROJECT_MAX = 20
-_PREVIEW_COLS = 40   # approximate; terminal width varies
+_PROJECT_MAX = 14
+_PREVIEW_COLS = 80   # gets most of the terminal width
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
 def _provider_badge(provider: str) -> str:
-    return _PROVIDER_BADGE.get(provider.lower(), provider[:3].upper())
+    return _PROVIDER_BADGE.get(provider.lower(), f"[dim]{provider[:6]}[/dim]")
+
+
+def _source_col(provider: str, project_path: str) -> str:
+    """Compact 'provider  project' cell — fits ~22 chars."""
+    badge = _provider_badge(provider)
+    if not project_path:
+        return badge
+    import pathlib
+    name = pathlib.Path(project_path).name or project_path
+    if len(name) > _PROJECT_MAX:
+        name = name[: _PROJECT_MAX - 1] + "…"
+    return f"{badge}  [dim]{name}[/dim]"
 
 
 def _time_ago(epoch: float) -> str:
@@ -68,20 +80,9 @@ def _time_ago(epoch: float) -> str:
     return f"{int(delta / 86400)}d"
 
 
-def _project_col(project_path: str) -> str:
-    """Return the last component of the path, truncated to _PROJECT_MAX chars."""
-    if not project_path:
-        return "[dim]—[/dim]"
-    import pathlib
-    name = pathlib.Path(project_path).name or project_path
-    if len(name) > _PROJECT_MAX:
-        return name[: _PROJECT_MAX - 1] + "…"
-    return name
-
-
-def _preview_col(preview: str, max_len: int = _PREVIEW_COLS) -> str:
+def _topic_col(preview: str, max_len: int = _PREVIEW_COLS) -> str:
     if not preview:
-        return "[dim]—[/dim]"
+        return "[dim](no topic)[/dim]"
     text = preview.replace("\n", " ").strip()
     if len(text) > max_len:
         return text[: max_len - 1] + "…"
@@ -283,9 +284,9 @@ class RecallScreen(Screen):
     def compose(self) -> ComposeResult:
         with Vertical(id="recall-box"):
             with Horizontal(id="recall-header"):
-                yield Label("RECALL SESSION", id="recall-title")
+                yield Label("RECALL CONVERSATION", id="recall-title")
                 yield Label("", id="recall-count")
-            yield Input(placeholder="  / filter by project or preview…",
+            yield Input(placeholder="  filter by project or topic…",
                         id="recall-search")
             yield Static("", id="recall-filter-bar")
             yield Static("[dim]loading sessions…[/dim]", id="recall-loading")
@@ -294,7 +295,7 @@ class RecallScreen(Screen):
 
     def on_mount(self) -> None:
         table = self.query_one("#recall-table", DataTable)
-        table.add_columns("", "ACCOUNT", "PROJECT", "AGE", "PREVIEW")
+        table.add_columns("SOURCE", "AGE", "TOPIC")
         table.cursor_type = "row"
         self._repaint_filter_bar()
         self._repaint_hint()
@@ -354,19 +355,16 @@ class RecallScreen(Screen):
         visible = self._visible_sessions()
 
         for record in visible:
-            badge = _provider_badge(record.provider)
-            account = record.account or "[dim]—[/dim]"
-            project = _project_col(record.project_path)
+            source = _source_col(record.provider, record.project_path)
             age = _time_ago(record.modified_at)
-            preview = _preview_col(record.preview)
-            table.add_row(badge, account, project, age, preview,
-                          key=record.session_id)
+            topic = _topic_col(record.preview)
+            table.add_row(source, age, topic, key=record.session_id)
 
         count_label = self.query_one("#recall-count", Label)
         total = len(self._all_sessions)
         shown = len(visible)
         if shown == total:
-            count_label.update(f"[dim]{total} sessions[/dim]")
+            count_label.update(f"[dim]{total} conversations[/dim]")
         else:
             count_label.update(f"[dim]{shown}/{total} shown[/dim]")
 

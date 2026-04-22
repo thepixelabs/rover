@@ -918,7 +918,7 @@ class MainMenuScreen(Screen):
             ("D", "Dispatch Dashboard", ""),
             ("A", "New altergo session", ""),
             ("Y", "Yolo session  [dim](skip confirm)[/dim]", ""),
-            ("R", "Recall session  [dim](resume by picker)[/dim]", ""),
+            ("R", "Recall conversation  [dim](resume by picker)[/dim]", ""),
             ("B", srv_label, srv_status),
         ]
         if caffeinate.is_available():
