@@ -311,7 +311,7 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 200;
-      padding: 0 20px;
+      padding: 0 14px;
       background: rgba(7, 9, 26, 0.92);
       border-bottom: 1px solid var(--border);
     }
@@ -324,7 +324,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 60px;
+      height: 48px;
     }
 
     .nav-brand {
@@ -347,6 +347,17 @@
       animation: pulse 3s ease-in-out infinite;
     }
 
+    .nav-breadcrumb {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--neon-cyan);
+      opacity: 0.7;
+      letter-spacing: 1px;
+      margin-left: 2px;
+      user-select: none;
+    }
+
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.6; transform: scale(0.85); }
@@ -355,15 +366,15 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 2px;
       list-style: none;
     }
 
     .nav-links a {
       text-decoration: none;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 0.875rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
       font-weight: 500;
       color: var(--text-muted);
       transition: color 150ms;
@@ -382,7 +393,7 @@
     .nav-links a[aria-current="page"]::after {
       content: '';
       position: absolute;
-      left: 14px; right: 14px;
+      left: 10px; right: 10px;
       bottom: 2px;
       height: 2px;
       border-radius: 2px;
@@ -396,7 +407,7 @@
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 4px;
     }
 
     .theme-toggle {
@@ -507,7 +518,7 @@
         display: flex;
         flex-direction: column;
         position: absolute;
-        top: 60px;
+        top: 48px;
         left: 0; right: 0;
         background: rgba(7, 9, 26, 0.97);
         border-bottom: 1px solid var(--border);
@@ -2392,6 +2403,7 @@
         <span class="nav-brand-dot" aria-hidden="true"></span>
         DISPATCH
       </a>
+      <span class="nav-breadcrumb" aria-hidden="true">/ rover</span>
 
       <nav aria-label="Main navigation">
         <ul class="nav-links" id="nav-links-list">
