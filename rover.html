@@ -2067,6 +2067,173 @@
       z-index: 1;
     }
 
+    /* ---- MCP MULTI-PROVIDER (Block 2b) ---- */
+    .rv-mcp-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 900px) {
+      .rv-mcp-features { grid-template-columns: 1fr; }
+    }
+
+    .rv-mcp-feature {
+      padding: 22px 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      box-shadow: var(--card-shadow);
+      transition: border-color 200ms, transform 250ms var(--ease-spring), box-shadow 250ms;
+    }
+    .rv-mcp-feature:hover {
+      border-color: rgba(99, 102, 241, 0.35);
+      transform: translateY(-3px);
+      box-shadow: var(--card-shadow-hover);
+    }
+    .rv-mcp-feature-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .rv-mcp-feature-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+    .rv-mcp-feature-body code {
+      display: inline-block;
+      padding: 1px 6px;
+      margin: 0 1px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      color: var(--indigo-light);
+      font-size: 0.86em;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    [data-theme="light"] .rv-mcp-feature-body code {
+      background: rgba(79, 82, 217, 0.08);
+      border-color: rgba(79, 82, 217, 0.25);
+      color: var(--indigo);
+    }
+
+    /* Provider matrix table */
+    .rv-mcp-matrix-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-accent);
+      background: var(--glass-bg);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 32px;
+    }
+    .rv-mcp-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      min-width: 520px;
+    }
+    .rv-mcp-matrix thead tr {
+      border-bottom: 1px solid var(--border-accent);
+    }
+    .rv-mcp-matrix th {
+      padding: 14px 18px;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--indigo-light);
+      white-space: nowrap;
+    }
+    .rv-mcp-matrix td {
+      padding: 13px 18px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+      line-height: 1.5;
+    }
+    .rv-mcp-matrix tbody tr:first-child td { border-top: none; }
+    .rv-mcp-matrix td:first-child {
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .rv-mcp-matrix tbody tr:hover td {
+      background: rgba(99, 102, 241, 0.04);
+    }
+    .rv-mcp-yes {
+      color: var(--neon-green);
+      font-weight: 600;
+    }
+    [data-theme="light"] .rv-mcp-yes { color: #008f43; }
+    .rv-mcp-partial {
+      color: var(--amber);
+      font-weight: 600;
+    }
+    .rv-mcp-no {
+      color: var(--text-dim);
+    }
+
+    /* CTA row for MCP section */
+    .rv-mcp-cta-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+    .rv-mcp-limit-note {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      letter-spacing: 0.01em;
+      max-width: 560px;
+      line-height: 1.65;
+    }
+    .rv-mcp-limit-note a {
+      color: var(--indigo-light);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(129, 140, 248, 0.4);
+      transition: text-decoration-color 150ms;
+    }
+    .rv-mcp-limit-note a:hover { text-decoration-color: var(--indigo-light); }
+    [data-theme="light"] .rv-mcp-limit-note a { color: var(--indigo); text-decoration-color: rgba(79, 82, 217, 0.4); }
+
+    /* Hero provider badge */
+    .rv-hero-provider-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 10px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(99, 102, 241, 0.28);
+      background: rgba(99, 102, 241, 0.07);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--indigo-light);
+    }
+    [data-theme="light"] .rv-hero-provider-badge {
+      border-color: rgba(79, 82, 217, 0.25);
+      background: rgba(79, 82, 217, 0.06);
+      color: var(--indigo);
+    }
+    .rv-hero-provider-badge .rv-sep {
+      color: var(--indigo-light);
+      opacity: 0.55;
+      padding: 0 5px;
+    }
+    [data-theme="light"] .rv-hero-provider-badge .rv-sep { color: var(--indigo); }
+
     /* ---- INSTALL TABS (Block 4) — icon+label flex ---- */
     .rv-tab {
       display: inline-flex;
@@ -2284,6 +2451,12 @@
 
           <div class="rv-hero-copy" style="position:relative;z-index:1;max-width:620px;">
             <p class="rv-hero-eyebrow"><img src="src/assets/rover/packs/pack-a-relay-noir/b1-signal-ping.png" alt="Signal ping" width="14" height="14" class="rv-eyebrow-ping-img" aria-hidden="true" />Part of Dispatch &middot; The edge terminal for your agents</p>
+            <p class="rv-hero-provider-badge" aria-label="Works with Claude, Gemini, Copilot, and Codex">
+              Claude <span class="rv-sep" aria-hidden="true">&middot;</span>
+              Gemini <span class="rv-sep" aria-hidden="true">&middot;</span>
+              Copilot <span class="rv-sep" aria-hidden="true">&middot;</span>
+              Codex
+            </p>
             <h1 class="rv-hero-title">
               Your fleet, <span class="rv-hero-title-accent">one SSH away.</span>
             </h1>
@@ -2345,6 +2518,119 @@
 
           <p class="rv-threetogether-body">
             <strong>Dispatch</strong> is the desktop cockpit for your AI coding agents &mdash; Claude, Codex, Gemini, Copilot &mdash; running in one place. <strong>altergo</strong> is the runtime underneath that keeps every account and session alive across restarts. <strong>Rover</strong> is the pocket terminal: SSH from your phone to your Mac and check, launch, or kill any agent in two keystrokes. One stack, three surfaces: altergo runs it, Dispatch oversees it, Rover reaches it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider" data-color="cyan-indigo" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 2b — MCP MULTI-PROVIDER
+         "One Dispatch. Every agent, on the same page."
+         v1.39.0: Claude Code, Gemini CLI, GitHub Copilot CLI, OpenAI Codex CLI
+         all connect to 11 shared MCP tools through one install.
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="mcp-providers" class="section" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+        <div class="section-head section-head--center">
+          <p class="section-label">// four agents. one surface.</p>
+          <h2 class="section-title">One Dispatch. Every agent, on the same page.</h2>
+          <p class="section-desc">
+            One Dispatch install gives every AI coding agent on your machine &mdash;
+            Claude Code, Gemini CLI, GitHub Copilot CLI, and OpenAI Codex CLI &mdash;
+            a shared view of your project and a shared set of hands to move it forward.
+          </p>
+        </div>
+
+        <div class="rv-mcp-features" data-reveal>
+          <article class="rv-mcp-feature" data-reveal data-reveal-delay="1">
+            <h3 class="rv-mcp-feature-title">One install wires all four CLIs.</h3>
+            <p class="rv-mcp-feature-body">
+              The Settings panel writes the correct config for each provider automatically &mdash;
+              Gemini&rsquo;s <code>httpUrl</code> field, Copilot&rsquo;s <code>tools: ["*"]</code>,
+              Codex&rsquo;s TOML format. You do not touch config files.
+            </p>
+          </article>
+
+          <article class="rv-mcp-feature" data-reveal data-reveal-delay="2">
+            <h3 class="rv-mcp-feature-title">11 shared MCP tools, identical across providers.</h3>
+            <p class="rv-mcp-feature-body">
+              Any connected agent can call <code>dispatch_get_state</code>,
+              <code>dispatch_update_phase_status</code>, <code>dispatch_spawn_agent</code>,
+              and eight more. Gemini sees the same tools Claude does.
+            </p>
+          </article>
+
+          <article class="rv-mcp-feature" data-reveal data-reveal-delay="3">
+            <h3 class="rv-mcp-feature-title">Single reactor keeps state consistent.</h3>
+            <p class="rv-mcp-feature-body">
+              All agents read and write the same <code>.tasks/</code> blackboard through
+              Dispatch. Phase lifecycle is governed by one reactor, so concurrent
+              updates from different providers do not produce conflicting state.
+            </p>
+          </article>
+        </div>
+
+        <div class="rv-mcp-matrix-wrap" data-reveal>
+          <table class="rv-mcp-matrix">
+            <caption class="sr-only">MCP capability matrix across Claude Code, Gemini CLI, GitHub Copilot CLI, and OpenAI Codex CLI</caption>
+            <thead>
+              <tr>
+                <th scope="col">Provider</th>
+                <th scope="col">MCP tools</th>
+                <th scope="col">Spawn from Dispatch</th>
+                <th scope="col">Session monitoring</th>
+                <th scope="col">Token accounting</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Claude Code</td>
+                <td><span class="rv-mcp-yes">All 11</span></td>
+                <td><span class="rv-mcp-yes">Yes</span></td>
+                <td><span class="rv-mcp-yes">Real-time</span></td>
+                <td><span class="rv-mcp-yes">Full</span></td>
+              </tr>
+              <tr>
+                <td>Gemini CLI</td>
+                <td><span class="rv-mcp-yes">All 11</span></td>
+                <td><span class="rv-mcp-partial">Best-effort</span></td>
+                <td>30s polling</td>
+                <td><span class="rv-mcp-yes">Full</span></td>
+              </tr>
+              <tr>
+                <td>GitHub Copilot CLI</td>
+                <td><span class="rv-mcp-yes">All 11</span></td>
+                <td><span class="rv-mcp-no">Not available</span></td>
+                <td>30s polling</td>
+                <td><span class="rv-mcp-no">N/A (subscription)</span></td>
+              </tr>
+              <tr>
+                <td>OpenAI Codex CLI</td>
+                <td><span class="rv-mcp-yes">All 11</span></td>
+                <td><span class="rv-mcp-yes">Yes</span></td>
+                <td>30s polling</td>
+                <td><span class="rv-mcp-partial">Dispatch-started only</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rv-mcp-cta-row" data-reveal>
+          <a
+            class="btn btn-primary"
+            href="docs/providers/README.md"
+            data-rover-event="rover.mcp.cta_install"
+            aria-label="Install MCP tools for all providers"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="width:18px;height:18px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Install MCP tools
+          </a>
+          <p class="rv-mcp-limit-note">
+            Copilot can&rsquo;t be spawned by Dispatch &mdash; no headless CLI mode.
+            Gemini and Copilot require re-installing when tokens rotate; the installer handles the update in one click.
+            See <a href="docs/providers/README.md">per-provider guides</a> for details.
           </p>
         </div>
       </div>
