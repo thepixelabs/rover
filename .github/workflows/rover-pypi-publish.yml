@@ -32,12 +32,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.12"
 
@@ -54,7 +54,7 @@ jobs:
         run: mv rover/dist dist
 
       - name: Publish to PyPI (OIDC trusted publisher)
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
 
       # Strip "rover-v" prefix: rover-v0.3.4 → 0.3.4 (PEP 440, matches sdist filename)
       - name: Derive version from tag
@@ -62,7 +62,7 @@ jobs:
         run: echo "version=${GITHUB_REF_NAME#rover-v}" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           tag_name: ${{ github.ref_name }}
           name: "Rover ${{ steps.tag.outputs.version }}"
@@ -113,7 +113,7 @@ jobs:
       # Use the existing tap-scoped GitHub App — same one used by dmg-release.yml.
       - name: Generate tap-scoped GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
         with:
           app-id: ${{ secrets.HOMEBREW_TAP_APP_ID }}
           private-key: ${{ secrets.HOMEBREW_TAP_APP_PRIVATE_KEY }}
