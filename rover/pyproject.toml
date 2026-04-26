@@ -7,7 +7,7 @@ name = "rover-tui"
 version = "0.3.6"
 description = "On-the-go session manager and agent monitor for dispatch"
 readme = "README.md"
-license = {text = "PolyForm-Shield-1.0.0"}
+license = { file = "LICENSE" }
 requires-python = ">=3.11"
 keywords = ["tui", "terminal", "ai", "agents", "claude", "dispatch"]
 classifiers = [
