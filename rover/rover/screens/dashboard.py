@@ -242,7 +242,7 @@ class DashboardScreen(Screen):
             term_w = os.get_terminal_size().columns
         except OSError:
             term_w = 80
-        yield Static(_figlet_renderable("slant", term_w), id="dash-figlet")
+        yield Static(_figlet_renderable("slant", "dispatch", term_w), id="dash-figlet")
         with Vertical(id="dash-box"):
             with Horizontal(id="dash-header"):
                 yield Label("DISPATCH MONITOR", id="dash-title")

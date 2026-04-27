@@ -32,8 +32,6 @@ from rich.console import Console
 
 # ── Layout constants ─────────────────────────────────────────────────────────
 
-_ALTERGO_DIR   = pathlib.Path.home() / ".altergo"
-_ACCOUNTS_DIR  = _ALTERGO_DIR / "accounts"
 _DIM_BORDER    = "#404060"
 _CYAN          = "#00d7ff"
 
@@ -58,12 +56,27 @@ _PICKER_BACK        = "::back::"
 # ── Native SSH bridge ─────────────────────────────────────────────────────────
 
 def _real_home() -> pathlib.Path:
-    """Real user home, ignoring altergo's HOME swap."""
+    """Real user home, ignoring altergo's HOME swap.
+
+    altergo overrides HOME to ``~/.altergo/accounts/<name>/`` for each
+    managed session. Rover must resolve paths relative to the *real* user
+    home (from the passwd database) so that ``_ALTERGO_DIR`` / ``_ACCOUNTS_DIR``
+    are always correct regardless of whether rover is launched from inside one
+    of those managed sessions.
+    """
     try:
         import pwd
         return pathlib.Path(pwd.getpwuid(os.getuid()).pw_dir)
     except Exception:
         return pathlib.Path.home()
+
+
+# Computed after _real_home() is defined so that altergo's HOME override
+# (which sets HOME to ~/.altergo/accounts/<name>/) does not corrupt these
+# module-level paths. pathlib.Path.home() reads $HOME; _real_home() reads
+# the passwd database entry, which is immune to the env-var swap.
+_ALTERGO_DIR   = _real_home() / ".altergo"
+_ACCOUNTS_DIR  = _ALTERGO_DIR / "accounts"
 
 
 def _native_ssh_token_path() -> pathlib.Path:
@@ -325,6 +338,9 @@ def _run_picker(
         ] + [
             Binding(ch, f"pick_letter('{ch}')", "", show=False)
             for ch in _LETTERS
+            # 's' is reserved for toggle_sort when sort_keys are provided;
+            # skip it here so there is no duplicate binding for that key.
+            if not (ch == "s" and sort_keys is not None)
         ] + [
             Binding(ch.upper(), f"pick_letter('{ch}')", "", show=False)
             for ch in _LETTERS
@@ -1464,15 +1480,17 @@ def run_yolo_resume_pick(config: dict, save_config_fn) -> None:
         items.append(key)
         sort_keys.append(rec.modified_at)
 
-        acct_col = rec.account[:14].ljust(14)
+        proj_name = pathlib.Path(rec.project_path).name if rec.project_path else "?"
+        proj_col = proj_name[:16].ljust(16)
+        acct_col = rec.account[:12].ljust(12)
         try:
-            date_col = _dt.datetime.fromtimestamp(rec.modified_at).strftime("%Y-%m-%d")
+            date_col = _dt.datetime.fromtimestamp(rec.modified_at).strftime("%m-%d")
         except Exception:
-            date_col = "???????????"
-        date_col = date_col[:10].ljust(10)
-        preview_col = (rec.preview or f"[{rec.provider}]")[:30]
+            date_col = "?????"
+        date_col = date_col[:5].ljust(5)
+        preview_col = (rec.preview or f"[{rec.provider}]")[:28]
         display_items.append(
-            f"[dim]{acct_col}[/dim]  [dim]{date_col}[/dim]  {preview_col}"
+            f"[bold]{proj_col}[/bold]  [dim]{acct_col}[/dim]  [dim]{date_col}[/dim]  {preview_col}"
         )
 
     chosen = _run_picker(
