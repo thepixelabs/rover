@@ -15,9 +15,6 @@ run_altergo_launcher(config, save_config_fn)
 
 run_yolo_resume_pick(config, save_config_fn)
   Cross-account session picker that execs altergo with --yolo-resume=<UUID>.
-
-run_native_ssh_setup(console=None)
-  Non-interactive setup command. Not touched.
 """
 
 from __future__ import annotations
@@ -53,7 +50,7 @@ _PROJECT_WORKSPACE  = "::workspace-root::"
 _PICKER_BACK        = "::back::"
 
 
-# ── Native SSH bridge ─────────────────────────────────────────────────────────
+# ── Path helpers ─────────────────────────────────────────────────────────────
 
 def _real_home() -> pathlib.Path:
     """Real user home, ignoring altergo's HOME swap.
@@ -77,115 +74,6 @@ def _real_home() -> pathlib.Path:
 # the passwd database entry, which is immune to the env-var swap.
 _ALTERGO_DIR   = _real_home() / ".altergo"
 _ACCOUNTS_DIR  = _ALTERGO_DIR / "accounts"
-
-
-def _native_ssh_token_path() -> pathlib.Path:
-    return _real_home() / ".claude" / "rover-native-token"
-
-
-def _check_native_ssh_token(console: Console) -> bool:
-    """True if native account will work here, False if SSH + token missing."""
-    if not os.environ.get("SSH_CONNECTION"):
-        return True
-
-    token_path = _native_ssh_token_path()
-    try:
-        size = token_path.stat().st_size if token_path.exists() else 0
-    except OSError:
-        size = 0
-
-    if size > 0:
-        return True
-
-    _run_error_screen(
-        "rover  \u00b7  native account needs SSH bridge",
-        [
-            "Claude Code reads native-account credentials from the macOS",
-            "Keychain, which is locked for SSH sessions.",
-            "",
-            "Fix (works from SSH too):",
-            "",
-            "  rover --setup-native-ssh",
-            "",
-            "Generates a long-lived OAuth token (via claude setup-token,",
-            "which prints a URL you can open in your phone browser).",
-            f"Token is written to {token_path}",
-            "and exported automatically for SSH sessions.",
-        ],
-    )
-    return False
-
-
-def run_native_ssh_setup(console: Console | None = None) -> int:
-    """Bootstrap the Claude native OAuth token for SSH use. Returns exit code."""
-    import shutil
-
-    if console is None:
-        console = Console()
-
-    claude_bin = shutil.which("claude")
-    if not claude_bin:
-        console.print(
-            "\n  [red]claude CLI not found on PATH.[/red]\n"
-            "  [dim]Install Claude Code first: https://claude.com/code[/dim]\n"
-        )
-        return 2
-
-    over_ssh = bool(os.environ.get("SSH_CONNECTION"))
-    console.print(
-        "\n  [bold cyan]Generating a long-lived Claude OAuth token[/bold cyan]\n"
-        + (
-            "  [dim]You're over SSH — claude setup-token will print a URL.\n"
-            "  Open it in your phone's browser, approve, and paste the token\n"
-            "  back here when it prints to the terminal.[/dim]\n"
-            if over_ssh
-            else
-            "  [dim]A browser window will open for confirmation. After the token\n"
-            "  prints to the terminal, copy it and paste it when prompted below.[/dim]\n"
-        )
-    )
-
-    try:
-        subprocess.run([claude_bin, "setup-token"])
-    except KeyboardInterrupt:
-        console.print("\n  [yellow]cancelled[/yellow]\n")
-        return 1
-    except Exception as exc:  # noqa: BLE001
-        console.print(f"\n  [red]claude setup-token failed: {exc}[/red]\n")
-        return 1
-
-    console.print(
-        "\n  [bold]Paste the token below[/bold] [dim](starts with sk-ant-oat01-…):[/dim]"
-    )
-    try:
-        raw = console.input("  token: ")
-    except (EOFError, KeyboardInterrupt):
-        console.print("\n  [yellow]cancelled[/yellow]\n")
-        return 1
-
-    token = "".join(raw.split())
-    if not token.startswith("sk-ant-oat01-"):
-        console.print(
-            "\n  [red]Token doesn't look right (expected sk-ant-oat01-… prefix).[/red]\n"
-            "  [dim]Nothing was written. Try again.[/dim]\n"
-        )
-        return 1
-
-    token_path = _native_ssh_token_path()
-    try:
-        token_path.parent.mkdir(parents=True, exist_ok=True)
-        token_path.write_text(token, encoding="utf-8")
-        os.chmod(token_path, 0o600)
-    except OSError as exc:
-        console.print(f"\n  [red]failed to write token file: {exc}[/red]\n")
-        return 1
-
-    console.print(
-        f"\n  [green]\u2713 token saved[/green]   [dim]{token_path}[/dim]\n"
-        "  [dim]chmod 600. SSH sessions will now use the native account.\n"
-        "  If Claude ever invalidates this token, rerun this command.[/dim]\n"
-    )
-    return 0
 
 
 # ── Discovery helpers ─────────────────────────────────────────────────────────
@@ -1346,9 +1234,6 @@ def _exec_altergo(
 ) -> None:
     """Build the altergo argv and run it as a child process."""
     import shutil
-
-    if chosen_account == "native" and not _check_native_ssh_token(console):
-        return
 
     provider_label = chosen_provider if chosen_provider else _get_account_provider(chosen_account)
     mode_hint = ""

@@ -561,18 +561,6 @@ class MainMenuScreen(Screen):
         color: #5fff87;
     }
 
-    #menu-rover-label {
-        width: 100%;
-        content-align: center middle;
-        text-align: center;
-        /* Color comes from the embedded ANSI gradient inside the figlet
-           renderable — the CSS color here would only apply to non-ANSI text
-           fallback (e.g. rich_pyfiglet import failure). Keep it white so
-           the fallback is readable too. */
-        color: #ffffff;
-        padding-bottom: 0;
-    }
-
     #menu-box {
         width: 100%;
         height: auto;
@@ -587,7 +575,7 @@ class MainMenuScreen(Screen):
     }
 
     #menu-version {
-        width: 10;
+        width: auto;
         color: #505070;
     }
 
@@ -740,26 +728,12 @@ class MainMenuScreen(Screen):
         if term_w >= 40 and term_h >= 14:
             figlet_text = nickname if use_nickname else "rover"
             yield Static(_figlet_renderable(header_font, figlet_text, term_w), id="menu-figlet")
-            if use_nickname:
-                # Small figlet of "rover" beneath the big nickname, so users
-                # can still tell which app they're in. White gradient so it
-                # reads clearly against the bright-green nickname above and
-                # doesn't blend into it.
-                yield Static(
-                    _figlet_renderable(
-                        "small",
-                        "rover",
-                        term_w,
-                        colors=["#ffffff", "#e0e0e0", "#a0a0a0"],
-                    ),
-                    id="menu-rover-label",
-                )
         # Textual requires a Container/Vertical/Horizontal for nested widgets;
         # Static is leaf-only and silently overlaps children when used as a
         # container, which produced the broken-looking stacked render.
         with Vertical(id="menu-box"):
             with Horizontal(id="menu-header"):
-                yield Label(f"v{__version__}", id="menu-version")
+                yield Label(f"rover v{__version__}", id="menu-version")
                 yield Label("", id="menu-caff")
                 yield Label(_now_str(), id="menu-clock")
             yield Static("", id="menu-stats")

@@ -36,8 +36,9 @@ from rover.sessions_index import (
 
 class TestDecodeProjectPath:
     def test_leading_dash_becomes_root_slash(self):
-        # -Users-netz-Documents-git-foo → /home/user/Documents/git/foo
-        assert _decode_project_path("-Users-netz-Documents-git-foo") == "/home/user/Documents/git/foo"
+        # Leading dash is replaced with `/`; subsequent dashes become `/`.
+        # -home-alice-projects-foo → /home/alice/projects/foo
+        assert _decode_project_path("-home-alice-projects-foo") == "/home/alice/projects/foo"
 
     def test_no_leading_dash_replaces_all_dashes(self):
         # Without a leading dash, every dash becomes a slash

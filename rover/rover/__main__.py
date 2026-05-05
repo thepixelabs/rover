@@ -109,34 +109,7 @@ def main() -> None:
         action="store_true",
         help="skip PATH check on startup",
     )
-    parser.add_argument(
-        "--setup-native-ssh",
-        action="store_true",
-        help="generate a long-lived Claude OAuth token so the native account works over SSH",
-    )
     args = parser.parse_args()
-
-    # Native SSH bridge setup. Works from Mac GUI or SSH (claude setup-token
-    # prints a URL the user opens in any browser, incl. on a phone while
-    # SSH'd from Termius). Exits after completion.
-    if args.setup_native_ssh:
-        from rover.altergo_launcher import run_native_ssh_setup
-        sys.exit(run_native_ssh_setup())
-
-    # If ~/.claude/rover-native-token exists, ensure CLAUDE_CODE_OAUTH_TOKEN
-    # is exported for child processes (claude, altergo). The ~/.zshrc guard
-    # covers fresh SSH logins, but not the case where the token was written
-    # inside the current shell session — so we belt-and-brace here.
-    if not os.environ.get("CLAUDE_CODE_OAUTH_TOKEN"):
-        try:
-            from rover.altergo_launcher import _native_ssh_token_path
-            _tok = _native_ssh_token_path()
-            if _tok.exists() and _tok.stat().st_size > 0:
-                os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = _tok.read_text(
-                    encoding="utf-8"
-                ).strip()
-        except Exception:
-            pass
 
     # Load config
     from rover.config import load_config, get_nickname, save_config

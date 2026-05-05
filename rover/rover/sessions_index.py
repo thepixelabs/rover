@@ -80,7 +80,7 @@ class SessionRecord(NamedTuple):
 def _decode_project_path(encoded: str) -> str:
     """Decode an altergo/Claude Code encoded project directory name.
 
-    -Users-netz-Documents-git-foo  →  /home/user/Documents/git/foo
+    -home-alice-projects-foo  →  /home/alice/projects/foo
     """
     if not encoded:
         return ""
