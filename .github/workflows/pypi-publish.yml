@@ -1,12 +1,11 @@
 name: Rover — PyPI Publish
 
-# Triggered by a tag of the form rover-v0.3.4 pushed to any branch.
-# The tag must be created manually — it is NOT created by the semantic-release
-# flow, which owns non-prefixed tags.
+# Triggered by a tag of the form v0.3.4 pushed to any branch.
+# The tag must be created manually (no semantic-release automation).
 on:
   push:
     tags:
-      - "rover-v*"
+      - "v*"
 
 jobs:
   build-and-publish:
@@ -19,9 +18,12 @@ jobs:
     #   pypi.org → Account → Publishing → Add a pending publisher
     #   Publisher: GitHub Actions
     #   Owner:     thepixelabs
-    #   Repository: dispatch
-    #   Workflow:  rover-pypi-publish.yml
+    #   Repository: rover
+    #   Workflow:  pypi-publish.yml
     #   Environment: pypi
+    # NOTE: The existing trusted-publisher config in PyPI still points to
+    # thepixelabs/dispatch — update it to thepixelabs/rover before pushing
+    # the first v* tag. See Step 4 handoff notes.
     permissions:
       contents: write   # create GitHub Release
       id-token: write   # OIDC token exchange with PyPI
@@ -32,34 +34,29 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Install build frontend
         run: pip install build
 
-      # Build from rover/ so hatchling picks up rover/pyproject.toml (name = rover-tui).
       - name: Build wheel and sdist
-        working-directory: rover
         run: python -m build
-
-      # Move dist/ to repo root — pypa/gh-action-pypi-publish expects dist/ at root.
-      - name: Move dist to repo root
-        run: mv rover/dist dist
 
       - name: Publish to PyPI (OIDC trusted publisher)
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
 
-      # Strip "rover-v" prefix: rover-v0.3.4 → 0.3.4 (PEP 440, matches sdist filename)
+      # Strip "v" prefix: v0.3.4 → 0.3.4 (PEP 440, matches sdist filename)
       - name: Derive version from tag
         id: tag
-        run: echo "version=${GITHUB_REF_NAME#rover-v}" >> "$GITHUB_OUTPUT"
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
@@ -77,12 +74,6 @@ jobs:
 
             ```bash
             brew install thepixelabs/tap/rover
-            ```
-
-            or via the full installer (includes tmux config + SSH auto-launch):
-
-            ```bash
-            curl -fsSL https://raw.githubusercontent.com/thepixelabs/dispatch/main/rover/install.sh | bash
             ```
           files: dist/*
           fail_on_unmatched_files: false
@@ -110,7 +101,6 @@ jobs:
     permissions: {}
 
     steps:
-      # Use the existing tap-scoped GitHub App — same one used by dmg-release.yml.
       - name: Generate tap-scoped GitHub App token
         id: app-token
         uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
@@ -120,9 +110,6 @@ jobs:
           owner: thepixelabs
           repositories: homebrew-tap
 
-      # Use repository_dispatch (needs contents:write only — the App already has it,
-      # as proven by dmg-release.yml). workflow_dispatch would require actions:write,
-      # which the tap-scoped App is not granted.
       - name: Dispatch rover-bump event to homebrew-tap
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}

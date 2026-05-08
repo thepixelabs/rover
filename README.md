@@ -1,12 +1,19 @@
 # Rover
 
+[![PyPI version](https://img.shields.io/pypi/v/rover-tui.svg)](https://pypi.org/project/rover-tui/)
+[![GitHub release](https://img.shields.io/github/v/release/thepixelabs/rover)](https://github.com/thepixelabs/rover/releases)
+[![License](https://img.shields.io/github/license/thepixelabs/rover)](LICENSE)
+[![Tests](https://github.com/thepixelabs/rover/actions/workflows/ci.yml/badge.svg)](https://github.com/thepixelabs/rover/actions/workflows/ci.yml)
+
 The Dispatch TUI — SSH into your Mac from your phone and check, launch, or kill any agent.
+
+Landing page: https://rover.pixelabs.net
 
 ## What Rover is
 
-Rover is a terminal companion for Dispatch. It runs on your Mac (or a Linux host), and you reach
-it over SSH from a phone or tablet to see which agents are running, start new ones, and kill the
-ones that aren't.
+Rover is a terminal companion for [Dispatch](https://github.com/thepixelabs/dispatch). It runs on
+your Mac (or a Linux host), and you reach it over SSH from a phone or tablet to see which agents
+are running, start new ones, and kill the ones that aren't.
 
 ## Prerequisites
 
@@ -16,28 +23,22 @@ ones that aren't.
 
 ## Install
 
-### Homebrew (macOS one-liner)
+### Homebrew (macOS, primary)
 
 ```bash
 brew install thepixelabs/tap/rover
 ```
 
-### pipx (any Linux box with Python)
+### pipx (any platform with Python)
 
 ```bash
-pipx install rover
+pipx install rover-tui
 ```
 
 ### uv (modern pip alternative)
 
 ```bash
-uv tool install rover
-```
-
-### Script (no-trust escape hatch)
-
-```bash
-curl -LsSf https://rover.thepixelabs.dev/install.sh | bash
+uv tool install rover-tui
 ```
 
 ## Update
@@ -51,19 +52,13 @@ brew upgrade thepixelabs/tap/rover
 ### pipx
 
 ```bash
-pipx upgrade rover
+pipx upgrade rover-tui
 ```
 
 ### uv
 
 ```bash
-uv tool upgrade rover
-```
-
-### Script
-
-```bash
-curl -LsSf https://rover.thepixelabs.dev/install.sh | bash
+uv tool upgrade rover-tui
 ```
 
 ## Uninstall
@@ -77,19 +72,13 @@ brew uninstall thepixelabs/tap/rover
 ### pipx
 
 ```bash
-pipx uninstall rover
+pipx uninstall rover-tui
 ```
 
 ### uv
 
 ```bash
-uv tool uninstall rover
-```
-
-### Script
-
-```bash
-rm -rf ~/.rover ~/.local/bin/rover  # also remove the "rover auto-launch" block from ~/.zshrc
+uv tool uninstall rover-tui
 ```
 
 ## Quick start
@@ -106,9 +95,6 @@ host first:
 ```bash
 ssh you@your-mac.local
 ```
-
-If you installed via the script channel, the auto-launch snippet runs `rover` for you on every
-SSH connection. Otherwise, run `rover` once you're in.
 
 Run `rover` — press `?` for the keymap.
 
@@ -138,20 +124,10 @@ Run `rover` — press `?` for the keymap.
 | `p` | yolo-pick — cross-account session picker, launch with `--yolo-resume <id>` |
 | `Esc` / `q` | Cancel |
 
-The four teaser chords from the marketing site are `Y` (yolo), `D` (dashboard), `A` (altergo),
-and `Q` (quit). Everything else is above.
+## Contributing
 
-## Escape hatch — what `install.sh` does
+Issues and pull requests welcome at https://github.com/thepixelabs/rover.
 
-The script channel is the fallback for SSH hosts without Homebrew or pipx. On a clean run it:
+## License
 
-- Creates a dedicated venv at `~/.rover` and installs Rover into it.
-- Writes a launcher at `~/.local/bin/rover` that shells into that venv.
-- Appends `export PATH="$HOME/.local/bin:$PATH"` to `~/.zshrc` if it isn't already there.
-- Appends a `# rover auto-launch` block to `~/.zshrc` (after a `[Y/n]` prompt) so `rover` starts
-  on every SSH login.
-- Appends a `# Rover detach shortcut` block to `~/.tmux.conf` (Ctrl+Q to detach, prefix Ctrl+A).
-
-To remove everything the script added, use the Script row in the Uninstall section above and
-delete the `rover auto-launch` and `Rover detach shortcut` blocks from `~/.zshrc` and
-`~/.tmux.conf`.
+See [LICENSE](LICENSE).

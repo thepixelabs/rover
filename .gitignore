@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.coverage
+htmlcov/
+
+# macOS
+.DS_Store
+
+# Claude Code
+.claude/
+
+# Landing page artifacts
+landing/_site/
+node_modules/

@@ -30,9 +30,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://rover.thepixelabs.dev"
-Repository = "https://github.com/thepixelabs/dispatch"
-Changelog = "https://github.com/thepixelabs/dispatch/releases"
+Homepage = "https://rover.pixelabs.net"
+Repository = "https://github.com/thepixelabs/rover"
+Changelog = "https://github.com/thepixelabs/rover/blob/main/CHANGELOG.md"
 
 [project.scripts]
 rover = "rover.__main__:main"
@@ -43,11 +43,5 @@ dev = [
     "pytest-timeout>=2.3",
 ]
 
-[tool.hatch.build]
-# The top-level repo's .gitignore lists rover/ as a separately-versioned
-# sub-project. Without this, hatchling's default VCS-aware file discovery
-# excludes every .py file under rover/ and produces an empty wheel.
-ignore-vcs = true
-
 [tool.hatch.build.targets.wheel]
-packages = ["rover"]
+packages = ["src/rover"]
