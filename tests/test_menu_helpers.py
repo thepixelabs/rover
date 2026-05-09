@@ -15,7 +15,6 @@ used by _render_menu — we don't snapshot the exact value, just prove it runs).
 
 from __future__ import annotations
 
-import pytest
 
 from rover.menu import _fmt_tokens, _now_str
 

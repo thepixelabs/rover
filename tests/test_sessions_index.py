@@ -13,10 +13,7 @@ Covers:
 from __future__ import annotations
 
 import json
-import pathlib
-import time
 
-import pytest
 
 from rover.sessions_index import (
     _clean,

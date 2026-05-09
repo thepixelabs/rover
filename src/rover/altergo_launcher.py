@@ -194,7 +194,7 @@ def _run_picker(
     from textual.binding import Binding
     from textual.containers import Vertical
     from textual.screen import Screen
-    from textual.widgets import DataTable, Label, Static
+    from textual.widgets import DataTable, Label
 
     if not items:
         return None
@@ -469,7 +469,7 @@ def _run_workspace_prompt() -> str | None:
     from textual.binding import Binding
     from textual.containers import Vertical
     from textual.screen import Screen
-    from textual.widgets import Button, Input, Label, Static
+    from textual.widgets import Button, Input, Label
 
     class WorkspaceScreen(Screen):
         BINDINGS = [
@@ -657,7 +657,7 @@ def _run_new_project_prompt(workspace: str) -> pathlib.Path | None:
             with Vertical(id="np-box"):
                 yield Label("rover  \u00b7  new project", id="np-title")
                 yield Label("\u2500" * 55, id="np-divider")
-                yield Label(f"Create a new project folder under:", classes="np-hint")
+                yield Label("Create a new project folder under:", classes="np-hint")
                 yield Label(f"  [dim]{workspace}[/dim]", classes="np-hint")
                 yield Label("", classes="np-hint")
                 yield Label("No spaces or slashes. `git init` runs automatically.",
@@ -727,7 +727,7 @@ def _run_error_screen(title: str, lines: list[str]) -> None:
     from textual.binding import Binding
     from textual.containers import Vertical
     from textual.screen import Screen
-    from textual.widgets import Button, Label, Static
+    from textual.widgets import Button, Label
 
     class ErrorScreen(Screen):
         BINDINGS = [

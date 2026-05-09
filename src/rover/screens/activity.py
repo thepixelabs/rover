@@ -13,7 +13,6 @@ Key bindings:
 from __future__ import annotations
 
 import threading
-import time
 from typing import Optional
 
 from textual.app import ComposeResult
@@ -176,7 +175,6 @@ class ActivityScreen(Screen):
 
     def _fetch_events(self, initial: bool = False) -> None:
         since = 0 if initial else self._last_event_ts
-        session_filter = self.session_id
 
         def _fetch() -> None:
             events, online = fetch_activity(
@@ -232,10 +230,10 @@ class ActivityScreen(Screen):
             )
         else:
             bar.update(
-                f"  [dim]showing:[/dim] [cyan]all events[/cyan]"
-                f"  [bold #00d7ff]C[/bold #00d7ff] clear  "
-                f"[bold #00d7ff]R[/bold #00d7ff] refresh  "
-                f"[bold #00d7ff]q[/bold #00d7ff] back"
+                "  [dim]showing:[/dim] [cyan]all events[/cyan]"
+                "  [bold #00d7ff]C[/bold #00d7ff] clear  "
+                "[bold #00d7ff]R[/bold #00d7ff] refresh  "
+                "[bold #00d7ff]q[/bold #00d7ff] back"
             )
 
     def _repaint_status_bar(self) -> None:

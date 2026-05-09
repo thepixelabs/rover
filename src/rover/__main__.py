@@ -112,7 +112,7 @@ def main() -> None:
     args = parser.parse_args()
 
     # Load config
-    from rover.config import load_config, get_nickname, save_config
+    from rover.config import load_config, save_config
     config = load_config()
 
     hours = args.hours if args.hours is not None else config.get("time_window_hours", 2)
@@ -143,7 +143,7 @@ def main() -> None:
 
     # Check for an interactive terminal early — before the banner wastes time.
     # Without a PTY (e.g. SSH without -t), both stdin and /dev/tty will fail.
-    import termios, io as _io
+    import termios
     _has_tty = False
     try:
         _fd = sys.stdin.fileno()

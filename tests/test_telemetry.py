@@ -14,9 +14,7 @@ Covers:
 from __future__ import annotations
 
 import json
-import pathlib
 
-import pytest
 
 from rover.telemetry import _emit, _maybe_rotate, _DROP_LINES, _MAX_BYTES
 
@@ -45,7 +43,7 @@ class TestEmitWrites:
         _emit({"event": "third"})
         lines = tmp_events_file.read_text(encoding="utf-8").splitlines()
         assert len(lines) == 3
-        events = [json.loads(l)["event"] for l in lines]
+        events = [json.loads(line)["event"] for line in lines]
         assert events == ["first", "second", "third"]
 
     def test_emit_creates_directory_if_missing(self, tmp_path, monkeypatch):

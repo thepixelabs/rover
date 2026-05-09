@@ -82,7 +82,7 @@ def _fmt_cost(cost_usd: float) -> str:
     if cost_usd == 0.0:
         return "[dim]—[/]"
     if cost_usd < 0.001:
-        return f"[dim]<$0.001[/]"
+        return "[dim]<$0.001[/]"
     return f"${cost_usd:.3f}"
 
 
@@ -334,7 +334,7 @@ class DashboardScreen(Screen):
             return
 
         parts = [
-            f"[green]● online[/green]",
+            "[green]● online[/green]",
             f"[dim]{stats.agent_count} agents[/dim]",
             f"[green]{stats.running_count} running[/green]" if stats.running_count else "[dim]0 running[/dim]",
             f"[dim]{_fmt_tokens(stats.total_tokens)} tok[/dim]",
@@ -362,10 +362,10 @@ class DashboardScreen(Screen):
 
     def _repaint_actions(self) -> None:
         lines = [
-            f"  [bold #00d7ff]Enter[/bold #00d7ff]  [dim]open detail[/dim]",
-            f"  [bold #00d7ff]A[/bold #00d7ff]      [dim]activity log[/dim]",
-            f"  [bold #00d7ff]R[/bold #00d7ff]      [dim]refresh now[/dim]",
-            f"  [bold #00d7ff]1-9[/bold #00d7ff]    [dim]quick jump[/dim]",
+            "  [bold #00d7ff]Enter[/bold #00d7ff]  [dim]open detail[/dim]",
+            "  [bold #00d7ff]A[/bold #00d7ff]      [dim]activity log[/dim]",
+            "  [bold #00d7ff]R[/bold #00d7ff]      [dim]refresh now[/dim]",
+            "  [bold #00d7ff]1-9[/bold #00d7ff]    [dim]quick jump[/dim]",
         ]
         self.query_one("#dash-actions", Static).update("  ".join(lines))
 

@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import Optional
 
 
 def _probe_cols(default: int = 80) -> int:

@@ -8,7 +8,6 @@ wake/sleep, toggle, stale-pid cleanup. We never actually spawn
 from __future__ import annotations
 
 import os
-import pathlib
 import sys
 
 import pytest

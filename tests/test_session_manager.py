@@ -13,7 +13,6 @@ import subprocess
 import time
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from rover.session_manager import TmuxSession, list_sessions
 

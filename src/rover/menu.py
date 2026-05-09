@@ -363,7 +363,7 @@ class NewSessionInputModalScreen(ModalScreen):
             self.set_timer(0.8, lambda: self.dismiss(
                 {"created": True, "name": name}))
         else:
-            result.update(f"[red]✗[/red] failed (collision?)")
+            result.update("[red]✗[/red] failed (collision?)")
             self.set_timer(1.4, lambda: self.dismiss(
                 {"created": False, "name": name}))
 

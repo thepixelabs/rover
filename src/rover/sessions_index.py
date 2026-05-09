@@ -36,7 +36,6 @@ from __future__ import annotations
 import json
 import pathlib
 import re
-import time
 from typing import NamedTuple
 
 # ---------------------------------------------------------------------------

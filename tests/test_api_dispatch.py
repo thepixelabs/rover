@@ -22,9 +22,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from rover.api import (
-    ActivityEvent,
-    MenuStats,
-    Session,
     _derive_display_status,
     _parse_activity_event,
     _parse_session,

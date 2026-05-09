@@ -19,7 +19,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
-from textual.widgets import Label, RichLog, Static
+from textual.widgets import Label, Static
 
 from rover.api import Session, fetch_single_session
 from rover.menu import _fmt_tokens, _now_str
