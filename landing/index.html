@@ -2956,42 +2956,42 @@
           <p class="section-label">// install</p>
           <h2 class="section-title">Paste one line.</h2>
           <p class="section-desc">
-            Pick your flavor. Rover ships on Homebrew and pipx.
+            Pick your flavor. Rover ships on Homebrew and pip.
           </p>
         </div>
 
         <div class="rv-install-layout">
           <div class="rv-install">
             <div class="rv-tabs" role="tablist" aria-label="Install method">
-              <button type="button" class="rv-tab" role="tab" id="rv-tab-homebrew" aria-controls="rv-panel-homebrew" aria-selected="false" data-channel="homebrew" data-rover-event="rover.install.tab_homebrew">
+              <button type="button" class="rv-tab" role="tab" id="rv-tab-homebrew" aria-controls="rv-panel-homebrew" aria-selected="true" data-channel="homebrew" data-rover-event="rover.install.tab_homebrew">
                 <img src="assets/packs/pack-a-relay-noir/b4-tab-homebrew.webp" alt="" width="14" height="14" class="rv-pack-tab-icon" aria-hidden="true" />
                 Homebrew
               </button>
-              <button type="button" class="rv-tab" role="tab" id="rv-tab-pipx" aria-controls="rv-panel-pipx" aria-selected="true" data-channel="pipx" data-rover-event="rover.install.tab_pipx">
-                <img src="assets/packs/pack-a-relay-noir/b4-tab-pipx.webp" alt="" width="14" height="14" class="rv-pack-tab-icon" aria-hidden="true" />
-                pipx
+              <button type="button" class="rv-tab" role="tab" id="rv-tab-pip" aria-controls="rv-panel-pip" aria-selected="false" data-channel="pip" data-rover-event="rover.install.tab_pip">
+                <img src="assets/packs/pack-a-relay-noir/b4-tab-script.webp" alt="" width="14" height="14" class="rv-pack-tab-icon" aria-hidden="true" />
+                pip
               </button>
             </div>
 
             <div class="rv-tabpanels">
-              <div class="rv-tabpanel" role="tabpanel" id="rv-panel-homebrew" aria-labelledby="rv-tab-homebrew" data-active="false">
+              <div class="rv-tabpanel" role="tabpanel" id="rv-panel-homebrew" aria-labelledby="rv-tab-homebrew" data-active="true">
                 <button type="button" class="rv-install-snippet" data-channel="homebrew" data-cmd="brew install thepixelabs/tap/rover" data-rover-event="rover.install.copy_homebrew" aria-label="Copy Homebrew install command to clipboard">
                   <span class="rv-prompt" aria-hidden="true">$</span>
                   <span class="rv-cmd">brew install thepixelabs/tap/rover</span>
                   <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 </button>
               </div>
-              <div class="rv-tabpanel" role="tabpanel" id="rv-panel-pipx" aria-labelledby="rv-tab-pipx" data-active="true">
-                <button type="button" class="rv-install-snippet" data-channel="pipx" data-cmd="pipx install rover-tui" data-rover-event="rover.install.copy_pipx" aria-label="Copy pipx install command to clipboard">
+              <div class="rv-tabpanel" role="tabpanel" id="rv-panel-pip" aria-labelledby="rv-tab-pip" data-active="false">
+                <button type="button" class="rv-install-snippet" data-channel="pip" data-cmd="pip install rover-tui" data-rover-event="rover.install.copy_pip" aria-label="Copy pip install command to clipboard">
                   <span class="rv-prompt" aria-hidden="true">$</span>
-                  <span class="rv-cmd">pipx install rover-tui</span>
+                  <span class="rv-cmd">pip install rover-tui</span>
                   <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 </button>
               </div>
             </div>
 
             <p class="rv-install-note">
-              Homebrew is the macOS one-liner. pipx works on any Linux box with Python 3.11+.
+              Homebrew is the macOS one-liner. pip works inside any Python 3.11+ environment on Linux or macOS &mdash; use a venv or pyenv.
             </p>
 
             <div class="rv-win-banner" id="rv-win-banner" role="note">
@@ -3369,8 +3369,8 @@
       var defaultChannel;
       switch (platform) {
         case 'mac':   defaultChannel = 'homebrew'; break;
-        case 'linux': defaultChannel = 'pipx'; break;
-        default:      defaultChannel = 'pipx'; break;
+        case 'linux': defaultChannel = 'pip'; break;
+        default:      defaultChannel = 'homebrew'; break;
       }
 
       /* Windows: show banner, disable tabs (tooltip on any click) */
