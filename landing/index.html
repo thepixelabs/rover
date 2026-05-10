@@ -2956,7 +2956,7 @@
           <p class="section-label">// install</p>
           <h2 class="section-title">Paste one line.</h2>
           <p class="section-desc">
-            Pick your flavor. Rover ships on Homebrew and pip.
+            Pick your flavor. Rover ships on Homebrew and pip &mdash; or clone and run from source.
           </p>
         </div>
 
@@ -2970,6 +2970,15 @@
               <button type="button" class="rv-tab" role="tab" id="rv-tab-pip" aria-controls="rv-panel-pip" aria-selected="false" data-channel="pip" data-rover-event="rover.install.tab_pip">
                 <img src="assets/packs/pack-a-relay-noir/b4-tab-script.webp" alt="" width="14" height="14" class="rv-pack-tab-icon" aria-hidden="true" />
                 pip
+              </button>
+              <button type="button" class="rv-tab" role="tab" id="rv-tab-source" aria-controls="rv-panel-source" aria-selected="false" data-channel="source" data-rover-event="rover.install.tab_source">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="rv-pack-tab-icon" style="opacity:0.85;">
+                  <circle cx="6" cy="6" r="2.5"/>
+                  <circle cx="6" cy="18" r="2.5"/>
+                  <circle cx="18" cy="6" r="2.5"/>
+                  <path d="M6 8.5v7M18 8.5v.5a3 3 0 0 1-3 3H9"/>
+                </svg>
+                Source
               </button>
             </div>
 
@@ -2988,10 +2997,29 @@
                   <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 </button>
               </div>
+              <div class="rv-tabpanel" role="tabpanel" id="rv-panel-source" aria-labelledby="rv-tab-source" data-active="false">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <button type="button" class="rv-install-snippet" data-channel="source" data-cmd="git clone https://github.com/thepixelabs/rover.git" data-rover-event="rover.install.copy_source_clone" aria-label="Copy git clone command to clipboard">
+                    <span class="rv-prompt" aria-hidden="true">$</span>
+                    <span class="rv-cmd">git clone https://github.com/thepixelabs/rover.git</span>
+                    <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                  <button type="button" class="rv-install-snippet" data-channel="source" data-cmd="cd rover && pip install -e &quot;.[dev]&quot;" data-rover-event="rover.install.copy_source_install" aria-label="Copy editable install command to clipboard">
+                    <span class="rv-prompt" aria-hidden="true">$</span>
+                    <span class="rv-cmd">cd rover &amp;&amp; pip install -e ".[dev]"</span>
+                    <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                  <button type="button" class="rv-install-snippet" data-channel="source" data-cmd="rover" data-rover-event="rover.install.copy_source_run" aria-label="Copy rover run command to clipboard">
+                    <span class="rv-prompt" aria-hidden="true">$</span>
+                    <span class="rv-cmd">rover</span>
+                    <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+              </div>
             </div>
 
             <p class="rv-install-note">
-              Homebrew is the macOS one-liner. pip works inside any Python 3.11+ environment on Linux or macOS &mdash; use a venv or pyenv.
+              Homebrew is the macOS one-liner. pip works inside any Python 3.11+ venv on Linux or macOS. <strong>Source</strong> is for contributors &mdash; clone, editable-install with dev deps, hack on the TUI directly.
             </p>
 
             <div class="rv-win-banner" id="rv-win-banner" role="note">
