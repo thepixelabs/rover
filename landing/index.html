@@ -3004,9 +3004,9 @@
                     <span class="rv-cmd">git clone https://github.com/thepixelabs/rover.git</span>
                     <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   </button>
-                  <button type="button" class="rv-install-snippet" data-channel="source" data-cmd="cd rover && pip install -e &quot;.[dev]&quot;" data-rover-event="rover.install.copy_source_install" aria-label="Copy editable install command to clipboard">
+                  <button type="button" class="rv-install-snippet" data-channel="source" data-cmd="cd rover && pip install -e ." data-rover-event="rover.install.copy_source_install" aria-label="Copy editable install command to clipboard">
                     <span class="rv-prompt" aria-hidden="true">$</span>
-                    <span class="rv-cmd">cd rover &amp;&amp; pip install -e ".[dev]"</span>
+                    <span class="rv-cmd">cd rover &amp;&amp; pip install -e .</span>
                     <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   </button>
                   <button type="button" class="rv-install-snippet" data-channel="source" data-cmd="rover" data-rover-event="rover.install.copy_source_run" aria-label="Copy rover run command to clipboard">
@@ -3019,7 +3019,7 @@
             </div>
 
             <p class="rv-install-note">
-              Homebrew is the macOS one-liner. pip works inside any Python 3.11+ venv on Linux or macOS. <strong>Source</strong> is for contributors &mdash; clone, editable-install with dev deps, hack on the TUI directly.
+              Homebrew is the macOS one-liner. pip works inside any Python 3.11+ venv on Linux or macOS. <strong>Source</strong> is for contributors &mdash; clone, editable-install, hack on the TUI directly.
             </p>
 
             <div class="rv-win-banner" id="rv-win-banner" role="note">
@@ -3192,7 +3192,7 @@
             DISPATCH
           </a>
           <p class="footer-brand-desc">
-            Source-available mission control for AI coding agents. Monitor Claude, Codex, Copilot, and Gemini from one real-time dashboard.
+            Mission control for AI coding agents. Monitor Claude, Codex, Copilot, and Gemini from one real-time dashboard.
           </p>
         </div>
 
