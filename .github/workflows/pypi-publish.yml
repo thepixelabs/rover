@@ -1,6 +1,6 @@
 name: Rover — PyPI Publish
 
-# Triggered by a tag of the form v0.3.4 pushed to any branch.
+# Triggered by a tag of the form v0.3.8 pushed to any branch.
 # The tag must be created manually (no semantic-release automation).
 on:
   push:
@@ -21,9 +21,6 @@ jobs:
     #   Repository: rover
     #   Workflow:  pypi-publish.yml
     #   Environment: pypi
-    # NOTE: The existing trusted-publisher config in PyPI still points to
-    # thepixelabs/dispatch — update it to thepixelabs/rover before pushing
-    # the first v* tag. See Step 4 handoff notes.
     permissions:
       contents: write   # create GitHub Release
       id-token: write   # OIDC token exchange with PyPI
@@ -53,7 +50,7 @@ jobs:
       - name: Publish to PyPI (OIDC trusted publisher)
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
 
-      # Strip "v" prefix: v0.3.4 → 0.3.4 (PEP 440, matches sdist filename)
+      # Strip "v" prefix: v0.3.8 → 0.3.8 (PEP 440, matches sdist filename)
       - name: Derive version from tag
         id: tag
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"

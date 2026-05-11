@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/thepixelabs/rover)](LICENSE)
 [![Tests](https://github.com/thepixelabs/rover/actions/workflows/ci.yml/badge.svg)](https://github.com/thepixelabs/rover/actions/workflows/ci.yml)
 
-The Dispatch TUI — SSH into your Mac from your phone and check, launch, or kill any agent.
+A terminal session manager — SSH in from your phone and manage tmux sessions and AI agents from anywhere.
 
 Landing page: https://rover.pixelabs.net
 
@@ -98,6 +98,25 @@ ssh you@your-mac.local
 
 Run `rover` — press `?` for the keymap.
 
+### Auto-launch on SSH (optional)
+
+If you mostly use rover by SSH'ing in from a phone or tablet, add this to
+`~/.zshrc` on the host so the shell drops you straight into rover:
+
+```bash
+# Auto-launch rover on SSH sessions
+if [[ -n "$SSH_CONNECTION" ]] \
+   && [[ -z "$TMUX" ]] \
+   && [[ $- == *i* ]] \
+   && command -v rover >/dev/null 2>&1; then
+  exec rover
+fi
+```
+
+Guards explained: only runs over SSH, only outside an existing tmux session,
+only for interactive shells, and only if `rover` is on PATH — so local
+terminals and scripted SSH commands stay untouched.
+
 ## Keymap
 
 ### Main menu
@@ -112,6 +131,9 @@ Run `rover` — press `?` for the keymap.
 | `A` | altergo launcher (project + account picker) |
 | `B` | Server / backend panel |
 | `X` | Kill the selected tmux session (asks to confirm) |
+| `R` | Resume a previous conversation (cross-account session picker) |
+| `N` | New tmux session |
+| `C` | Toggle keep-awake / caffeinate (macOS only) |
 | `S` | Settings |
 | `Q` | Quit |
 

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "rover-tui"
 version = "0.3.8"
-description = "On-the-go session manager and agent monitor for dispatch"
+description = "On-the-go session manager and agent monitor for Dispatch"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
