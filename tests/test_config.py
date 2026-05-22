@@ -13,9 +13,6 @@ Covers:
 from __future__ import annotations
 
 import json
-import pathlib
-
-import pytest
 
 import rover.config as config_module
 from rover.config import DEFAULT_CONFIG, load_config, save_config

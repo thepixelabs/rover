@@ -866,7 +866,6 @@ class MainMenuScreen(Screen):
         except Exception:
             return
 
-        s = self._stats
         awake = caffeinate.is_available() and caffeinate.is_awake()
 
         rows: list[tuple[str, str, str]] = [
