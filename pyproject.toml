@@ -5,11 +5,11 @@ build-backend = "hatchling.build"
 [project]
 name = "rover-tui"
 version = "0.3.8"
-description = "On-the-go session manager and agent monitor for Dispatch"
+description = "SSH-friendly TUI session manager and AI agent launcher for your Mac"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
-keywords = ["tui", "terminal", "ai", "agents", "claude", "dispatch"]
+keywords = ["tui", "terminal", "ai", "agents", "claude"]
 classifiers = [
     "Environment :: Console",
     "License :: Other/Proprietary License",
@@ -45,3 +45,43 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/rover"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/rover/__init__.py:__version__"]
+branch = "main"
+build_command = "pip install build && python -m build"
+commit_parser = "angular"
+tag_format = "v{version}"
+changelog_file = "CHANGELOG.md"
+
+[tool.semantic_release.commit_parser_options]
+minor_tags = ["feat"]
+major_tags = ["landmark"]
+patch_tags = ["fix", "perf", "refactor", "revert"]
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = [
+    "^style",
+    "^test",
+    "^build",
+    "^ci",
+    "^chore",
+]
+
+[tool.semantic_release.changelog.default_templates]
+changelog_file = "CHANGELOG.md"
+
+[tool.semantic_release.publish]
+upload_to_pypi = false
+upload_to_release = true
+
+[tool.semantic_release.remote]
+type = "github"
+
+[tool.semantic_release.remote.token]
+env = "GH_TOKEN"

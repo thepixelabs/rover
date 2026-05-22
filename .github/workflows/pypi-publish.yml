@@ -1,86 +1,95 @@
-name: Rover — PyPI Publish
+name: Release
 
-# Triggered by a tag of the form v0.3.8 pushed to any branch.
-# The tag must be created manually (no semantic-release automation).
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+
+# Deny all permissions by default; the release job grants only what it needs.
+permissions: {}
+
+# Never cancel an in-flight release — a second push queues behind the running
+# job rather than killing it mid-way through version bumping and tag creation.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  build-and-publish:
-    name: Build wheel + sdist, publish to PyPI
+  release:
+    name: Release
     runs-on: ubuntu-latest
+    # The pypi environment gates OIDC trusted publishing. CI correctness is
+    # enforced by branch protection (require status checks on PRs) — not here.
     environment: pypi
-    # Permissions scoped to this job only.
-    # Trusted Publisher (OIDC) — no API token required.
-    # Configure on PyPI BEFORE first tag push:
-    #   pypi.org → Account → Publishing → Add a pending publisher
-    #   Publisher: GitHub Actions
-    #   Owner:     thepixelabs
-    #   Repository: rover
-    #   Workflow:  pypi-publish.yml
-    #   Environment: pypi
     permissions:
-      contents: write   # create GitHub Release
-      id-token: write   # OIDC token exchange with PyPI
+      contents: write      # push version-bump commit and tag
+      issues: write        # comment on issues referenced in commits
+      pull-requests: write # comment on merged PRs with release link
+      id-token: write      # OIDC trusted publishing to PyPI
 
     outputs:
-      version: ${{ steps.tag.outputs.version }}
-      sdist_sha256: ${{ steps.sdist.outputs.sha256 }}
+      released: ${{ steps.release.outputs.released }}
+      version: ${{ steps.release.outputs.version }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          # Use the GH_TOKEN PAT as the checkout token so its credentials are
+          # persisted on the `origin` remote.  python-semantic-release shells
+          # out to plain `git push`, which reads credentials from the remote
+          # URL helper — not from the GH_TOKEN env var (that's a `gh` CLI
+          # convention).  The PAT must also have permission to push to main
+          # under any branch protection rules in force.
+          token: ${{ secrets.GH_TOKEN }}
+          # Full history required so python-semantic-release can walk back to
+          # the last tag when computing which commits need a new version.
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.12"
-          cache: pip
 
-      - name: Install build frontend
-        run: pip install build
+      # Cache pip downloads keyed on the workflow file itself. The only deps
+      # here are python-semantic-release and build — the workflow file hash is
+      # a stable, correct cache key for this isolated tool environment.
+      - name: Cache pip downloads
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-release-${{ hashFiles('.github/workflows/release.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-release-
 
-      - name: Build wheel and sdist
+      - name: Install release tooling
+        run: pip install "python-semantic-release==9.*" build
+
+      - name: Configure git bot identity
+        run: |
+          git config --global user.name "Ground Control"
+          git config --global user.email "ground-control@users.noreply.github.com"
+
+      - name: Run python-semantic-release
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: semantic-release version --push
+
+      - name: Build sdist and wheel
+        if: steps.release.outputs.released == 'true'
         run: python -m build
 
-      - name: Publish to PyPI (OIDC trusted publisher)
-        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
-
-      # Strip "v" prefix: v0.3.8 → 0.3.8 (PEP 440, matches sdist filename)
-      - name: Derive version from tag
-        id: tag
-        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+      - name: Publish to PyPI (trusted publishing)
+        if: steps.release.outputs.released == 'true'
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
         with:
-          tag_name: ${{ github.ref_name }}
-          name: "Rover ${{ steps.tag.outputs.version }}"
-          body: |
-            ## Install
-
-            ```bash
-            pipx install rover-tui
-            ```
-
-            or via Homebrew:
-
-            ```bash
-            brew install thepixelabs/tap/rover
-            ```
-          files: dist/*
-          fail_on_unmatched_files: false
+          packages-dir: dist/
 
       # hatchling normalises rover-tui → rover_tui in artifact filenames.
       - name: Compute sdist sha256
         id: sdist
+        if: steps.release.outputs.released == 'true'
         run: |
           set -euo pipefail
-          SDIST="dist/rover_tui-${{ steps.tag.outputs.version }}.tar.gz"
+          SDIST="dist/rover_tui-${{ steps.release.outputs.version }}.tar.gz"
           if [ ! -f "$SDIST" ]; then
             echo "ERROR: sdist not found at $SDIST"
             ls -la dist/
@@ -91,15 +100,9 @@ jobs:
           echo "sha256: $SHA"
           echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
 
-  trigger-homebrew-bump:
-    name: Trigger Homebrew formula bump
-    runs-on: ubuntu-latest
-    needs: build-and-publish
-    permissions: {}
-
-    steps:
       - name: Generate tap-scoped GitHub App token
         id: app-token
+        if: steps.release.outputs.released == 'true'
         uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
         with:
           app-id: ${{ secrets.HOMEBREW_TAP_APP_ID }}
@@ -108,10 +111,11 @@ jobs:
           repositories: homebrew-tap
 
       - name: Dispatch rover-bump event to homebrew-tap
+        if: steps.release.outputs.released == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          VERSION: ${{ needs.build-and-publish.outputs.version }}
-          SHA256: ${{ needs.build-and-publish.outputs.sdist_sha256 }}
+          VERSION: ${{ steps.release.outputs.version }}
+          SHA256: ${{ steps.sdist.outputs.sha256 }}
         run: |
           set -euo pipefail
           if [ -z "$SHA256" ]; then

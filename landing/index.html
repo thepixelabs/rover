@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rover — Your fleet, one SSH away.</title>
-  <meta name="description" content="Rover is an SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes. Works with altergo and Dispatch — no laptop needed." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+  <meta name="description" content="Rover is an SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes. Works with altergo — no laptop needed." />
   <meta name="keywords" content="Rover, SSH from phone, AI agent monitoring from phone, terminal companion, Blink, Termius, a-Shell, altergo, mobile agent control" />
   <meta name="author" content="thepixelabs" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
@@ -16,7 +19,7 @@
 
   <!-- Open Graph / Social -->
   <meta property="og:title" content="Rover — Your fleet, one SSH away." />
-  <meta property="og:description" content="Rover is an SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes. Works with altergo and Dispatch — no laptop needed." />
+  <meta property="og:description" content="Rover is an SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes. Works with altergo — no laptop needed." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://rover.pixelabs.net/" />
   <meta property="og:image" content="https://rover.pixelabs.net/assets/packs/pack-a-relay-noir/b1-hero-illustration.webp" />
@@ -42,7 +45,7 @@
         "@type": "WebPage",
         "@id": "https://rover.pixelabs.net/#webpage",
         "name": "Rover — On-the-go SSH session manager for your Mac",
-        "description": "Rover is an SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes. Works with altergo and Dispatch.",
+        "description": "Rover is an SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes. Works with altergo.",
         "url": "https://rover.pixelabs.net/",
         "isPartOf": {
           "@type": "WebSite",
@@ -67,7 +70,7 @@
       {
         "@type": "SoftwareApplication",
         "name": "Rover",
-        "description": "SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes. Works with altergo and Dispatch.",
+        "description": "SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes. Works with altergo.",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "macOS, Linux",
         "url": "https://rover.pixelabs.net/",
@@ -2189,6 +2192,63 @@
       .rv-requirement-row dt { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
     }
 
+    /* ================================================================
+       BLOCK 6b — SSH SETUP SECTION (#get-home)
+       ================================================================ */
+
+    .rv-install-snippet--multiline {
+      align-items: flex-start;
+      min-height: auto;
+      cursor: pointer;
+    }
+    .rv-install-snippet--multiline .rv-prompt {
+      font-size: 0.7rem;
+      opacity: 0.65;
+      padding-top: 2px;
+      min-width: 72px;
+      flex-shrink: 0;
+    }
+    .rv-cmd--block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1 1 0;
+      overflow: visible;
+      text-overflow: clip;
+      white-space: pre;
+    }
+    .rv-code-comment { color: var(--text-dim); font-size: 0.82em; }
+    .rv-code-line    { font-size: 0.9rem; }
+    .rv-code-indent  { padding-left: 1.6em; }
+    .rv-code-var     { color: var(--neon-cyan); }
+    [data-theme="light"] .rv-code-var { color: #006092; }
+
+    .rv-snippet-center {
+      max-width: 560px;
+      margin: 0 auto 28px;
+    }
+
+    #get-home .section-desc {
+      max-width: 800px;
+      font-size: clamp(0.9rem, 1vw, 1rem);
+    }
+
+    .rv-get-home-note {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.65;
+    }
+    [data-theme="light"] .rv-get-home-note {
+      color: rgba(18, 18, 28, 0.55);
+    }
+
+    @media (max-width: 640px) {
+      .rv-cmd--block { white-space: normal; }
+    }
+
     /* ---- FOOTER CTA LOCKUP (Block 7) ---- */
     .rv-lockup {
       font-family: var(--font-mono);
@@ -2244,20 +2304,19 @@
       height: 100%;
       object-fit: cover;
       object-position: center top;
-      opacity: 0.28;
-      /* Scale up slightly so the crop is tighter / more immersive */
+      opacity: 0.45;
       transform: scale(1.08);
       transform-origin: center top;
       user-select: none;
     }
-    /* Light mode: desaturate + brighten so it reads as a light wash */
     [data-theme="light"] .rv-dictate-bg-img {
-      opacity: 0.14;
-      filter: grayscale(0.4) brightness(1.4) contrast(0.85);
+      opacity: 0.22;
+      filter: brightness(0.85) contrast(1.2);
     }
-    /* Dark mode: slight cyan tint to tie the image into the brand palette */
     [data-theme="dark"] .rv-dictate-bg-img {
-      filter: saturate(0.8) brightness(0.75) hue-rotate(180deg) invert(0.05);
+      opacity: 0.6;
+      filter: brightness(1.8) saturate(1.4) contrast(1.1);
+      mix-blend-mode: screen;
     }
     /* Gradient vignettes so the image fades into the page at top and bottom */
     .rv-dictate-bg::after {
@@ -2789,11 +2848,10 @@
   <header class="site-nav" role="banner">
     <div class="container nav-inner">
       <div class="nav-brand-wrap">
-        <a class="nav-brand" href="landing.html" aria-label="Dispatch — home">
+        <a class="nav-brand" href="#" aria-label="Rover home">
           <span class="nav-brand-dot" aria-hidden="true"></span>
-          DISPATCH
+          rover
         </a>
-        <span class="nav-breadcrumb" aria-hidden="true"><span class="nav-breadcrumb-sep">/</span>rover</span>
       </div>
 
       <nav aria-label="Main navigation">
@@ -2804,17 +2862,10 @@
               pixelabs
             </a>
           </li>
-          <li><a href="landing.html#features">Features</a></li>
-          <li><a href="landing.html#how">How it works</a></li>
-          <li><a href="landing.html#screenshots">Screenshots</a></li>
-          <li><a href="landing.html#character-system">Character System</a></li>
-          <li><a href="#" aria-current="page" aria-disabled="true" onclick="return false;">Rover</a></li>
-          <li>
-            <a href="https://dispatch.pixelabs.net/docs/" target="_blank" rel="noopener noreferrer" class="nav-docs-link" aria-label="Dispatch documentation (opens in new tab)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-              Docs
-            </a>
-          </li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#screenshots">Screenshots</a></li>
+          <li><a href="https://github.com/thepixelabs/rover" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         </ul>
       </nav>
 
@@ -2947,7 +2998,7 @@
         <div class="rv-hero-inner">
 
           <div class="rv-hero-copy" style="position:relative;z-index:1;max-width:620px;">
-            <p class="rv-hero-eyebrow"><img src="assets/packs/pack-a-relay-noir/b1-signal-ping.webp" alt="Signal ping" width="14" height="14" class="rv-eyebrow-ping-img" aria-hidden="true" />SSH session manager for your Mac &middot; Works with altergo &amp; Dispatch</p>
+            <p class="rv-hero-eyebrow"><img src="assets/packs/pack-a-relay-noir/b1-signal-ping.webp" alt="Signal ping" width="14" height="14" class="rv-eyebrow-ping-img" aria-hidden="true" />SSH session manager for your Mac &middot; Works with altergo</p>
             <p class="rv-hero-provider-badge" aria-label="Works with Claude, Gemini, Copilot, and Codex">
               Claude <span class="rv-sep" aria-hidden="true">&middot;</span>
               Gemini <span class="rv-sep" aria-hidden="true">&middot;</span>
@@ -2958,7 +3009,7 @@
               Your fleet, <span class="rv-hero-title-accent">one SSH away.</span>
             </h1>
             <p class="rv-hero-subtitle">
-              Rover is an SSH-friendly TUI session manager for your Mac. Works with altergo and Dispatch &mdash; any tmux session you&rsquo;d otherwise lose track of.
+              Rover is an SSH-friendly TUI session manager for your Mac. Works with altergo &mdash; any tmux session you&rsquo;d otherwise lose track of.
             </p>
             <div class="rv-hero-actions">
               <a
@@ -3016,8 +3067,8 @@
     <div class="section-divider" data-color="cyan-green" aria-hidden="true"></div>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         BLOCK 2 — THREE-TOGETHER (altergo + Dispatch + Rover)
-         Earnest voice — this block is teaching the three-stack story.
+         BLOCK 2 — TWO-TOGETHER (altergo + Rover)
+         Earnest voice — this block is teaching the two-stack story.
          ═══════════════════════════════════════════════════════════════ -->
     <section id="three-together" class="section" data-reveal>
       <div class="container" style="position:relative;z-index:1;">
@@ -3034,14 +3085,14 @@
             />
           </div>
 
-          <h2 class="rv-threetogether-headline">One stack. Three surfaces.</h2>
+          <h2 class="rv-threetogether-headline">One stack. Two surfaces.</h2>
 
           <p class="rv-verb-trio">
-            altergo runs it <span class="rv-sep">&middot;</span> Dispatch oversees it <span class="rv-sep">&middot;</span> Rover reaches it
+            altergo runs it <span class="rv-sep">&middot;</span> Rover reaches it
           </p>
 
           <p class="rv-threetogether-body">
-            <strong>Dispatch</strong> is the desktop cockpit for your AI coding agents &mdash; Claude, Codex, Gemini, Copilot &mdash; running in one place. <strong>altergo</strong> is the runtime underneath that keeps every account and session alive across restarts. <strong>Rover</strong> is the pocket terminal: SSH from your phone to your Mac and check, launch, or kill any agent in two keystrokes. One stack, three surfaces: altergo runs it, Dispatch oversees it, Rover reaches it.
+            <strong>altergo</strong> is the runtime underneath that keeps every account and session alive across restarts. <strong>Rover</strong> is the pocket terminal: SSH from your phone to your Mac and check, launch, or kill any agent in two keystrokes.
           </p>
         </div>
       </div>
@@ -3061,7 +3112,7 @@
           <p class="section-label">// four agents, one ground truth</p>
           <h2 class="section-title">All four agents. The same project state.</h2>
           <p class="section-desc">
-            Claude Code, Gemini CLI, Copilot CLI, and Codex CLI each connect to Dispatch and share one task board, one file surface, and one set of tools. No reconciliation. No drift.
+            Claude Code, Gemini CLI, Copilot CLI, and Codex CLI each share one task board, one file surface, and one set of tools. No reconciliation. No drift.
           </p>
         </div>
 
@@ -3073,7 +3124,7 @@
 
           <article class="rv-mcp-feature" data-reveal data-reveal-delay="2">
             <h3 class="rv-mcp-feature-title">One setup, then every agent just works.</h3>
-            <p class="rv-mcp-feature-body">Install once &mdash; Dispatch writes each provider&rsquo;s config file.</p>
+            <p class="rv-mcp-feature-body">Install once &mdash; each provider&rsquo;s config is written automatically.</p>
           </article>
 
           <article class="rv-mcp-feature" data-reveal data-reveal-delay="3">
@@ -3171,7 +3222,7 @@
         <div class="section-head section-head--center">
           <p class="section-label">// voice input</p>
           <h2 class="section-title">Dictate. Agent moves.</h2>
-          <p class="section-desc">Keyboard mic. Three sentences. Claude is already working.</p>
+          <p class="section-desc">Your phone&rsquo;s mic. Three sentences into an SSH session. Claude is already working. The combination of voice and remote access is where it clicks.</p>
         </div>
 
         <div class="rv-benefits-grid">
@@ -3531,6 +3582,44 @@
     <div class="section-divider" data-color="cyan-indigo" aria-hidden="true"></div>
 
     <!-- ═══════════════════════════════════════════════════════════════
+         BLOCK 6b — GET HOME (SSH auto-launch)
+         ═══════════════════════════════════════════════════════════════ -->
+    <section id="get-home" class="section" data-reveal>
+      <div class="container" style="position:relative;z-index:1;">
+
+        <div class="section-head section-head--center" data-reveal>
+          <p class="section-label">// auto-launch</p>
+          <h2 class="section-title">SSH in. rover opens.</h2>
+          <p class="section-desc">Add one block to your shell profile. Every SSH login drops you straight into rover.</p>
+        </div>
+
+        <div class="rv-snippet-center">
+          <button type="button"
+            class="rv-install-snippet rv-install-snippet--multiline"
+            data-cmd="if [[ -n &quot;$SSH_CONNECTION&quot; ]]; then&#10;  rover&#10;fi"
+            aria-label="Copy SSH auto-launch shell snippet to clipboard">
+            <span class="rv-prompt" aria-hidden="true">~/.zshrc</span>
+            <span class="rv-cmd rv-cmd--block">
+              <span class="rv-code-comment"># auto-launch rover on SSH sessions</span>
+              <span class="rv-code-line">if [[ -n <span class="rv-code-var">$SSH_CONNECTION</span> ]]; then</span>
+              <span class="rv-code-line rv-code-indent">  rover</span>
+              <span class="rv-code-line">fi</span>
+            </span>
+            <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <p class="rv-install-note">Click to copy &middot; add to <code>~/.zshrc</code> or <code>~/.bashrc</code>, then <code>source ~/.zshrc</code></p>
+        </div>
+
+        <p class="rv-get-home-note">
+          Couch, kitchen, garden &mdash; any phone on the wifi reaches it. Add a VPN to the router and the couch becomes the train.
+        </p>
+
+      </div>
+    </section>
+
+    <div class="section-divider" data-color="cyan-indigo" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
          BLOCK 7 — FOOTER CTA
          ═══════════════════════════════════════════════════════════════ -->
     <section class="cta-section" data-reveal>
@@ -3584,7 +3673,7 @@
             </a>
           </div>
 
-          <p class="rv-lockup">Works with altergo <span class="rv-sep">&middot;</span> Dispatch</p>
+          <p class="rv-lockup">Works with altergo</p>
         </div>
       </div>
     </section>
@@ -3600,24 +3689,23 @@
     <div class="container">
       <div class="footer-main">
         <div class="footer-brand-col">
-          <a class="footer-brand-mark" href="landing.html" aria-label="Dispatch home">
+          <a class="footer-brand-mark" href="#" aria-label="Rover home">
             <span class="footer-brand-dot" aria-hidden="true"></span>
-            DISPATCH
+            rover
           </a>
           <p class="footer-brand-desc">
-            Mission control for AI coding agents. Monitor Claude, Codex, Copilot, and Gemini from one real-time dashboard.
+            SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding agent from your phone in two keystrokes.
           </p>
         </div>
 
         <div class="footer-nav-col">
           <p class="footer-nav-label">Navigate</p>
           <ul class="footer-nav-links">
-            <li><a href="landing.html#features">Features</a></li>
-            <li><a href="landing.html#how">How it works</a></li>
-            <li><a href="landing.html#screenshots">Screenshots</a></li>
-            <li><a href="landing.html#character-system">Character System</a></li>
-            <li><a href="#" aria-disabled="true" onclick="return false;">Rover</a></li>
-            <li><a href="https://dispatch.pixelabs.net/docs/" target="_blank" rel="noopener noreferrer" class="footer-docs-link">Documentation</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#screenshots">Screenshots</a></li>
+            <li><a href="#get-home">Setup</a></li>
+            <li><a href="https://altergo.pixelabs.net">altergo</a></li>
           </ul>
         </div>
 

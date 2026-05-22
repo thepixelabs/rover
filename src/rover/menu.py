@@ -497,11 +497,9 @@ class MainMenuScreen(Screen):
     BINDINGS = [
         Binding("q",      "quit_menu",      "Quit",     show=False),
         Binding("ctrl+c", "quit_menu",      "Quit",     show=False),
-        Binding("d",      "dispatch",       "Dispatch", show=False),
         Binding("s",      "settings",       "Settings", show=False),
         Binding("a",      "altergo",        "Altergo",  show=False),
         Binding("y",      "yolo",           "Yolo",     show=False),
-        Binding("b",      "server_toggle",  "Server",   show=False),
         Binding("x",      "kill_session",   "Kill",     show=False),
         Binding("r",      "recall",         "Recall",   show=False),
         Binding("n",      "new_session",    "New tmux", show=False),
@@ -868,23 +866,12 @@ class MainMenuScreen(Screen):
         except Exception:
             return
 
-        s = self._stats
-        online = s is not None and s.server_online
         awake = caffeinate.is_available() and caffeinate.is_awake()
 
-        if online:
-            srv_label = "Stop dispatch server"
-            srv_status = "[green]\u25cf online[/green]"
-        else:
-            srv_label = "Start dispatch server"
-            srv_status = "[dim]\u25cb offline[/dim]"
-
         rows: list[tuple[str, str, str]] = [
-            ("D", "Dispatch Dashboard", ""),
             ("A", "New altergo session", ""),
             ("Y", "Yolo session  [dim](skip confirm)[/dim]", ""),
             ("R", "Recall conversation  [dim](resume by picker)[/dim]", ""),
-            ("B", srv_label, srv_status),
         ]
         if caffeinate.is_available():
             if awake:
@@ -918,13 +905,13 @@ class MainMenuScreen(Screen):
             hint.update(
                 f"[dim]\u2191\u2193/jk navigate \u00b7 [/dim]"
                 f"[bold #00d7ff]#{self._number_buffer}[/bold #00d7ff]"
-                f"[dim] + Enter attach \u00b7 Y yolo \u00b7 A altergo \u00b7 D agents"
-                f" \u00b7 B server{caff_hint} \u00b7 X kill \u00b7 S sets \u00b7 Q quit[/dim]"
+                f"[dim] + Enter attach \u00b7 Y yolo \u00b7 A altergo"
+                f"{caff_hint} \u00b7 X kill \u00b7 S sets \u00b7 Q quit[/dim]"
             )
         else:
             hint.update(
                 "[dim]\u2191\u2193/jk navigate \u00b7 Enter/num attach"
-                " \u00b7 Y yolo \u00b7 A altergo \u00b7 D agents \u00b7 B server"
+                " \u00b7 Y yolo \u00b7 A altergo"
                 f"{caff_hint} \u00b7 X kill \u00b7 S sets \u00b7 Q quit[/dim]"
             )
 
