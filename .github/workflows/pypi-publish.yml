@@ -33,13 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          # Use the GH_TOKEN PAT as the checkout token so its credentials are
-          # persisted on the `origin` remote.  python-semantic-release shells
-          # out to plain `git push`, which reads credentials from the remote
-          # URL helper — not from the GH_TOKEN env var (that's a `gh` CLI
-          # convention).  The PAT must also have permission to push to main
-          # under any branch protection rules in force.
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ github.token }}
           # Full history required so python-semantic-release can walk back to
           # the last tag when computing which commits need a new version.
           fetch-depth: 0
@@ -55,7 +49,7 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-release-${{ hashFiles('.github/workflows/release.yml') }}
+          key: ${{ runner.os }}-pip-release-${{ hashFiles('.github/workflows/pypi-publish.yml') }}
           restore-keys: |
             ${{ runner.os }}-pip-release-
 
@@ -70,7 +64,7 @@ jobs:
       - name: Run python-semantic-release
         id: release
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: semantic-release version --push
 
       - name: Build sdist and wheel
