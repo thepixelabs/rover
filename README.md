@@ -11,9 +11,8 @@ Landing page: https://rover.pixelabs.net
 
 ## What Rover is
 
-Rover is a terminal companion for [Dispatch](https://github.com/thepixelabs/dispatch). It runs on
-your Mac (or a Linux host), and you reach it over SSH from a phone or tablet to see which agents
-are running, start new ones, and kill the ones that aren't.
+Rover is an SSH-friendly TUI session manager for your Mac. Check, launch, or kill any AI coding
+agent from your phone in two keystrokes.
 
 ## Prerequisites
 
@@ -100,11 +99,12 @@ Run `rover` — press `?` for the keymap.
 
 ### Auto-launch on SSH (optional)
 
-If you mostly use rover by SSH'ing in from a phone or tablet, add this to
-`~/.zshrc` on the host so the shell drops you straight into rover:
+Add to your shell's startup file so every SSH login drops straight into rover.
+
+**zsh** — `~/.zshrc`:
 
 ```bash
-# Auto-launch rover on SSH sessions
+# auto-launch rover on SSH sessions
 if [[ -n "$SSH_CONNECTION" ]] \
    && [[ -z "$TMUX" ]] \
    && [[ $- == *i* ]] \
@@ -113,9 +113,19 @@ if [[ -n "$SSH_CONNECTION" ]] \
 fi
 ```
 
-Guards explained: only runs over SSH, only outside an existing tmux session,
-only for interactive shells, and only if `rover` is on PATH — so local
-terminals and scripted SSH commands stay untouched.
+**bash** — `~/.bash_profile` (macOS) or `~/.bashrc` (Linux):
+
+```bash
+# auto-launch rover on SSH sessions
+if [[ -n "$SSH_CONNECTION" ]] \
+   && [[ -z "$TMUX" ]] \
+   && [[ $- == *i* ]] \
+   && command -v rover >/dev/null 2>&1; then
+  exec rover
+fi
+```
+
+Guards: only fires over SSH, outside an existing tmux session, in interactive shells, and only when `rover` is on PATH.
 
 ## Keymap
 
@@ -127,9 +137,7 @@ terminals and scripted SSH commands stay untouched.
 | `1`–`9` | Jump to session N |
 | `Enter` | Attach to the selected session |
 | `Y` | Open the yolo submenu |
-| `D` | Dispatch agent dashboard |
 | `A` | altergo launcher (project + account picker) |
-| `B` | Server / backend panel |
 | `X` | Kill the selected tmux session (asks to confirm) |
 | `R` | Resume a previous conversation (cross-account session picker) |
 | `N` | New tmux session |
@@ -153,3 +161,8 @@ Issues and pull requests welcome at https://github.com/thepixelabs/rover.
 ## License
 
 See [LICENSE](LICENSE).
+
+## Getting home — SSH connectivity
+
+Need to establish an SSH path back to your Mac first? See [docs/ssh-setup.md](docs/ssh-setup.md) — covers Tailscale, router VPN (WireGuard / OpenVPN / IKEv2), and port forwarding with DDNS.
+
