@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rover-tui"
-version = "0.3.9"
+version = "0.4.0"
 description = "SSH-friendly TUI session manager and AI agent launcher for your Mac"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -42,6 +42,7 @@ dev = [
     "pytest>=8.0",
     "pytest-timeout>=2.3",
 ]
+
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/rover"]
