@@ -75,7 +75,7 @@
         "operatingSystem": "macOS, Linux",
         "url": "https://rover.pixelabs.net/",
         "codeRepository": "https://github.com/thepixelabs/rover",
-        "license": "https://polyformproject.org/licenses/shield/1.0.0",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
         "author": {
           "@type": "Organization",
           "name": "thepixelabs",
@@ -3030,14 +3030,14 @@
                 type="button"
                 class="rv-install-snippet"
                 data-channel="homebrew"
-                data-cmd="brew install thepixelabs/tap/rover"
+                data-cmd="brew install thepixelabs/tap/rover-tui"
                 id="rv-hero-copy-btn"
                 data-rover-copy="homebrew"
                 data-rover-event="rover.hero.cta_copy"
                 aria-label="Copy Homebrew install command to clipboard"
               >
                 <span class="rv-prompt" aria-hidden="true">$</span>
-                <span class="rv-cmd">brew install thepixelabs/tap/rover</span>
+                <span class="rv-cmd">brew install thepixelabs/tap/rover-tui</span>
                 <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               </button>
               <!-- pipx alternative — same copy mechanic, visually secondary -->
@@ -3448,9 +3448,9 @@
 
             <div class="rv-tabpanels">
               <div class="rv-tabpanel" role="tabpanel" id="rv-panel-homebrew" aria-labelledby="rv-tab-homebrew" data-active="true">
-                <button type="button" class="rv-install-snippet" data-channel="homebrew" data-cmd="brew install thepixelabs/tap/rover" data-rover-event="rover.install.copy_homebrew" aria-label="Copy Homebrew install command to clipboard">
+                <button type="button" class="rv-install-snippet" data-channel="homebrew" data-cmd="brew install thepixelabs/tap/rover-tui" data-rover-event="rover.install.copy_homebrew" aria-label="Copy Homebrew install command to clipboard">
                   <span class="rv-prompt" aria-hidden="true">$</span>
-                  <span class="rv-cmd">brew install thepixelabs/tap/rover</span>
+                  <span class="rv-cmd">brew install thepixelabs/tap/rover-tui</span>
                   <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 </button>
               </div>
@@ -3647,14 +3647,14 @@
               type="button"
               class="rv-install-snippet"
               data-channel="homebrew"
-              data-cmd="brew install thepixelabs/tap/rover"
+              data-cmd="brew install thepixelabs/tap/rover-tui"
               id="rv-footer-copy-btn"
               data-rover-copy="homebrew"
               data-rover-event="rover.footer.cta_copy"
               aria-label="Copy Homebrew install command to clipboard"
             >
               <span class="rv-prompt" aria-hidden="true">$</span>
-              <span class="rv-cmd">brew install thepixelabs/tap/rover</span>
+              <span class="rv-cmd">brew install thepixelabs/tap/rover-tui</span>
               <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
             <p class="rv-install-note" style="margin-top:8px;font-size:0.75rem;">Click to copy &middot; Then run <code>rover</code> in your terminal</p>
@@ -3726,7 +3726,7 @@
       </div>
 
       <div class="footer-bottom">
-        <span>&copy; 2026 thepixelabs &middot; PolyForm Shield 1.0.0</span>
+        <span>&copy; 2026 thepixelabs &middot; Apache 2.0</span>
       </div>
     </div>
   </footer>

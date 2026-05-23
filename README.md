@@ -25,7 +25,7 @@ agent from your phone in two keystrokes.
 ### Homebrew (macOS, primary)
 
 ```bash
-brew install thepixelabs/tap/rover
+brew install thepixelabs/tap/rover-tui
 ```
 
 ### pipx (any platform with Python)
@@ -45,7 +45,7 @@ uv tool install rover-tui
 ### Homebrew
 
 ```bash
-brew upgrade thepixelabs/tap/rover
+brew upgrade thepixelabs/tap/rover-tui
 ```
 
 ### pipx
@@ -65,7 +65,7 @@ uv tool upgrade rover-tui
 ### Homebrew
 
 ```bash
-brew uninstall thepixelabs/tap/rover
+brew uninstall thepixelabs/tap/rover-tui
 ```
 
 ### pipx

@@ -59,7 +59,7 @@ jobs:
             or via Homebrew:
 
             ```bash
-            brew install thepixelabs/tap/rover
+            brew install thepixelabs/tap/rover-tui
             ```
           files: dist/*
           fail_on_unmatched_files: false
