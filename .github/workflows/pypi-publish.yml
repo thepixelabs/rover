@@ -2,101 +2,91 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    tags:
+      - "v*"
 
-# Deny all permissions by default; the release job grants only what it needs.
 permissions: {}
 
-# Never cancel an in-flight release — a second push queues behind the running
-# job rather than killing it mid-way through version bumping and tag creation.
-concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
-  release:
-    name: Release
+  build-and-publish:
+    name: Build and publish to PyPI
     runs-on: ubuntu-latest
-    # The pypi environment gates OIDC trusted publishing. CI correctness is
-    # enforced by branch protection (require status checks on PRs) — not here.
     environment: pypi
     permissions:
-      contents: write      # push version-bump commit and tag
-      issues: write        # comment on issues referenced in commits
-      pull-requests: write # comment on merged PRs with release link
-      id-token: write      # OIDC trusted publishing to PyPI
+      contents: write  # create GitHub Release
+      id-token: write  # OIDC trusted publishing to PyPI
 
     outputs:
-      released: ${{ steps.release.outputs.released }}
-      version: ${{ steps.release.outputs.version }}
+      version: ${{ steps.tag.outputs.version }}
+      sdist_sha256: ${{ steps.sdist.outputs.sha256 }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@v4
         with:
-          token: ${{ github.token }}
-          # Full history required so python-semantic-release can walk back to
-          # the last tag when computing which commits need a new version.
           fetch-depth: 0
 
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
-      # Cache pip downloads keyed on the workflow file itself. The only deps
-      # here are python-semantic-release and build — the workflow file hash is
-      # a stable, correct cache key for this isolated tool environment.
-      - name: Cache pip downloads
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-release-${{ hashFiles('.github/workflows/pypi-publish.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-release-
+      - name: Install build frontend
+        run: pip install build
 
-      - name: Install release tooling
-        run: pip install "python-semantic-release==9.*" build
-
-      - name: Configure git bot identity
-        run: |
-          git config --global user.name "Ground Control"
-          git config --global user.email "ground-control@users.noreply.github.com"
-
-      - name: Run python-semantic-release
-        id: release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: semantic-release version --push
-
-      - name: Build sdist and wheel
-        if: steps.release.outputs.released == 'true'
+      - name: Build wheel and sdist
         run: python -m build
 
-      - name: Publish to PyPI (trusted publishing)
-        if: steps.release.outputs.released == 'true'
+      - name: Publish to PyPI (OIDC trusted publisher)
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
+
+      # Strip "v" prefix: v0.3.9 → 0.3.9
+      - name: Derive version from tag
+        id: tag
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:
-          packages-dir: dist/
+          tag_name: ${{ github.ref_name }}
+          name: "Rover ${{ steps.tag.outputs.version }}"
+          body: |
+            ## Install
+
+            ```bash
+            pipx install rover-tui==${{ steps.tag.outputs.version }}
+            ```
+
+            or via Homebrew:
+
+            ```bash
+            brew install thepixelabs/tap/rover
+            ```
+          files: dist/*
+          fail_on_unmatched_files: false
 
       # hatchling normalises rover-tui → rover_tui in artifact filenames.
       - name: Compute sdist sha256
         id: sdist
-        if: steps.release.outputs.released == 'true'
         run: |
           set -euo pipefail
-          SDIST="dist/rover_tui-${{ steps.release.outputs.version }}.tar.gz"
+          SDIST="dist/rover_tui-${{ steps.tag.outputs.version }}.tar.gz"
           if [ ! -f "$SDIST" ]; then
             echo "ERROR: sdist not found at $SDIST"
             ls -la dist/
             exit 1
           fi
           SHA=$(sha256sum "$SDIST" | awk '{print $1}')
-          echo "sdist: $SDIST"
-          echo "sha256: $SHA"
           echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
 
+  trigger-homebrew-bump:
+    name: Trigger Homebrew formula bump
+    runs-on: ubuntu-latest
+    needs: build-and-publish
+    permissions: {}
+
+    steps:
       - name: Generate tap-scoped GitHub App token
         id: app-token
-        if: steps.release.outputs.released == 'true'
         uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
         with:
           app-id: ${{ secrets.HOMEBREW_TAP_APP_ID }}
@@ -105,11 +95,10 @@ jobs:
           repositories: homebrew-tap
 
       - name: Dispatch rover-bump event to homebrew-tap
-        if: steps.release.outputs.released == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          VERSION: ${{ steps.release.outputs.version }}
-          SHA256: ${{ steps.sdist.outputs.sha256 }}
+          VERSION: ${{ needs.build-and-publish.outputs.version }}
+          SHA256: ${{ needs.build-and-publish.outputs.sdist_sha256 }}
         run: |
           set -euo pipefail
           if [ -z "$SHA256" ]; then
