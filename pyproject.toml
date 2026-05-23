@@ -47,6 +47,16 @@ dev = [
 [tool.hatch.build.targets.wheel]
 packages = ["src/rover"]
 
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "landing/",
+    "docs/",
+    ".github/",
+    "tests/",
+    "uv.lock",
+    ".mcp.json",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""rover — on-the-go companion for dispatch agents."""
+"""rover — on-the-go SSH session manager and AI agent launcher."""
 
 from __future__ import annotations
 
@@ -63,17 +63,6 @@ def _check_path(config: dict, save_config) -> None:
             )
         else:
             console.print("[dim]Already present in ~/.zshrc — nothing changed.[/dim]\n")
-
-
-# ── Dispatch helpers ───────────────────────────────────────────────────────────
-
-def _run_dispatch(config: dict, hours: float) -> None:
-    os.environ["DTUI_IN_TEXTUAL"] = "1"
-    try:
-        from rover.app import DispatchTuiApp
-        DispatchTuiApp(hours=float(hours)).run()
-    finally:
-        os.environ.pop("DTUI_IN_TEXTUAL", None)
 
 
 def _run_settings(config: dict, hours: float) -> None:
@@ -185,8 +174,6 @@ def main() -> None:
 
         if action == MenuAction.QUIT:
             break
-        elif action == MenuAction.DISPATCH:
-            _run_dispatch(config, hours)
         elif action == MenuAction.SETTINGS:
             _run_settings(config, hours)
             config = load_config()

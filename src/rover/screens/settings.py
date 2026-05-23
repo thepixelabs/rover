@@ -26,12 +26,6 @@ _THEME_OPTIONS = [
     ("Rainbow",          "rainbow"),
 ]
 
-_TIME_WINDOW_MIN = 1
-_TIME_WINDOW_MAX = 24
-_REFRESH_MIN     = 5
-_REFRESH_MAX     = 300
-
-
 class SettingsScreen(Screen):
     """Full-screen settings form."""
 
@@ -249,37 +243,6 @@ class SettingsScreen(Screen):
                     classes="field-input",
                 )
 
-            # ── DISPATCH ──────────────────────────────────────────────────────
-            yield Static("── DISPATCH ─────────────────────────────", classes="section-rule")
-
-            with Vertical(classes="field-row"):
-                yield Label("Time window", classes="field-label")
-                with Vertical(classes="input-unit-row"):
-                    yield Input(
-                        id="input-time-window",
-                        classes="field-input",
-                    )
-                    yield Static("hours", classes="field-unit")
-                yield Label(
-                    f"How far back the agent dashboard looks for activity "
-                    f"({_TIME_WINDOW_MIN}\u2013{_TIME_WINDOW_MAX} hours).",
-                    classes="field-caption",
-                )
-
-            with Vertical(classes="field-row"):
-                yield Label("Refresh interval", classes="field-label")
-                with Vertical(classes="input-unit-row"):
-                    yield Input(
-                        id="input-refresh",
-                        classes="field-input",
-                    )
-                    yield Static("seconds", classes="field-unit")
-                yield Label(
-                    f"How often the main menu re-fetches dispatch stats "
-                    f"({_REFRESH_MIN}\u2013{_REFRESH_MAX} seconds).",
-                    classes="field-caption",
-                )
-
             # ── ALTERGO ───────────────────────────────────────────────────────
             yield Static("── ALTERGO ──────────────────────────────", classes="section-rule")
 
@@ -308,12 +271,6 @@ class SettingsScreen(Screen):
         cfg = load_config()
 
         self.query_one("#input-nickname", Input).value = cfg.get("nickname", "")
-        self.query_one("#input-time-window", Input).value = str(
-            cfg.get("time_window_hours", 2)
-        )
-        self.query_one("#input-refresh", Input).value = str(
-            cfg.get("refresh_seconds", 30)
-        )
         self.query_one("#input-git-workspace", Input).value = cfg.get(
             "git_workspace", ""
         )
@@ -354,32 +311,6 @@ class SettingsScreen(Screen):
 
         nickname = self.query_one("#input-nickname", Input).value.strip()
 
-        raw_time_window = self.query_one("#input-time-window", Input).value.strip()
-        try:
-            time_window = int(raw_time_window)
-        except ValueError:
-            self._show_error("Time window must be a whole number.")
-            return
-        if not (_TIME_WINDOW_MIN <= time_window <= _TIME_WINDOW_MAX):
-            self._show_error(
-                f"Time window must be between {_TIME_WINDOW_MIN} and "
-                f"{_TIME_WINDOW_MAX} hours."
-            )
-            return
-
-        raw_refresh = self.query_one("#input-refresh", Input).value.strip()
-        try:
-            refresh_seconds = int(raw_refresh)
-        except ValueError:
-            self._show_error("Refresh interval must be a whole number.")
-            return
-        if not (_REFRESH_MIN <= refresh_seconds <= _REFRESH_MAX):
-            self._show_error(
-                f"Refresh interval must be between {_REFRESH_MIN} and "
-                f"{_REFRESH_MAX} seconds."
-            )
-            return
-
         # Validate git workspace (empty is fine — means "ask me on first use")
         git_workspace_raw = self.query_one("#input-git-workspace", Input).value.strip()
         git_workspace = ""
@@ -405,13 +336,9 @@ class SettingsScreen(Screen):
             "#switch-show-nickname", Switch
         ).value
 
-        # Merge over the currently saved config so we preserve any keys we
-        # don't own (e.g. dispatch_port set by another path).
         cfg = load_config()
 
         cfg["nickname"]           = nickname
-        cfg["time_window_hours"]  = time_window
-        cfg["refresh_seconds"]    = refresh_seconds
         cfg["theme"]              = theme
         cfg["header_font"]        = header_font
         cfg["animation_pack"]          = animation_pack

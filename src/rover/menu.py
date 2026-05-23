@@ -9,14 +9,13 @@ Flow:
 
   The Textual app runs until the user presses a key that maps to one of:
     Q / Ctrl+C  → MenuAction.QUIT
-    D           → MenuAction.DISPATCH
     S           → MenuAction.SETTINGS
     Enter / 1-9 → attach session (app exits with attach payload, caller
                   invokes session_manager.attach_session, re-enters menu)
 
-  Subprocess-blocking flows (altergo launcher, server toggle) exit the
-  app with a payload dict, let __main__'s while loop handle the subprocess,
-  then re-enter run_menu.  This keeps the Textual event loop clean.
+  Subprocess-blocking flows (altergo launcher) exit the app with a payload
+  dict, let __main__'s while loop handle the subprocess, then re-enter
+  run_menu.  This keeps the Textual event loop clean.
 
   Auto-refresh every 5 seconds via set_interval.
 """
@@ -24,7 +23,6 @@ Flow:
 from __future__ import annotations
 
 import os
-import threading
 from datetime import datetime
 from enum import Enum
 from typing import Any
@@ -32,11 +30,10 @@ from typing import Any
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
-from textual.screen import ModalScreen, Screen
-from textual.widgets import DataTable, Input, Label, LoadingIndicator, Static
+from textual.screen import Screen
+from textual.widgets import DataTable, Input, Label, Static
 
 from rover import __version__
-from rover.api import MenuStats, fetch_menu_stats
 from rover.session_manager import (
     TmuxSession,
     kill_session,
@@ -51,7 +48,6 @@ from rover import caffeinate
 
 class MenuAction(Enum):
     QUIT = "quit"
-    DISPATCH = "dispatch"
     SETTINGS = "settings"
 
 
@@ -371,122 +367,6 @@ class NewSessionInputModalScreen(ModalScreen):
         self.dismiss({"created": False, "cancelled": True})
 
 
-class ServerToggleModalScreen(ModalScreen):
-    """Start/stop the dispatch server — confirm → work → result."""
-
-    BINDINGS = [
-        Binding("y",      "confirm", "Yes",    show=False),
-        Binding("n",      "cancel",  "No",     show=False),
-        Binding("escape", "cancel",  "Cancel", show=False),
-    ]
-
-    DEFAULT_CSS = _MODAL_CSS
-
-    def __init__(self, config: dict) -> None:
-        super().__init__()
-        from rover import server_manager
-        self.config = config
-        self.port = int(config.get("dispatch_port", 4242))
-        self.status = server_manager.server_status(port=self.port)
-        self._phase = "confirm"   # confirm → running → result
-        self._result_ok = False
-        self._result_msg = ""
-
-    def compose(self) -> ComposeResult:
-        with Vertical(id="modal-box"):
-            yield Label("Dispatch server", id="modal-title")
-            yield Label("─" * 40, id="modal-divider")
-            yield Label("", id="modal-msg", classes="modal-line")
-            yield LoadingIndicator(id="modal-spinner")
-            yield Label("", id="modal-hint")
-
-    def on_mount(self) -> None:
-        self.query_one("#modal-spinner", LoadingIndicator).display = False
-        self._repaint()
-
-    def _repaint(self) -> None:
-        msg = self.query_one("#modal-msg", Label)
-        hint = self.query_one("#modal-hint", Label)
-        spinner = self.query_one("#modal-spinner", LoadingIndicator)
-
-        if self._phase == "confirm":
-            spinner.display = False
-            if self.status["running"]:
-                msg.update(
-                    f"Stop dispatch server "
-                    f"[dim](pid {self.status['pid']})[/dim]?"
-                )
-            else:
-                msg.update(
-                    f"Start dispatch server "
-                    f"[dim](port {self.port})[/dim]?"
-                )
-            hint.update("[dim]y confirm  ·  n / Esc cancel[/dim]")
-
-        elif self._phase == "running":
-            spinner.display = True
-            msg.update(
-                "[dim]stopping...[/dim]" if self.status["running"]
-                else "[dim]starting (up to 15s)...[/dim]"
-            )
-            hint.update("")
-
-        elif self._phase == "result":
-            spinner.display = False
-            if self._result_ok:
-                msg.update(f"[green]✓[/green] {self._result_msg}")
-            else:
-                msg.update(f"[red]✗[/red] {self._result_msg}")
-            hint.update("[dim]press any key to close[/dim]")
-
-    def action_confirm(self) -> None:
-        if self._phase == "result":
-            self.dismiss({"ok": self._result_ok})
-            return
-        if self._phase != "confirm":
-            return
-        self._phase = "running"
-        self._repaint()
-        self.run_worker(self._do_work, thread=True, exclusive=True)
-
-    def action_cancel(self) -> None:
-        if self._phase == "running":
-            # Don't interrupt in-flight work; ignore Esc while spinning.
-            return
-        if self._phase == "result":
-            self.dismiss({"ok": self._result_ok})
-            return
-        self.dismiss({"cancelled": True})
-
-    def on_key(self, event) -> None:
-        # In result phase, any key dismisses (consistent with old UX).
-        if self._phase == "result":
-            event.prevent_default()
-            event.stop()
-            self.dismiss({"ok": self._result_ok})
-
-    def _do_work(self) -> None:
-        from rover import server_manager
-        if self.status["running"]:
-            ok, msg = server_manager.stop_server(port=self.port)
-        else:
-            repo = server_manager.find_dispatch_repo(self.config)
-            if repo is None:
-                ok, msg = False, (
-                    "Could not find the dispatch repo. "
-                    "Set dispatch_repo_path in ~/.rover/config.json"
-                )
-            else:
-                ok, msg = server_manager.start_server(repo, port=self.port)
-        self.app.call_from_thread(self._on_done, ok, msg)
-
-    def _on_done(self, ok: bool, msg: str) -> None:
-        self._result_ok = ok
-        self._result_msg = msg
-        self._phase = "result"
-        self._repaint()
-
-
 # ---------------------------------------------------------------------------
 # Main menu screen
 # ---------------------------------------------------------------------------
@@ -706,7 +586,6 @@ class MainMenuScreen(Screen):
         self.config = config
         self.hours = hours
         self._sessions: list[TmuxSession] = []
-        self._stats: MenuStats | None = None
         self._number_buffer: str = ""
 
     # ── Composition ────────────────────────────────────────────────────────────
@@ -734,7 +613,6 @@ class MainMenuScreen(Screen):
                 yield Label(f"rover v{__version__}", id="menu-version")
                 yield Label("", id="menu-caff")
                 yield Label(_now_str(), id="menu-clock")
-            yield Static("", id="menu-stats")
             yield Static("─" * 60, id="menu-divider-top")
             yield Label("SESSIONS", id="sessions-header")
             yield Static("(no sessions)", id="sessions-empty")
@@ -754,7 +632,7 @@ class MainMenuScreen(Screen):
     # ── Data refresh ─────────────────────────────────────────────────────────
 
     def _refresh_data(self) -> None:
-        """Fetch sessions + stats and repaint."""
+        """Fetch sessions and repaint."""
         self._sessions = list_sessions()
 
         # Clamp cursor to valid range
@@ -765,21 +643,9 @@ class MainMenuScreen(Screen):
             if cursor > max_row:
                 tbl.move_cursor(row=max(0, max_row))
 
-        # fetch stats in background so we don't block the event loop
-        def _fetch():
-            port = int(self.config.get("dispatch_port", 4242))
-            stats = fetch_menu_stats(port=port, hours=1.0)
-            self.call_from_thread(self._on_stats_fetched, stats)
-
-        threading.Thread(target=_fetch, daemon=True).start()
-
         self._repaint_sessions()
         self._repaint_actions()
         self._repaint_hint()
-
-    def _on_stats_fetched(self, stats: MenuStats) -> None:
-        self._stats = stats
-        self._repaint_stats()
 
     def _on_timer(self) -> None:
         self._refresh_data()
@@ -802,38 +668,6 @@ class MainMenuScreen(Screen):
             pass
 
     # ── Repaint helpers ───────────────────────────────────────────────────────
-
-    def _repaint_stats(self) -> None:
-        try:
-            stats_widget = self.query_one("#menu-stats", Static)
-        except Exception:
-            return
-        if self._stats is None:
-            stats_widget.update("")
-            return
-        s = self._stats
-        if not s.server_online:
-            stats_widget.update("[dim]dispatch offline[/dim]")
-            return
-        tok = _fmt_tokens(s.total_tokens)
-        cost = f"${s.total_cost_usd:.2f}"
-        n = s.agent_count
-        parts = [
-            f"[dim]{n} agent{'s' if n != 1 else ''}[/dim]",
-            f"[bold]{tok}[/bold][dim] tokens (1h)[/dim]",
-            f"[dim]{cost}[/dim]",
-        ]
-        provider_parts = [
-            f"{prov} {_fmt_tokens(t)}"
-            for prov, t in sorted(s.tokens_by_provider.items(), key=lambda x: -x[1])
-            if t > 0
-        ][:3]
-        line1 = "  \u00b7  ".join(parts)
-        if provider_parts:
-            line2 = "  \u00b7  ".join(provider_parts)
-            stats_widget.update(f"{line1}\n{line2}")
-        else:
-            stats_widget.update(line1)
 
     def _repaint_sessions(self) -> None:
         try:
@@ -920,9 +754,6 @@ class MainMenuScreen(Screen):
     def action_quit_menu(self) -> None:
         self.app.exit(result={"action": "quit"})
 
-    def action_dispatch(self) -> None:
-        self.app.exit(result={"action": "dispatch"})
-
     def action_settings(self) -> None:
         self.app.exit(result={"action": "settings"})
 
@@ -933,13 +764,6 @@ class MainMenuScreen(Screen):
     def action_yolo(self) -> None:
         self._number_buffer = ""
         self.app.push_screen(YoloSubmenuScreen())
-
-    def action_server_toggle(self) -> None:
-        self._number_buffer = ""
-        self.app.push_screen(
-            ServerToggleModalScreen(self.config),
-            callback=lambda _r: self._refresh_data(),
-        )
 
     def action_kill_session(self) -> None:
         self._number_buffer = ""
@@ -1104,12 +928,12 @@ class MainMenuApp(App):
 def run_menu(config: dict, hours: float = 2.0) -> MenuAction:
     """Show the Textual session menu and handle user input.
 
-    Returns a MenuAction when the user picks Dispatch / Settings / Quit.
-    For attach, server-toggle, kill, etc., this function handles the side
-    effect directly and re-enters the Textual app so the caller never sees
-    those internal actions.
+    Returns a MenuAction when the user picks Settings or Quit.
+    For attach, kill, etc., this function handles the side effect directly
+    and re-enters the Textual app so the caller never sees those internal
+    actions.
 
-    The caller's while loop in __main__.py only needs to handle the three
+    The caller's while loop in __main__.py only needs to handle the two
     exported MenuAction values.
     """
     from rover.session_manager import attach_session, is_available
@@ -1126,9 +950,6 @@ def run_menu(config: dict, hours: float = 2.0) -> MenuAction:
 
         if action == "quit":
             return MenuAction.QUIT
-
-        if action == "dispatch":
-            return MenuAction.DISPATCH
 
         if action == "settings":
             return MenuAction.SETTINGS
