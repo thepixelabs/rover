@@ -11,7 +11,7 @@ tool: mcp__mcp-imagen__imagen_t2i
 model: imagen-4.0-ultra-generate-001
 aspect_ratio: 4:3
 num_images: 1
-output_directory: /home/user/Documents/git/dispatch/src/assets/rover/packs/pack-a-relay-noir
+output_directory: <local-path>/packs/pack-a-relay-noir
 ```
 
 Post-processing:

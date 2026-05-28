@@ -280,7 +280,7 @@ Surgical post-extraction cleanup of the docs surface:
   snippet for users SSH'ing in from phone/tablet. - CHANGELOG: [Unreleased] → [0.3.8] - 2026-05-09;
   adds a [0.3.7] stub for the pre-extraction release. - pyproject.toml: description capitalization
   "dispatch" → "Dispatch". - pypi-publish.yml: stale v0.3.4 comment refs bumped to v0.3.8; removed
-  one-time migration NOTE about the trusted-publisher pointing at thepixelabs/dispatch.
+  one-time migration NOTE about the trusted-publisher configuration.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
@@ -292,7 +292,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 Follows v1.39.0 (PR #51). Updates public + landing docs to accurately describe the new
   multi-provider MCP install story. Backed by three prep briefs (system-architect change brief,
-  product-service-architect positioning, brand-strategist voice) in vedox-internal.
+  product-service-architect positioning, brand-strategist voice).
 
 ### Public repo — this PR - **README.md**: new "Works with Claude · Gemini · Copilot · Codex" badge
   chip; MCP bullet corrected (11 tools, all 4 providers); new MCP Integration subsection; Getting
@@ -306,9 +306,7 @@ Follows v1.39.0 (PR #51). Updates public + landing docs to accurately describe t
   features, single "Install MCP tools" CTA, honest limitations microline. Hero badge `Claude ·
   Gemini · Copilot · Codex`.
 
-### Internal docs (separate trees, not in this PR) Also updated in `vedox-private/dispatch-project/`
-  (RELEASES.md, README.md, provider-parity-execution-log.md, docs/HOW_IT_WORKS.md,
-  docs/MCP_TOOLS.md, docs/FEATURES.md) and `vedox-internal/` (release index + three prep briefs).
+### Internal docs (separate trees, not in this PR) Also updated in companion repos (RELEASES.md, README.md, provider-parity-execution-log.md, docs/HOW_IT_WORKS.md, docs/MCP_TOOLS.md, docs/FEATURES.md).
 
 ## Voice notes Per brand-strategist: peer-level, dry-with-a-pulse, third-person "Dispatch", no
   "seamless/unified/ecosystem" language. Tagline **"Four agents. One surface."** integrated as
@@ -542,9 +540,6 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
   [ ] `cd rover && ./tests/test_install.sh` — install script smoke passes - [ ] Mobile overflow menu
   exposes Rover entry; clicking opens the tab
 
-## Notes - README points to `dispatch-tui/README.md` — the directory is actually `rover/`. Link may
-  need a follow-up fix (kept unchanged in this PR to keep scope tight). - `.rover-landing/` and
-  `rover/.rover-upgrade/` contain internal wave/design docs; committing per request.
 
 - **rover**: Standalone distribution — PyPI publish pipeline + install.sh update
   ([`32fc6d2`](https://github.com/thepixelabs/rover/commit/32fc6d2aaee1047a64e41331cdbdbb5cc51a9e42))

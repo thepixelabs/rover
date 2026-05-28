@@ -21,3 +21,10 @@ htmlcov/
 # Landing page artifacts
 landing/_site/
 node_modules/
+landing/assets/imagen-*.png
+
+# Local agent coordination files
+.tasks/
+
+# MCP server config (may contain internal paths/tokens)
+.mcp.json
