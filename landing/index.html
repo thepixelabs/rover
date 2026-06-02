@@ -2232,7 +2232,7 @@
       min-width: 72px;
       flex-shrink: 0;
     }
-    .rv-cmd--block {
+    .rv-install-snippet > .rv-cmd--block {
       display: flex;
       flex-direction: column;
       gap: 2px;
@@ -2248,7 +2248,7 @@
     [data-theme="light"] .rv-code-var { color: #006092; }
 
     .rv-snippet-center {
-      max-width: 560px;
+      max-width: 720px;
       margin: 0 auto 28px;
     }
 
@@ -2271,8 +2271,8 @@
       color: rgba(18, 18, 28, 0.85);
     }
 
-    @media (max-width: 640px) {
-      .rv-cmd--block { white-space: normal; }
+    @media (max-width: 720px) {
+      .rv-install-snippet > .rv-cmd--block { white-space: pre-wrap; word-break: break-word; }
     }
 
     /* ---- FOOTER CTA LOCKUP (Block 7) ---- */
@@ -3564,6 +3564,8 @@
 
         <p id="rv-req-note" class="rv-requirements-footnote">
           <span class="rv-req-asterisk" aria-hidden="true">*</span> Or run <code>rover</code> on your laptop. Same TUI, no SSH, when you&rsquo;re at the desk.
+          <br />
+          <span class="rv-req-asterisk" aria-hidden="true">*</span> On Android, <strong>Termius</strong>. On iOS, <strong>Blink</strong> or <strong>a-Shell</strong>.
         </p>
 
         <p class="rv-requirements-epilogue">
@@ -3583,24 +3585,25 @@
         <div class="section-head section-head--center" data-reveal>
           <p class="section-label">// auto-launch</p>
           <h2 class="section-title">SSH in. rover opens.</h2>
-          <p class="section-desc">Couch, kitchen, garden &mdash; any phone on the wifi reaches it. Add a VPN to the router and the couch becomes the train.</p>
+          <p class="section-desc">Couch, kitchen, garden &mdash; any phone on the wifi reaches it.<br />Add a VPN to the router and the couch becomes the train.</p>
         </div>
 
         <div class="rv-snippet-center">
           <button type="button"
             class="rv-install-snippet rv-install-snippet--multiline"
-            data-cmd="if [[ -n &quot;$SSH_CONNECTION&quot; ]]; then&#10;  rover&#10;fi"
+            data-cmd="if [[ -n &quot;$SSH_CONNECTION&quot; ]] &amp;&amp; [[ -z &quot;$ROVER_LAUNCHED&quot; ]]; then&#10;  export ROVER_LAUNCHED=1&#10;  rover&#10;fi"
             aria-label="Copy SSH auto-launch shell snippet to clipboard">
             <span class="rv-prompt" aria-hidden="true">~/.zshrc</span>
             <span class="rv-cmd rv-cmd--block">
-              <span class="rv-code-comment"># auto-launch rover on SSH sessions</span>
-              <span class="rv-code-line">if [[ -n <span class="rv-code-var">$SSH_CONNECTION</span> ]]; then</span>
+              <span class="rv-code-comment"># auto-launch rover on SSH login</span>
+              <span class="rv-code-line">if [[ -n <span class="rv-code-var">$SSH_CONNECTION</span> ]] &amp;&amp; [[ -z <span class="rv-code-var">$ROVER_LAUNCHED</span> ]]; then</span>
+              <span class="rv-code-line rv-code-indent">  export ROVER_LAUNCHED=1</span>
               <span class="rv-code-line rv-code-indent">  rover</span>
               <span class="rv-code-line">fi</span>
             </span>
             <svg class="rv-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           </button>
-          <p class="rv-install-note">Click to copy &middot; add to <code>~/.zshrc</code> or <code>~/.bashrc</code>, then <code>source ~/.zshrc</code></p>
+          <p class="rv-install-note">Click to copy &middot; add to your shell profile (<code>~/.zshrc</code>, <code>~/.bashrc</code>, etc.), then reload it</p>
         </div>
 
 

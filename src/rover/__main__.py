@@ -65,6 +65,37 @@ def _check_path(config: dict, save_config) -> None:
             console.print("[dim]Already present in ~/.zshrc — nothing changed.[/dim]\n")
 
 
+def _print_ssh_snippet_hint(config: dict, save_config) -> None:
+    """First-run hint: print the SSH auto-launch snippet for users to copy."""
+    from rich.console import Console
+
+    console = Console()
+    console.print(
+        "\n[bold]SSH auto-launch[/bold] [dim](optional)[/dim]\n"
+        "Drop into rover automatically when you SSH in. Add to your shell profile "
+        "([bold]~/.zshrc[/bold], [bold]~/.bashrc[/bold], etc.):\n"
+    )
+    # Plain print so the snippet copy-pastes cleanly without Rich markup artifacts.
+    print(
+        '  # Auto-launch rover on SSH login, but drop back to the shell on quit\n'
+        '  # (no `exec` — otherwise quitting rover terminates the SSH session).\n'
+        '  if [[ -n "$SSH_CONNECTION" ]] \\\n'
+        '     && [[ -z "$TMUX" ]] \\\n'
+        '     && [[ -z "$ROVER_LAUNCHED" ]] \\\n'
+        '     && command -v rover >/dev/null 2>&1; then\n'
+        '    export ROVER_LAUNCHED=1\n'
+        '    rover\n'
+        '  fi'
+    )
+    console.print(
+        "\n[dim]Then: [bold]source ~/.zshrc[/bold] (or your shell's equivalent). "
+        "See [bold]docs/ssh-setup.md[/bold] for VPN options.[/dim]\n"
+    )
+
+    config["ssh_snippet_shown"] = True
+    save_config(config)
+
+
 def _run_settings(config: dict, hours: float) -> None:
     os.environ["DTUI_IN_TEXTUAL"] = "1"
     try:
@@ -109,6 +140,10 @@ def main() -> None:
     # PATH check (first run only)
     if not args.no_path_check and not config.get("path_prompt_answered", False):
         _check_path(config, save_config)
+
+    # SSH auto-launch snippet hint (first run only).
+    if not config.get("ssh_snippet_shown", False):
+        _print_ssh_snippet_hint(config, save_config)
 
     # Git workspace onboarding (first run only).
     # Lazy fallback still exists inside altergo/yolo flows — this just nudges

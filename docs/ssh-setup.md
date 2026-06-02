@@ -9,28 +9,32 @@ Add to your shell's startup file so every SSH login drops straight into rover.
 **zsh** — `~/.zshrc`:
 
 ```bash
-# auto-launch rover on SSH sessions
+# Auto-launch rover on SSH login, but drop back to the shell on quit
+# (no `exec` — otherwise quitting rover terminates the SSH session).
 if [[ -n "$SSH_CONNECTION" ]] \
    && [[ -z "$TMUX" ]] \
-   && [[ $- == *i* ]] \
+   && [[ -z "$ROVER_LAUNCHED" ]] \
    && command -v rover >/dev/null 2>&1; then
-  exec rover
+  export ROVER_LAUNCHED=1
+  rover
 fi
 ```
 
 **bash** — `~/.bash_profile` (macOS) or `~/.bashrc` (Linux):
 
 ```bash
-# auto-launch rover on SSH sessions
+# Auto-launch rover on SSH login, but drop back to the shell on quit
+# (no `exec` — otherwise quitting rover terminates the SSH session).
 if [[ -n "$SSH_CONNECTION" ]] \
    && [[ -z "$TMUX" ]] \
-   && [[ $- == *i* ]] \
+   && [[ -z "$ROVER_LAUNCHED" ]] \
    && command -v rover >/dev/null 2>&1; then
-  exec rover
+  export ROVER_LAUNCHED=1
+  rover
 fi
 ```
 
-Guards: only fires over SSH, outside an existing tmux session, in interactive shells, and only when `rover` is on PATH — local terminals and scripted SSH commands stay untouched.
+Guards: only fires over SSH, outside an existing tmux session, only when `rover` is on PATH, and only once per shell — the `ROVER_LAUNCHED` flag stops re-entry if rover spawns a subshell that re-sources your rc file. No `exec`, so quitting rover drops back to your shell instead of killing the SSH session.
 
 Reload after editing:
 
