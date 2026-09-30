@@ -5,6 +5,9 @@
 [![License](https://img.shields.io/github/license/thepixelabs/rover)](LICENSE)
 [![Tests](https://github.com/thepixelabs/rover/actions/workflows/ci.yml/badge.svg)](https://github.com/thepixelabs/rover/actions/workflows/ci.yml)
 
+> [!WARNING]
+> **Rover is obsolete and no longer maintained.** Coding agents now ship remote control out of the box: `/remote-control` in Claude Code, `copilot --remote` in GitHub Copilot CLI, and ChatGPT Remote for Codex. Use those instead. This repo stays up for reference.
+
 A terminal session manager — SSH in from your phone and manage tmux sessions and AI agents from anywhere.
 
 Landing page: https://rover.pixelabs.net

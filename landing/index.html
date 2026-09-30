@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rover — Your fleet, one SSH away.</title>
+  <title>Rover — Obsolete. Use your agent's built-in remote control.</title>
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/favicon.png" />
@@ -1126,6 +1126,20 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--neon-cyan);
+      margin-bottom: 16px;
+    }
+
+    .rv-retired-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #ffb454;
+      border: 1px solid #ffb454;
+      border-radius: 999px;
+      padding: 5px 12px;
       margin-bottom: 16px;
     }
 
@@ -3018,18 +3032,12 @@
         <div class="rv-hero-inner">
 
           <div class="rv-hero-copy" style="position:relative;z-index:1;max-width:620px;">
-            <p class="rv-hero-eyebrow"><img src="assets/packs/pack-a-relay-noir/b1-signal-ping.webp" alt="Signal ping" width="14" height="14" class="rv-eyebrow-ping-img" aria-hidden="true" />SSH session manager for your Mac &middot; Works with altergo</p>
-            <p class="rv-hero-provider-badge" aria-label="Works with Claude, Gemini, Copilot, and Codex">
-              Claude <span class="rv-sep" aria-hidden="true">&middot;</span>
-              Gemini <span class="rv-sep" aria-hidden="true">&middot;</span>
-              Copilot <span class="rv-sep" aria-hidden="true">&middot;</span>
-              Codex
-            </p>
+            <p class="rv-retired-badge">Obsolete &middot; replaced by built-in remote control</p>
             <h1 class="rv-hero-title">
-              Your fleet, <span class="rv-hero-title-accent">one SSH away.</span>
+              Rover is obsolete. <span class="rv-hero-title-accent">Your agent does this now.</span>
             </h1>
             <p class="rv-hero-subtitle">
-              Use your AI coding setup from anywhere. SSH into your Mac from your phone and keep building.
+              Rover existed to reach coding agents on your Mac from your phone over SSH. Claude Code (<code>/remote-control</code>), GitHub Copilot CLI (<code>copilot --remote</code>) and OpenAI Codex now ship remote control in the harness itself, with no SSH, tmux or extra tool to set up. There is no reason left to run Rover. The project stays up for history only and is no longer maintained.
             </p>
             <div class="rv-hero-actions">
               <a
